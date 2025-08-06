@@ -1,9 +1,10 @@
 import { ChattingButton } from "@/components/ChattingButton";
+import { Cube } from "@/components/Cube";
 
 export default function Home() {
   return (
-    <div>
-      안녕하세요.
+    <div className="h-full  border-red-300 box-border">
+      <Cube />
       <div className="fixed bottom-12 left-12">
         <ChattingButton />
       </div>
