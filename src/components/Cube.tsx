@@ -40,10 +40,23 @@ export const Cube = () => {
     };
     renderer.setAnimationLoop(animate);
 
+    // 리사이즈 핸들러 함수
+    const handleResize = () => {
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    };
+
+    window.addEventListener("resize", handleResize);
+
     // 6. 클린업 함수 (컴포넌트 언마운트 시 정리)
     return () => {
       renderer.dispose();
       container?.removeChild(renderer.domElement);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
