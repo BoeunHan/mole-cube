@@ -32,6 +32,10 @@ export const Cube = () => {
     renderer.setClearColor(0xfafaf8);
     container.appendChild(renderer.domElement);
 
+    // 큐브 그룹 생성 (전체 큐브를 하나로 그룹핑)
+    const group = new THREE.Group();
+    scene.add(group);
+
     // 큐브(박스) 만들기
     const half = Math.floor(size / 2);
     for (let x = 0; x < size; x++) {
@@ -49,7 +53,7 @@ export const Cube = () => {
             (z - half) * offset
           );
 
-          scene.add(cube);
+          group.add(cube);
           cubes[x][y][z] = cube;
         }
       }
@@ -61,7 +65,45 @@ export const Cube = () => {
     scene.add(light);
     scene.add(new THREE.AmbientLight(0xffffff, 1));
 
-    renderer.render(scene, camera);
+    const animate = () => {
+      renderer.render(scene, camera);
+    };
+    renderer.setAnimationLoop(animate);
+
+    // 드래그
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+
+    const onMouseDown = (event: MouseEvent) => {
+      isDragging = true;
+      previousMousePosition = { x: event.clientX, y: event.clientY };
+    };
+
+    const onMouseMove = (event: MouseEvent) => {
+      if (!isDragging) return;
+
+      const deltaMove = {
+        x: event.clientX - previousMousePosition.x,
+        y: event.clientY - previousMousePosition.y,
+      };
+
+      // 회전 속도 조절 계수
+      const rotationSpeed = 0.005;
+
+      group.rotation.y += deltaMove.x * rotationSpeed;
+      group.rotation.x += deltaMove.y * rotationSpeed;
+
+      previousMousePosition = { x: event.clientX, y: event.clientY };
+    };
+
+    const onMouseUp = () => {
+      isDragging = false;
+    };
+
+    container.addEventListener("mousedown", onMouseDown);
+    container.addEventListener("mousemove", onMouseMove);
+    container.addEventListener("mouseup", onMouseUp);
+    container.addEventListener("mouseleave", onMouseUp);
 
     // 리사이즈 핸들러 함수
     const handleResize = () => {
@@ -78,9 +120,13 @@ export const Cube = () => {
 
     // 클린업 함수 (컴포넌트 언마운트 시 정리)
     return () => {
+      window.removeEventListener("resize", handleResize);
+      container.removeEventListener("mousedown", onMouseDown);
+      container.removeEventListener("mousemove", onMouseMove);
+      container.removeEventListener("mouseup", onMouseUp);
+      container.removeEventListener("mouseleave", onMouseUp);
       renderer.dispose();
       container?.removeChild(renderer.domElement);
-      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
