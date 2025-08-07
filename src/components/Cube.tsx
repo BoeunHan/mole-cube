@@ -23,8 +23,8 @@ export const Cube = () => {
     const scene = new THREE.Scene();
 
     // 카메라(Camera) 만들기
-    const camera = new THREE.PerspectiveCamera(110, width / height, 0.1, 2000);
-    camera.position.z = 5;
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 2000);
+    camera.position.z = 12;
 
     // 렌더러(Renderer) 만들기
     const renderer = new THREE.WebGLRenderer({ antialias: true });
