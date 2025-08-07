@@ -68,7 +68,8 @@ export const Cube = () => {
     const animate = () => {
       renderer.render(scene, camera);
     };
-    renderer.setAnimationLoop(animate);
+
+    renderer.render(scene, camera);
 
     // 드래그
     let isDragging = false;
@@ -77,6 +78,7 @@ export const Cube = () => {
     const onMouseDown = (event: MouseEvent) => {
       isDragging = true;
       previousMousePosition = { x: event.clientX, y: event.clientY };
+      renderer.setAnimationLoop(animate);
     };
 
     const onMouseMove = (event: MouseEvent) => {
@@ -98,6 +100,7 @@ export const Cube = () => {
 
     const onMouseUp = () => {
       isDragging = false;
+      renderer.setAnimationLoop(null);
     };
 
     container.addEventListener("mousedown", onMouseDown);
