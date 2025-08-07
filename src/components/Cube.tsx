@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { CubeData } from "@/types";
 
-const cubes: THREE.Mesh[] = [];
+const cubes: CubeData = [];
 const offset = 1.1;
-const half = 1;
+const size = 3;
 
 export const Cube = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -31,16 +32,24 @@ export const Cube = () => {
     container.appendChild(renderer.domElement);
 
     // 큐브(박스) 만들기
-    for (let x = -half; x <= half; x++) {
-      for (let y = -half; y <= half; y++) {
-        for (let z = -half; z <= half; z++) {
+    const half = Math.floor(size / 2);
+    for (let x = 0; x < size; x++) {
+      cubes[x] = [];
+      for (let y = 0; y < size; y++) {
+        cubes[x][y] = [];
+        for (let z = 0; z < size; z++) {
           const geometry = new THREE.BoxGeometry(1, 1, 1);
           const material = new THREE.MeshLambertMaterial({ color: 0xffc4b7 });
           const cube = new THREE.Mesh(geometry, material);
 
-          cube.position.set(x * offset, y * offset, z * offset);
+          cube.position.set(
+            (x - half) * offset,
+            (y - half) * offset,
+            (z - half) * offset
+          );
+
           scene.add(cube);
-          cubes.push(cube);
+          cubes[x][y][z] = cube;
         }
       }
     }
