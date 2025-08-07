@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CubeData } from "@/types";
+import { COLORS } from "@/colors";
 
 const cubes: CubeData = [];
 const offset = 1.1;
@@ -39,8 +40,8 @@ export const Cube = () => {
         cubes[x][y] = [];
         for (let z = 0; z < size; z++) {
           const geometry = new THREE.BoxGeometry(1, 1, 1);
-          const material = new THREE.MeshLambertMaterial({ color: 0xffc4b7 });
-          const cube = new THREE.Mesh(geometry, material);
+          const materials = getMaterialsByPosition(x, y, z, size);
+          const cube = new THREE.Mesh(geometry, materials);
 
           cube.position.set(
             (x - half) * offset,
@@ -85,3 +86,41 @@ export const Cube = () => {
 
   return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
 };
+
+function getMaterialsByPosition(x: number, y: number, z: number, size: number) {
+  const max = size - 1;
+
+  const materials = [];
+
+  materials[0] =
+    x === max
+      ? new THREE.MeshLambertMaterial({ color: COLORS.R })
+      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+
+  materials[1] =
+    x === 0
+      ? new THREE.MeshLambertMaterial({ color: COLORS.L })
+      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+
+  materials[2] =
+    y === max
+      ? new THREE.MeshLambertMaterial({ color: COLORS.U })
+      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+
+  materials[3] =
+    y === 0
+      ? new THREE.MeshLambertMaterial({ color: COLORS.D })
+      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+
+  materials[4] =
+    z === max
+      ? new THREE.MeshLambertMaterial({ color: COLORS.F })
+      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+
+  materials[5] =
+    z === 0
+      ? new THREE.MeshLambertMaterial({ color: COLORS.B })
+      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+
+  return materials;
+}

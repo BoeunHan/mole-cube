@@ -1,0 +1,9 @@
+export const COLORS = {
+  R: 0xffc4b7,
+  L: 0x93cef6,
+  U: 0xd0f8b8,
+  D: 0xffe7c0,
+  F: 0xffd1a6,
+  B: 0xfafaf8,
+  NONE: 0xaeaeae,
+};
