@@ -3,6 +3,10 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
+const cubes: THREE.Mesh[] = [];
+const offset = 1.1;
+const half = 1;
+
 export const Cube = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -17,7 +21,7 @@ export const Cube = () => {
     const scene = new THREE.Scene();
 
     // 카메라(Camera) 만들기
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 2000);
+    const camera = new THREE.PerspectiveCamera(110, width / height, 0.1, 2000);
     camera.position.z = 5;
 
     // 렌더러(Renderer) 만들기
@@ -27,24 +31,27 @@ export const Cube = () => {
     container.appendChild(renderer.domElement);
 
     // 큐브(박스) 만들기
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshLambertMaterial({ color: 0xffc4b7 });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    for (let x = -half; x <= half; x++) {
+      for (let y = -half; y <= half; y++) {
+        for (let z = -half; z <= half; z++) {
+          const geometry = new THREE.BoxGeometry(1, 1, 1);
+          const material = new THREE.MeshLambertMaterial({ color: 0xffc4b7 });
+          const cube = new THREE.Mesh(geometry, material);
+
+          cube.position.set(x * offset, y * offset, z * offset);
+          scene.add(cube);
+          cubes.push(cube);
+        }
+      }
+    }
 
     // 조명 추가하기
-    const light = new THREE.DirectionalLight(0xffffff, 3);
-    light.position.set(5, 5, 5);
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(0, 0, 5);
     scene.add(light);
     scene.add(new THREE.AmbientLight(0xffffff, 1));
 
-    // 애니메이션 루프 만들기
-    const animate = () => {
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    };
-    renderer.setAnimationLoop(animate);
+    renderer.render(scene, camera);
 
     // 리사이즈 핸들러 함수
     const handleResize = () => {
@@ -54,6 +61,7 @@ export const Cube = () => {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
+      renderer.render(scene, camera);
     };
 
     window.addEventListener("resize", handleResize);
