@@ -36,6 +36,9 @@ export const Cube = () => {
     const group = new THREE.Group();
     scene.add(group);
 
+    group.rotation.x = Math.PI / 10;
+    group.rotation.y = -Math.PI / 10;
+
     // 큐브(박스) 만들기
     const half = Math.floor(size / 2);
     for (let x = 0; x < size; x++) {
@@ -61,7 +64,7 @@ export const Cube = () => {
 
     // 조명 추가하기
     const light = new THREE.DirectionalLight(0xffffff, 2);
-    light.position.set(0, 0, 5);
+    light.position.set(0, 3, 20);
     scene.add(light);
     scene.add(new THREE.AmbientLight(0xffffff, 1));
 
