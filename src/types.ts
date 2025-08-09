@@ -1,5 +1,3 @@
 import { Mesh } from "three";
 
-type Cube = Mesh;
-
-export type CubeData = Cube[][][];
+export type CubeData = Mesh[][][];

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CubeData } from "@/types";
-import { Color, CUBE_COLORS } from "@/colors";
+import { Color, CUBE_COLORS, Face } from "@/colors";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
 
 const cubes: CubeData = [];
@@ -12,6 +12,9 @@ const size = 3;
 
 export const Cube = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -21,32 +24,30 @@ export const Cube = () => {
     const height = container.clientHeight;
 
     // 씬
-    const scene = new THREE.Scene();
+    sceneRef.current = new THREE.Scene();
 
     // 조명
     const light = new THREE.DirectionalLight(0xffffff, 2);
     light.position.set(0, 3, 20);
     // scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffffff, 1));
+    sceneRef.current.add(new THREE.AmbientLight(0xffffff, 1));
 
     // 카메라
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 2000);
-    camera.position.z = 12;
-    camera.add(light);
-    scene.add(camera);
+    cameraRef.current = new THREE.PerspectiveCamera(
+      50,
+      width / height,
+      0.1,
+      2000
+    );
+    cameraRef.current.position.z = 12;
+    cameraRef.current.add(light);
+    sceneRef.current.add(cameraRef.current);
 
     // 렌더러
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(width, height);
-    renderer.setClearColor(0xfafaf8);
-    container.appendChild(renderer.domElement);
-
-    // 큐브 그룹 생성 (전체 큐브를 하나로 그룹핑)
-    const group = new THREE.Group();
-    scene.add(group);
-
-    group.rotation.x = Math.PI / 10;
-    group.rotation.y = -Math.PI / 10;
+    rendererRef.current = new THREE.WebGLRenderer({ antialias: true });
+    rendererRef.current.setSize(width, height);
+    rendererRef.current.setClearColor(0xfafaf8);
+    container.appendChild(rendererRef.current.domElement);
 
     // 큐브(박스) 만들기
     const half = Math.floor(size / 2);
@@ -65,32 +66,59 @@ export const Cube = () => {
             (z - half) * offset
           );
 
-          group.add(cube);
+          sceneRef.current.add(cube);
           cubes[x][y][z] = cube;
         }
       }
     }
 
     // 라벨
-    makeFaceLabel("R", new THREE.Vector3((half + 0.7) * offset, 0, 0), group);
-    makeFaceLabel("L", new THREE.Vector3(-(half + 0.7) * offset, 0, 0), group);
-    makeFaceLabel("U", new THREE.Vector3(0, (half + 0.7) * offset, 0), group);
-    makeFaceLabel("D", new THREE.Vector3(0, -(half + 0.7) * offset, 0), group);
-    makeFaceLabel("F", new THREE.Vector3(0, 0, (half + 0.7) * offset), group);
-    makeFaceLabel("B", new THREE.Vector3(0, 0, -(half + 0.7) * offset), group);
+    makeFaceLabel(
+      "R",
+      new THREE.Vector3((half + 0.7) * offset, 0, 0),
+      sceneRef.current
+    );
+    makeFaceLabel(
+      "L",
+      new THREE.Vector3(-(half + 0.7) * offset, 0, 0),
+      sceneRef.current
+    );
+    makeFaceLabel(
+      "U",
+      new THREE.Vector3(0, (half + 0.7) * offset, 0),
+      sceneRef.current
+    );
+    makeFaceLabel(
+      "D",
+      new THREE.Vector3(0, -(half + 0.7) * offset, 0),
+      sceneRef.current
+    );
+    makeFaceLabel(
+      "F",
+      new THREE.Vector3(0, 0, (half + 0.7) * offset),
+      sceneRef.current
+    );
+    makeFaceLabel(
+      "B",
+      new THREE.Vector3(0, 0, -(half + 0.7) * offset),
+      sceneRef.current
+    );
 
     // 드래그
-    const controls = new TrackballControls(camera, renderer.domElement);
-    controls.rotateSpeed = 2;
+    const controls = new TrackballControls(
+      cameraRef.current,
+      rendererRef.current.domElement
+    );
+    controls.rotateSpeed = 20;
     controls.noZoom = true;
     controls.noPan = true;
 
     const handleControlStart = () => {
-      renderer.setAnimationLoop(animate);
+      rendererRef.current?.setAnimationLoop(animate);
     };
 
     const handleControlEnd = () => {
-      renderer.setAnimationLoop(null);
+      rendererRef.current?.setAnimationLoop(null);
     };
 
     controls.addEventListener("start", handleControlStart);
@@ -98,20 +126,22 @@ export const Cube = () => {
 
     const animate = () => {
       controls.update();
-      renderer.render(scene, camera);
+      rendererRef.current?.render(sceneRef.current!, cameraRef.current!);
     };
 
-    renderer.render(scene, camera);
+    rendererRef.current.render(sceneRef.current, cameraRef.current);
 
     // 리사이즈 핸들러 함수
     const handleResize = () => {
       const width = container.clientWidth;
       const height = container.clientHeight;
 
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-      renderer.render(scene, camera);
+      if (cameraRef.current && sceneRef.current) {
+        cameraRef.current.aspect = width / height;
+        cameraRef.current.updateProjectionMatrix();
+        rendererRef.current?.setSize(width, height);
+        rendererRef.current?.render(sceneRef.current, cameraRef.current);
+      }
     };
 
     window.addEventListener("resize", handleResize);
@@ -122,12 +152,64 @@ export const Cube = () => {
       controls.removeEventListener("start", handleControlStart);
       controls.removeEventListener("end", handleControlEnd);
 
-      renderer.dispose();
-      container?.removeChild(renderer.domElement);
+      rendererRef.current?.dispose();
+      if (container && rendererRef.current) {
+        container.removeChild(rendererRef.current.domElement);
+      }
     };
   }, []);
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <>
+      <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.R,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current
+              );
+          }}
+        >
+          R 시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.B,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current
+              );
+          }}
+        >
+          B 시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.U,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current
+              );
+          }}
+        >
+          U 시계방향으로 회전
+        </button>
+      </div>
+    </>
+  );
 };
 
 function getMaterialsByPosition(x: number, y: number, z: number, size: number) {
@@ -137,32 +219,32 @@ function getMaterialsByPosition(x: number, y: number, z: number, size: number) {
 
   materials[0] =
     x === max
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.R[y][z] })
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.R][y][z] })
       : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[1] =
     x === 0
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.L[y][z] })
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.L][y][z] })
       : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[2] =
     y === max
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.U[x][z] })
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.U][x][z] })
       : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[3] =
     y === 0
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.D[x][z] })
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.D][x][z] })
       : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[4] =
     z === max
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.F[x][y] })
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.F][x][y] })
       : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[5] =
     z === 0
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.B[x][y] })
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.B][x][y] })
       : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   return materials;
@@ -171,7 +253,7 @@ function getMaterialsByPosition(x: number, y: number, z: number, size: number) {
 function makeFaceLabel(
   text: string,
   offset: THREE.Vector3,
-  parent: THREE.Object3D
+  scene: THREE.Scene
 ) {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d")!;
@@ -194,6 +276,111 @@ function makeFaceLabel(
   sprite.scale.set(0.5, 0.5, 1);
   sprite.position.copy(offset);
 
-  parent.add(sprite);
+  scene.add(sprite);
   return sprite;
+}
+
+function rotateFace90(
+  cubes: CubeData,
+  face: Face,
+  renderer: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  camera: THREE.Camera
+) {
+  const { faceGroup, removeFromFaceGroup } = controlFaceGroup(
+    cubes,
+    face,
+    scene
+  );
+  scene.add(faceGroup);
+  const axis = getRotationAxis(face);
+  const startRotation = faceGroup.rotation[axis];
+  const direction = getRotationDirection(face);
+  const targetRotation = startRotation + (direction * Math.PI) / 2; // 90도 회전
+  const duration = 200; // ms
+  const startTime = performance.now();
+
+  function animate() {
+    const elapsed = performance.now() - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    faceGroup.rotation[axis] =
+      startRotation + (targetRotation - startRotation) * t;
+
+    renderer.render(scene, camera);
+
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      removeFromFaceGroup();
+    }
+  }
+
+  animate();
+}
+
+function controlFaceGroup(cubes: CubeData, face: Face, scene: THREE.Scene) {
+  const faceGroup = new THREE.Group();
+
+  let condition: (x: number, y: number, z: number) => boolean;
+
+  if (face === Face.R) condition = (x, _y, _z) => x === size - 1;
+  else if (face === Face.L) condition = (x, _y, _z) => x === 0;
+  else if (face === Face.U) condition = (_x, y, _z) => y === size - 1;
+  else if (face === Face.D) condition = (_x, y, _z) => y === 0;
+  else if (face === Face.F) condition = (_x, _y, z) => z === size - 1;
+  else condition = (_x, _y, z) => z === 0;
+
+  for (let x = 0; x < size; x++) {
+    for (let y = 0; y < size; y++) {
+      for (let z = 0; z < size; z++) {
+        const cube = cubes[x][y][z];
+        if (condition(x, y, z)) {
+          faceGroup.add(cube);
+        }
+      }
+    }
+  }
+
+  const removeFromFaceGroup = () => {
+    for (let x = 0; x < size; x++) {
+      for (let y = 0; y < size; y++) {
+        for (let z = 0; z < size; z++) {
+          const cube = cubes[x][y][z];
+          if (condition(x, y, z)) {
+            faceGroup.remove(cube);
+            scene.add(cube);
+          }
+        }
+      }
+    }
+  };
+
+  return { faceGroup, removeFromFaceGroup };
+}
+
+function getRotationAxis(face: Face): "x" | "y" | "z" {
+  switch (face) {
+    case Face.R:
+    case Face.L:
+      return "x";
+    case Face.U:
+    case Face.D:
+      return "y";
+    case Face.F:
+    case Face.B:
+      return "z";
+  }
+}
+
+function getRotationDirection(face: Face): 1 | -1 {
+  switch (face) {
+    case Face.U:
+    case Face.R:
+    case Face.F:
+      return -1; // 시계방향
+    case Face.D:
+    case Face.L:
+    case Face.B:
+      return 1; // 반시계방향
+  }
 }
