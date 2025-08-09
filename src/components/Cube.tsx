@@ -71,12 +71,7 @@ export const Cube = () => {
       }
     }
 
-    // 드래그
-    const controls = new TrackballControls(camera, renderer.domElement);
-    controls.rotateSpeed = 2;
-    controls.noZoom = true;
-    controls.noPan = true;
-
+    // 라벨
     makeFaceLabel("R", new THREE.Vector3((half + 0.7) * offset, 0, 0), group);
     makeFaceLabel("L", new THREE.Vector3(-(half + 0.7) * offset, 0, 0), group);
     makeFaceLabel("U", new THREE.Vector3(0, (half + 0.7) * offset, 0), group);
@@ -84,12 +79,29 @@ export const Cube = () => {
     makeFaceLabel("F", new THREE.Vector3(0, 0, (half + 0.7) * offset), group);
     makeFaceLabel("B", new THREE.Vector3(0, 0, -(half + 0.7) * offset), group);
 
+    // 드래그
+    const controls = new TrackballControls(camera, renderer.domElement);
+    controls.rotateSpeed = 2;
+    controls.noZoom = true;
+    controls.noPan = true;
+
+    const handleControlStart = () => {
+      renderer.setAnimationLoop(animate);
+    };
+
+    const handleControlEnd = () => {
+      renderer.setAnimationLoop(null);
+    };
+
+    controls.addEventListener("start", handleControlStart);
+    controls.addEventListener("end", handleControlEnd);
+
     const animate = () => {
       controls.update();
       renderer.render(scene, camera);
     };
 
-    renderer.setAnimationLoop(animate);
+    renderer.render(scene, camera);
 
     // 리사이즈 핸들러 함수
     const handleResize = () => {
@@ -107,6 +119,9 @@ export const Cube = () => {
     // 클린업 함수 (컴포넌트 언마운트 시 정리)
     return () => {
       window.removeEventListener("resize", handleResize);
+      controls.removeEventListener("start", handleControlStart);
+      controls.removeEventListener("end", handleControlEnd);
+
       renderer.dispose();
       container?.removeChild(renderer.domElement);
     };
