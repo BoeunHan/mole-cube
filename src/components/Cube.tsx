@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CubeData } from "@/types";
 import { Color, CUBE_COLORS } from "@/colors";
+import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
 
 const cubes: CubeData = [];
 const offset = 1.1;
@@ -19,14 +20,22 @@ export const Cube = () => {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // 씬(Scene) 만들기
+    // 씬
     const scene = new THREE.Scene();
 
-    // 카메라(Camera) 만들기
+    // 조명
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(0, 3, 20);
+    // scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+    // 카메라
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 2000);
     camera.position.z = 12;
+    camera.add(light);
+    scene.add(camera);
 
-    // 렌더러(Renderer) 만들기
+    // 렌더러
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.setClearColor(0xfafaf8);
@@ -62,54 +71,18 @@ export const Cube = () => {
       }
     }
 
-    // 조명 추가하기
-    const light = new THREE.DirectionalLight(0xffffff, 2);
-    light.position.set(0, 3, 20);
-    scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffffff, 1));
+    // 드래그
+    const controls = new TrackballControls(camera, renderer.domElement);
+    controls.rotateSpeed = 2;
+    controls.noZoom = true;
+    controls.noPan = true;
 
     const animate = () => {
+      controls.update();
       renderer.render(scene, camera);
     };
 
-    renderer.render(scene, camera);
-
-    // 드래그
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-
-    const onMouseDown = (event: MouseEvent) => {
-      isDragging = true;
-      previousMousePosition = { x: event.clientX, y: event.clientY };
-      renderer.setAnimationLoop(animate);
-    };
-
-    const onMouseMove = (event: MouseEvent) => {
-      if (!isDragging) return;
-
-      const deltaMove = {
-        x: event.clientX - previousMousePosition.x,
-        y: event.clientY - previousMousePosition.y,
-      };
-
-      // 회전 속도 조절 계수
-      const rotationSpeed = 0.005;
-
-      group.rotation.y += deltaMove.x * rotationSpeed;
-      group.rotation.x += deltaMove.y * rotationSpeed;
-
-      previousMousePosition = { x: event.clientX, y: event.clientY };
-    };
-
-    const onMouseUp = () => {
-      isDragging = false;
-      renderer.setAnimationLoop(null);
-    };
-
-    container.addEventListener("mousedown", onMouseDown);
-    container.addEventListener("mousemove", onMouseMove);
-    container.addEventListener("mouseup", onMouseUp);
-    container.addEventListener("mouseleave", onMouseUp);
+    renderer.setAnimationLoop(animate);
 
     // 리사이즈 핸들러 함수
     const handleResize = () => {
@@ -127,10 +100,6 @@ export const Cube = () => {
     // 클린업 함수 (컴포넌트 언마운트 시 정리)
     return () => {
       window.removeEventListener("resize", handleResize);
-      container.removeEventListener("mousedown", onMouseDown);
-      container.removeEventListener("mousemove", onMouseMove);
-      container.removeEventListener("mouseup", onMouseUp);
-      container.removeEventListener("mouseleave", onMouseUp);
       renderer.dispose();
       container?.removeChild(renderer.domElement);
     };
