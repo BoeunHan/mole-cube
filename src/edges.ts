@@ -5,8 +5,7 @@ export type EdgePosition = "top" | "bottom" | "left" | "right";
 export interface AdjacentEdgeInfo {
   face: Face;
   edge: EdgePosition;
-  reverseClockwise: boolean;
-  reverseCounterClockwise: boolean;
+  reverse: boolean;
 }
 
 export const adjacentEdgesMap: Record<Face, AdjacentEdgeInfo[]> = {
@@ -14,156 +13,132 @@ export const adjacentEdgesMap: Record<Face, AdjacentEdgeInfo[]> = {
     {
       face: Face.U,
       edge: "right",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.B,
       edge: "right",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.D,
       edge: "right",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.F,
       edge: "right",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
   ],
   [Face.L]: [
     {
       face: Face.U,
       edge: "left",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.F,
       edge: "left",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.D,
       edge: "left",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.B,
       edge: "left",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
   ],
   [Face.U]: [
     {
       face: Face.B,
       edge: "top",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.R,
       edge: "right",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.F,
       edge: "top",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.L,
       edge: "right",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
   ],
   [Face.D]: [
     {
       face: Face.F,
       edge: "bottom",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.R,
       edge: "left",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.B,
       edge: "bottom",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.L,
       edge: "left",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
   ],
   [Face.F]: [
     {
       face: Face.U,
       edge: "top",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.R,
       edge: "top",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.D,
       edge: "top",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.L,
       edge: "top",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
   ],
   [Face.B]: [
     {
       face: Face.U,
       edge: "bottom",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.L,
       edge: "bottom",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
     {
       face: Face.D,
       edge: "bottom",
-      reverseClockwise: false,
-      reverseCounterClockwise: true,
+      reverse: false,
     },
     {
       face: Face.R,
       edge: "bottom",
-      reverseClockwise: true,
-      reverseCounterClockwise: false,
+      reverse: true,
     },
   ],
 };

@@ -67,9 +67,13 @@ function setEdgeColors(face: Face, edge: EdgePosition, colors: Color[]) {
   }
 }
 
-export function updateFaceColorsAfterRotation(face: Face, clockwise: boolean) {
-  const currentColors = CUBE_COLORS[face];
-  const isOpposite = face === Face.L || face === Face.U || face === Face.B;
+export function updateCubeColorsAfterRotation(
+  pivotFace: Face,
+  clockwise: boolean
+) {
+  const currentColors = CUBE_COLORS[pivotFace];
+  const isOpposite =
+    pivotFace === Face.L || pivotFace === Face.U || pivotFace === Face.B;
   let rotatedColors: Color[][];
 
   if (clockwise) {
@@ -81,17 +85,15 @@ export function updateFaceColorsAfterRotation(face: Face, clockwise: boolean) {
       ? rotateMatrixClockwise(currentColors)
       : rotateMatrixCounterClockwise(currentColors);
   }
-  CUBE_COLORS[face] = rotatedColors;
+  CUBE_COLORS[pivotFace] = rotatedColors;
 
-  const adjEdges = adjacentEdgesMap[face];
-  const edges: Color[][] = adjEdges.map(
-    ({ face, edge, reverseClockwise, reverseCounterClockwise }) => {
-      let edgeColors = getEdgeColors(face, edge);
-      const reverse = clockwise ? reverseClockwise : reverseCounterClockwise;
-      if (reverse) edgeColors = edgeColors.slice().reverse();
-      return edgeColors;
-    }
-  );
+  const adjEdges = adjacentEdgesMap[pivotFace];
+  const edges: Color[][] = adjEdges.map(({ face, edge, reverse }) => {
+    let edgeColors = getEdgeColors(face, edge);
+    const edgeReverse = clockwise ? reverse : !reverse;
+    if (edgeReverse) edgeColors = edgeColors.slice().reverse();
+    return edgeColors;
+  });
   for (let i = 0; i < 4; i++) {
     const fromIndex = (i + (clockwise ? 3 : 1)) % 4;
     const to = adjEdges[i];

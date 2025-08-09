@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { CubeData } from "@/types";
 import { Color, CUBE_COLORS, Face } from "@/colors";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
-import { updateFaceColorsAfterRotation } from "@/utils";
+import { updateCubeColorsAfterRotation } from "@/utils";
 
 const cubes: CubeData = [];
 const offset = 1.1;
@@ -153,7 +153,8 @@ export const Cube = () => {
                 Face.R,
                 rendererRef.current,
                 sceneRef.current,
-                cameraRef.current
+                cameraRef.current,
+                true
               );
           }}
         >
@@ -168,7 +169,8 @@ export const Cube = () => {
                 Face.L,
                 rendererRef.current,
                 sceneRef.current,
-                cameraRef.current
+                cameraRef.current,
+                true
               );
           }}
         >
@@ -183,7 +185,8 @@ export const Cube = () => {
                 Face.U,
                 rendererRef.current,
                 sceneRef.current,
-                cameraRef.current
+                cameraRef.current,
+                true
               );
           }}
         >
@@ -198,7 +201,8 @@ export const Cube = () => {
                 Face.D,
                 rendererRef.current,
                 sceneRef.current,
-                cameraRef.current
+                cameraRef.current,
+                true
               );
           }}
         >
@@ -213,7 +217,8 @@ export const Cube = () => {
                 Face.F,
                 rendererRef.current,
                 sceneRef.current,
-                cameraRef.current
+                cameraRef.current,
+                true
               );
           }}
         >
@@ -228,11 +233,108 @@ export const Cube = () => {
                 Face.B,
                 rendererRef.current,
                 sceneRef.current,
-                cameraRef.current
+                cameraRef.current,
+                true
               );
           }}
         >
           B 시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.R,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current,
+                false
+              );
+          }}
+        >
+          R 반시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.L,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current,
+                false
+              );
+          }}
+        >
+          L 반시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.U,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current,
+                false
+              );
+          }}
+        >
+          U 반시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.D,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current,
+                false
+              );
+          }}
+        >
+          D 반시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.F,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current,
+                false
+              );
+          }}
+        >
+          F 반시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.B,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current,
+                false
+              );
+          }}
+        >
+          B 반시계방향으로 회전
         </button>
       </div>
     </>
@@ -262,10 +364,10 @@ function initCubes(scene: THREE.Scene) {
       }
     }
   }
-  updateFaceColors();
+  updateCubeColors();
 }
 
-function updateFaceColors() {
+function updateCubeColors() {
   for (let x = 0; x < size; x++) {
     for (let y = 0; y < size; y++) {
       for (let z = 0; z < size; z++) {
@@ -330,7 +432,8 @@ function rotateFace90(
   face: Face,
   renderer: THREE.WebGLRenderer,
   scene: THREE.Scene,
-  camera: THREE.Camera
+  camera: THREE.Camera,
+  clockwise: boolean
 ) {
   const { faceGroup, removeFromFaceGroup } = controlFaceGroup(
     cubes,
@@ -340,7 +443,7 @@ function rotateFace90(
   scene.add(faceGroup);
   const axis = getRotationAxis(face);
   const startRotation = faceGroup.rotation[axis];
-  const direction = getRotationDirection(face);
+  const direction = getRotationDirection(face, clockwise);
   const targetRotation = startRotation + (direction * Math.PI) / 2; // 90도 회전
   const duration = 200; // ms
   const startTime = performance.now();
@@ -357,8 +460,8 @@ function rotateFace90(
       requestAnimationFrame(animate);
     } else {
       removeFromFaceGroup();
-      updateFaceColorsAfterRotation(face, true);
-      updateFaceColors();
+      updateCubeColorsAfterRotation(face, clockwise);
+      updateCubeColors();
     }
   }
 
@@ -419,15 +522,15 @@ function getRotationAxis(face: Face): "x" | "y" | "z" {
   }
 }
 
-function getRotationDirection(face: Face): 1 | -1 {
+function getRotationDirection(face: Face, clockwise: boolean): 1 | -1 {
   switch (face) {
     case Face.U:
     case Face.R:
     case Face.F:
-      return -1; // 시계방향
+      return clockwise ? -1 : 1;
     case Face.D:
     case Face.L:
     case Face.B:
-      return 1; // 반시계방향
+      return clockwise ? 1 : -1;
   }
 }
