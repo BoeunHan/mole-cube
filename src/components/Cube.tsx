@@ -77,6 +77,13 @@ export const Cube = () => {
     controls.noZoom = true;
     controls.noPan = true;
 
+    makeFaceLabel("R", new THREE.Vector3((half + 0.7) * offset, 0, 0), group);
+    makeFaceLabel("L", new THREE.Vector3(-(half + 0.7) * offset, 0, 0), group);
+    makeFaceLabel("U", new THREE.Vector3(0, (half + 0.7) * offset, 0), group);
+    makeFaceLabel("D", new THREE.Vector3(0, -(half + 0.7) * offset, 0), group);
+    makeFaceLabel("F", new THREE.Vector3(0, 0, (half + 0.7) * offset), group);
+    makeFaceLabel("B", new THREE.Vector3(0, 0, -(half + 0.7) * offset), group);
+
     const animate = () => {
       controls.update();
       renderer.render(scene, camera);
@@ -144,4 +151,34 @@ function getMaterialsByPosition(x: number, y: number, z: number, size: number) {
       : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   return materials;
+}
+
+function makeFaceLabel(
+  text: string,
+  offset: THREE.Vector3,
+  parent: THREE.Object3D
+) {
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d")!;
+  canvas.width = 256;
+  canvas.height = 256;
+
+  context.font = "120px Arial";
+  context.fillStyle = "black";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const material = new THREE.SpriteMaterial({
+    map: texture,
+    transparent: true,
+  });
+
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(0.5, 0.5, 1);
+  sprite.position.copy(offset);
+
+  parent.add(sprite);
+  return sprite;
 }
