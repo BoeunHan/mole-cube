@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CubeData } from "@/types";
-import { COLORS } from "@/colors";
+import { Color, CUBE_COLORS } from "@/colors";
 
 const cubes: CubeData = [];
 const offset = 1.1;
@@ -146,33 +146,33 @@ function getMaterialsByPosition(x: number, y: number, z: number, size: number) {
 
   materials[0] =
     x === max
-      ? new THREE.MeshLambertMaterial({ color: COLORS.R })
-      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.R[y][z] })
+      : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[1] =
     x === 0
-      ? new THREE.MeshLambertMaterial({ color: COLORS.L })
-      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.L[y][z] })
+      : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[2] =
     y === max
-      ? new THREE.MeshLambertMaterial({ color: COLORS.U })
-      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.U[x][z] })
+      : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[3] =
     y === 0
-      ? new THREE.MeshLambertMaterial({ color: COLORS.D })
-      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.D[x][z] })
+      : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[4] =
     z === max
-      ? new THREE.MeshLambertMaterial({ color: COLORS.F })
-      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.F[x][y] })
+      : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   materials[5] =
     z === 0
-      ? new THREE.MeshLambertMaterial({ color: COLORS.B })
-      : new THREE.MeshLambertMaterial({ color: COLORS.NONE });
+      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS.B[x][y] })
+      : new THREE.MeshLambertMaterial({ color: Color.NONE });
 
   return materials;
 }
