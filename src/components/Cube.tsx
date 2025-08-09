@@ -5,10 +5,12 @@ import * as THREE from "three";
 import { CubeData } from "@/types";
 import { Color, CUBE_COLORS, Face } from "@/colors";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
+import { updateFaceColorsAfterRotation } from "@/utils";
 
 const cubes: CubeData = [];
 const offset = 1.1;
 const size = 3;
+const half = Math.floor(size / 2);
 
 export const Cube = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,27 +52,7 @@ export const Cube = () => {
     container.appendChild(rendererRef.current.domElement);
 
     // 큐브(박스) 만들기
-    const half = Math.floor(size / 2);
-    for (let x = 0; x < size; x++) {
-      cubes[x] = [];
-      for (let y = 0; y < size; y++) {
-        cubes[x][y] = [];
-        for (let z = 0; z < size; z++) {
-          const geometry = new THREE.BoxGeometry(1, 1, 1);
-          const materials = getMaterialsByPosition(x, y, z, size);
-          const cube = new THREE.Mesh(geometry, materials);
-
-          cube.position.set(
-            (x - half) * offset,
-            (y - half) * offset,
-            (z - half) * offset
-          );
-
-          sceneRef.current.add(cube);
-          cubes[x][y][z] = cube;
-        }
-      }
-    }
+    initCubes(sceneRef.current);
 
     // 라벨
     makeFaceLabel(
@@ -183,14 +165,14 @@ export const Cube = () => {
             if (rendererRef.current && sceneRef.current && cameraRef.current)
               rotateFace90(
                 cubes,
-                Face.B,
+                Face.L,
                 rendererRef.current,
                 sceneRef.current,
                 cameraRef.current
               );
           }}
         >
-          B 시계방향으로 회전
+          L 시계방향으로 회전
         </button>
         <button
           className="cursor-pointer"
@@ -207,47 +189,110 @@ export const Cube = () => {
         >
           U 시계방향으로 회전
         </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.D,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current
+              );
+          }}
+        >
+          D 시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.F,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current
+              );
+          }}
+        >
+          F 시계방향으로 회전
+        </button>
+        <button
+          className="cursor-pointer"
+          onClick={() => {
+            if (rendererRef.current && sceneRef.current && cameraRef.current)
+              rotateFace90(
+                cubes,
+                Face.B,
+                rendererRef.current,
+                sceneRef.current,
+                cameraRef.current
+              );
+          }}
+        >
+          B 시계방향으로 회전
+        </button>
       </div>
     </>
   );
 };
 
-function getMaterialsByPosition(x: number, y: number, z: number, size: number) {
+function initCubes(scene: THREE.Scene) {
+  for (let x = 0; x < size; x++) {
+    cubes[x] = [];
+    for (let y = 0; y < size; y++) {
+      cubes[x][y] = [];
+      for (let z = 0; z < size; z++) {
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const materials = Array.from(
+          { length: 6 },
+          () => new THREE.MeshBasicMaterial({ color: Color.NONE })
+        );
+        const cube = new THREE.Mesh(geometry, materials);
+        cube.position.set(
+          (x - half) * offset,
+          (y - half) * offset,
+          (z - half) * offset
+        );
+
+        scene.add(cube);
+        cubes[x][y][z] = cube;
+      }
+    }
+  }
+  updateFaceColors();
+}
+
+function updateFaceColors() {
+  for (let x = 0; x < size; x++) {
+    for (let y = 0; y < size; y++) {
+      for (let z = 0; z < size; z++) {
+        const cube = cubes[x][y][z];
+        const colors = getColorsByPosition(x, y, z);
+        const materials = cube.material as THREE.MeshBasicMaterial[];
+        for (let i = 0; i < 6; i++) {
+          materials[i].color.set(colors[i]);
+          materials[i].needsUpdate = true;
+        }
+      }
+    }
+  }
+}
+
+function getColorsByPosition(x: number, y: number, z: number) {
   const max = size - 1;
+  const colors = [];
 
-  const materials = [];
+  colors[0] = x === max ? CUBE_COLORS[Face.R][y][z] : Color.NONE;
+  colors[1] = x === 0 ? CUBE_COLORS[Face.L][y][z] : Color.NONE;
+  colors[2] = y === max ? CUBE_COLORS[Face.U][x][z] : Color.NONE;
+  colors[3] = y === 0 ? CUBE_COLORS[Face.D][x][z] : Color.NONE;
+  colors[4] = z === max ? CUBE_COLORS[Face.F][x][y] : Color.NONE;
+  colors[5] = z === 0 ? CUBE_COLORS[Face.B][x][y] : Color.NONE;
 
-  materials[0] =
-    x === max
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.R][y][z] })
-      : new THREE.MeshLambertMaterial({ color: Color.NONE });
-
-  materials[1] =
-    x === 0
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.L][y][z] })
-      : new THREE.MeshLambertMaterial({ color: Color.NONE });
-
-  materials[2] =
-    y === max
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.U][x][z] })
-      : new THREE.MeshLambertMaterial({ color: Color.NONE });
-
-  materials[3] =
-    y === 0
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.D][x][z] })
-      : new THREE.MeshLambertMaterial({ color: Color.NONE });
-
-  materials[4] =
-    z === max
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.F][x][y] })
-      : new THREE.MeshLambertMaterial({ color: Color.NONE });
-
-  materials[5] =
-    z === 0
-      ? new THREE.MeshLambertMaterial({ color: CUBE_COLORS[Face.B][x][y] })
-      : new THREE.MeshLambertMaterial({ color: Color.NONE });
-
-  return materials;
+  return colors;
 }
 
 function makeFaceLabel(
@@ -312,6 +357,8 @@ function rotateFace90(
       requestAnimationFrame(animate);
     } else {
       removeFromFaceGroup();
+      updateFaceColorsAfterRotation(face, true);
+      updateFaceColors();
     }
   }
 

@@ -1,20 +1,20 @@
 export enum Color {
-  RED = 0xffc4b7,
-  ORANGE = 0xffd1a6,
-  YELLOW = 0xffe7c0,
-  GREEN = 0xd0f8b8,
-  BLUE = 0x93cef6,
-  WHITE = 0xfafaf8,
-  NONE = 0xaeaeae,
+  RED = "#ffc4b7",
+  ORANGE = "#ffd1a6",
+  YELLOW = "#ffe7c0",
+  GREEN = "#d0f8b8",
+  BLUE = "#93cef6",
+  WHITE = "#fafaf8",
+  NONE = "#aeaeae",
 }
 
 export enum Face {
-  R,
-  L,
-  U,
-  D,
-  F,
-  B,
+  R = "R",
+  L = "L",
+  U = "U",
+  D = "D",
+  F = "F",
+  B = "B",
 }
 
 export const CUBE_COLORS = {
