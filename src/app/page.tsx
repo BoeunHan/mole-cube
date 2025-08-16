@@ -1,10 +1,10 @@
 import { ChattingButton } from "@/components/ChattingButton";
-import { Cube } from "@/components/Cube";
+import { CubeView } from "@/components/CubeView";
 
 export default function Home() {
   return (
     <div className="h-full  border-red-300 box-border">
-      <Cube />
+      <CubeView />
       <div className="fixed bottom-12 left-12">
         <ChattingButton />
       </div>

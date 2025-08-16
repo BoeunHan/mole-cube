@@ -13,7 +13,7 @@ const offset = 1.1;
 const size = 3;
 const half = Math.floor(size / 2);
 
-export const Cube = () => {
+export const CubeView = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
