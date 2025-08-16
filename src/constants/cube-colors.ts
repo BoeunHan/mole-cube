@@ -9,7 +9,7 @@ export const DEFAULT_CUBE_COLORS = {
   [Face.B]: Color.WHITE,
 };
 
-const createCubeColor = (size: number): Record<Face, Color[][]> => {
+export const createCubeColors = (size: number): Record<Face, Color[][]> => {
   const createCubeFace = (face: Face) =>
     Array.from({ length: size }, () =>
       new Array(size).fill(DEFAULT_CUBE_COLORS[face])
@@ -25,4 +25,4 @@ const createCubeColor = (size: number): Record<Face, Color[][]> => {
   };
 };
 
-export const CUBE_COLORS = createCubeColor(3);
+export const CUBE_COLORS = createCubeColors(3);

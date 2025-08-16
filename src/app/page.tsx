@@ -5,7 +5,7 @@ import { CubeProvider } from "@/providers/CubeContext";
 
 export default function Home() {
   return (
-    <CubeProvider size={3}>
+    <CubeProvider>
       <div className="h-full border-red-300 box-border">
         <CubeView />
         <div className="fixed bottom-12 left-12">

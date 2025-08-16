@@ -1,45 +1,35 @@
 "use client";
 
+import { Color, Face } from "@/enums";
 import { CubeData } from "@/types";
 import { createContext, ReactNode, useContext, useRef } from "react";
 import * as THREE from "three";
 
 type CubeContextType = {
-  cubes: CubeData;
-  size: number;
-  half: number;
+  cubesRef: React.RefObject<CubeData>;
+  cubeColorsRef: React.RefObject<Record<Face, Color[][]> | null>;
   rendererRef: React.RefObject<THREE.WebGLRenderer | null>;
   sceneRef: React.RefObject<THREE.Scene | null>;
-  cameraRef: React.RefObject<THREE.Camera | null>;
-  cubesRef: React.RefObject<CubeData>;
+  cameraRef: React.RefObject<THREE.PerspectiveCamera | null>;
 };
 
 const CubeContext = createContext<CubeContextType | null>(null);
 
-export const CubeProvider = ({
-  children,
-  size,
-}: {
-  children: ReactNode;
-  size: number;
-}) => {
-  const cubes: CubeData = [];
-
+export const CubeProvider = ({ children }: { children: ReactNode }) => {
+  const cubesRef = useRef<CubeData>([]);
+  const cubeColorsRef = useRef<Record<Face, Color[][]> | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.Camera | null>(null);
-  const cubesRef = useRef<CubeData>([]);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
   return (
     <CubeContext.Provider
       value={{
-        cubes,
-        size,
-        half: Math.floor(size / 2),
         rendererRef,
         sceneRef,
         cameraRef,
         cubesRef,
+        cubeColorsRef,
       }}
     >
       {children}

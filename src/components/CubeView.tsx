@@ -3,21 +3,23 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CubeData } from "@/types";
-import { Color, Face } from "@/enums";
-import { CUBE_COLORS } from "@/constants/cube-colors";
+import { Face } from "@/enums";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
 import { updateCubeColorsAfterRotation } from "@/utils";
+import { useCubeControl } from "@/hooks/useCubeControl";
+import { useCube } from "@/providers/CubeContext";
 
-const cubes: CubeData = [];
 const offset = 1.1;
 const size = 3;
 const half = Math.floor(size / 2);
 
 export const CubeView = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+
+  const { sceneRef, cameraRef, rendererRef, cubesRef, cubeColorsRef } =
+    useCube();
+
+  const { initCubes } = useCubeControl(3);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -53,7 +55,7 @@ export const CubeView = () => {
     container.appendChild(rendererRef.current.domElement);
 
     // 큐브(박스) 만들기
-    initCubes(sceneRef.current);
+    initCubes();
 
     // 라벨
     makeFaceLabel(
@@ -147,62 +149,6 @@ export const CubeView = () => {
   );
 };
 
-function initCubes(scene: THREE.Scene) {
-  for (let x = 0; x < size; x++) {
-    cubes[x] = [];
-    for (let y = 0; y < size; y++) {
-      cubes[x][y] = [];
-      for (let z = 0; z < size; z++) {
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const materials = Array.from(
-          { length: 6 },
-          () => new THREE.MeshBasicMaterial({ color: Color.NONE })
-        );
-        const cube = new THREE.Mesh(geometry, materials);
-        cube.position.set(
-          (x - half) * offset,
-          (y - half) * offset,
-          (z - half) * offset
-        );
-
-        scene.add(cube);
-        cubes[x][y][z] = cube;
-      }
-    }
-  }
-  updateCubeColors();
-}
-
-function updateCubeColors() {
-  for (let x = 0; x < size; x++) {
-    for (let y = 0; y < size; y++) {
-      for (let z = 0; z < size; z++) {
-        const cube = cubes[x][y][z];
-        const colors = getColorsByPosition(x, y, z);
-        const materials = cube.material as THREE.MeshBasicMaterial[];
-        for (let i = 0; i < 6; i++) {
-          materials[i].color.set(colors[i]);
-          materials[i].needsUpdate = true;
-        }
-      }
-    }
-  }
-}
-
-function getColorsByPosition(x: number, y: number, z: number) {
-  const max = size - 1;
-  const colors = [];
-
-  colors[0] = x === max ? CUBE_COLORS[Face.R][y][z] : Color.NONE;
-  colors[1] = x === 0 ? CUBE_COLORS[Face.L][y][z] : Color.NONE;
-  colors[2] = y === max ? CUBE_COLORS[Face.U][x][z] : Color.NONE;
-  colors[3] = y === 0 ? CUBE_COLORS[Face.D][x][z] : Color.NONE;
-  colors[4] = z === max ? CUBE_COLORS[Face.F][x][y] : Color.NONE;
-  colors[5] = z === 0 ? CUBE_COLORS[Face.B][x][y] : Color.NONE;
-
-  return colors;
-}
-
 function makeFaceLabel(
   text: string,
   offset: THREE.Vector3,
@@ -267,7 +213,7 @@ function rotateFace90(
     } else {
       removeFromFaceGroup();
       updateCubeColorsAfterRotation(face, clockwise);
-      updateCubeColors();
+      // updateCubeColors();
     }
   }
 
