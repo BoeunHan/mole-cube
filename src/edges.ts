@@ -1,4 +1,4 @@
-import { Face } from "./colors";
+import { Face } from "./enums";
 
 export type EdgePosition = "top" | "bottom" | "left" | "right";
 

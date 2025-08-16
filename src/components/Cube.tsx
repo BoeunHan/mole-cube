@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CubeData } from "@/types";
-import { Color, CUBE_COLORS, Face } from "@/colors";
+import { Color, Face } from "@/enums";
+import { CUBE_COLORS } from "@/constants/cube-colors";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
 import { updateCubeColorsAfterRotation } from "@/utils";
 
@@ -91,7 +92,7 @@ export const Cube = () => {
       cameraRef.current,
       rendererRef.current.domElement
     );
-    controls.rotateSpeed = 20;
+    controls.rotateSpeed = 5;
     controls.noZoom = true;
     controls.noPan = true;
 

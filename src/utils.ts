@@ -1,5 +1,6 @@
-import { Color, CUBE_COLORS, Face } from "./colors";
-import { adjacentEdgesMap, EdgePosition } from "./edges";
+import { Color, Face } from "@/enums";
+import { CUBE_COLORS } from "@/constants/cube-colors";
+import { adjacentEdgesMap, EdgePosition } from "@/edges";
 
 function rotateMatrixClockwise(matrix: Color[][]): Color[][] {
   const N = matrix.length;
