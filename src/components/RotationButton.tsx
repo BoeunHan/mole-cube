@@ -2,6 +2,7 @@
 
 import { DEFAULT_CUBE_COLORS } from "@/constants/cube-colors";
 import { Face } from "@/enums";
+import { useCubeControl } from "@/hooks/useCubeControl";
 import { Fragment } from "react";
 
 export const RotationButtonList = () => {
@@ -24,8 +25,10 @@ const RotationButton = ({
   face: Face;
   clockwise: boolean;
 }) => {
+  const { rotateFace } = useCubeControl();
+
   const handleClick = () => {
-    console.log(face, clockwise);
+    rotateFace(face, clockwise);
   };
 
   return (
