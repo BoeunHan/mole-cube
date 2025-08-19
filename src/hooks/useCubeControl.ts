@@ -2,10 +2,16 @@
 
 import * as THREE from "three";
 import { useCube } from "@/providers/CubeContext";
-import { createCubeColors } from "@/constants/cube-colors";
 import { CubeData } from "@/types";
 import { Color, Face } from "@/enums";
 import { adjacentEdgesMap, EdgePosition } from "@/edges";
+import {
+  createCubeColors,
+  getRotationAxis,
+  getRotationDirection,
+  rotateMatrixClockwise,
+  rotateMatrixCounterClockwise,
+} from "@/cube.helpers";
 
 const OFFSET = 1.1;
 
@@ -297,54 +303,3 @@ export const useCubeControl = () => {
 
   return { initCubes, rotateFace };
 };
-
-function getRotationDirection(face: Face, clockwise: boolean): 1 | -1 {
-  switch (face) {
-    case Face.U:
-    case Face.R:
-    case Face.F:
-      return clockwise ? -1 : 1;
-    case Face.D:
-    case Face.L:
-    case Face.B:
-      return clockwise ? 1 : -1;
-  }
-}
-
-function getRotationAxis(face: Face): "x" | "y" | "z" {
-  switch (face) {
-    case Face.R:
-    case Face.L:
-      return "x";
-    case Face.U:
-    case Face.D:
-      return "y";
-    case Face.F:
-    case Face.B:
-      return "z";
-  }
-}
-
-function rotateMatrixClockwise(matrix: Color[][]): Color[][] {
-  const N = matrix.length;
-  const result: Color[][] = Array.from({ length: N }, () => Array(N));
-
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < N; j++) {
-      result[j][N - 1 - i] = matrix[i][j];
-    }
-  }
-  return result;
-}
-
-function rotateMatrixCounterClockwise(matrix: Color[][]): Color[][] {
-  const N = matrix.length;
-  const result: Color[][] = Array.from({ length: N }, () => Array(N));
-
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < N; j++) {
-      result[N - 1 - j][i] = matrix[i][j];
-    }
-  }
-  return result;
-}

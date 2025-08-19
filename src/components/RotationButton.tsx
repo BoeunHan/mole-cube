@@ -1,6 +1,6 @@
 "use client";
 
-import { DEFAULT_CUBE_COLORS } from "@/constants/cube-colors";
+import { DEFAULT_CUBE_COLORS } from "@/cube-colors";
 import { Face } from "@/enums";
 import { useCubeControl } from "@/hooks/useCubeControl";
 import { Fragment } from "react";
