@@ -35,6 +35,7 @@ const RotationButton = ({
     <button
       className="bg-white cursor-pointer rounded-sm shadow w-6 h-6 flex justify-center items-center hover:[background-color:var(--hover-bg)]"
       style={{ "--hover-bg": DEFAULT_CUBE_COLORS[face] } as any}
+      title={clockwise ? "시계방향" : "반시계방향"}
       onClick={handleClick}
     >
       {clockwise ? face : `${face}'`}

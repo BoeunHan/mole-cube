@@ -26,7 +26,6 @@ export const CubeView = () => {
     // 조명
     const light = new THREE.DirectionalLight(0xffffff, 2);
     light.position.set(0, 3, 20);
-    // scene.add(light);
     sceneRef.current.add(new THREE.AmbientLight(0xffffff, 1));
 
     // 카메라
@@ -43,7 +42,7 @@ export const CubeView = () => {
     // 렌더러
     rendererRef.current = new THREE.WebGLRenderer({ antialias: true });
     rendererRef.current.setSize(width, height);
-    rendererRef.current.setClearColor(0xfafaf8);
+    rendererRef.current.setClearColor(0xeaeaea);
     container.appendChild(rendererRef.current.domElement);
 
     // 큐브(박스) 만들기
