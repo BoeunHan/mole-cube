@@ -7,19 +7,23 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { sessionUtil } from "@/lib/utils";
+import { NICKNAME_KEY } from "@/constants";
 
 export const NicknameDialog = () => {
   const [open, setOpen] = useState(true);
   const [nickname, setNickname] = useState("");
 
+  const savedNickname = sessionUtil.getValue(NICKNAME_KEY);
+
   const handleSubmit = () => {
     if (!nickname.trim()) return;
-    console.log("닉네임 설정 완료!:", nickname);
+    sessionUtil.setValue(NICKNAME_KEY, nickname);
     setOpen(false);
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={!savedNickname && open}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>사용할 닉네임:</DialogTitle>
