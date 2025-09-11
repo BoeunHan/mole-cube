@@ -7,23 +7,23 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { localStorageUtil } from "@/lib/utils";
-import { NICKNAME_KEY } from "@/constants";
+import { useGameSocket } from "@/providers/GameSocketContext";
 
 export const NicknameDialog = () => {
+  const { setNickname: emitNickname } = useGameSocket();
+
   const [open, setOpen] = useState(true);
   const [nickname, setNickname] = useState("");
 
-  const savedNickname = localStorageUtil.getValue(NICKNAME_KEY);
-
   const handleSubmit = () => {
+    // TODO: 닉네임 경고 toast
     if (!nickname.trim()) return;
-    localStorageUtil.setValue(NICKNAME_KEY, nickname);
+    emitNickname(nickname.trim());
     setOpen(false);
   };
 
   return (
-    <Dialog open={!savedNickname && open}>
+    <Dialog open={open}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>사용할 닉네임:</DialogTitle>
