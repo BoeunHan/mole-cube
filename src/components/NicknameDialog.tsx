@@ -7,18 +7,18 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { sessionUtil } from "@/lib/utils";
+import { localStorageUtil } from "@/lib/utils";
 import { NICKNAME_KEY } from "@/constants";
 
 export const NicknameDialog = () => {
   const [open, setOpen] = useState(true);
   const [nickname, setNickname] = useState("");
 
-  const savedNickname = sessionUtil.getValue(NICKNAME_KEY);
+  const savedNickname = localStorageUtil.getValue(NICKNAME_KEY);
 
   const handleSubmit = () => {
     if (!nickname.trim()) return;
-    sessionUtil.setValue(NICKNAME_KEY, nickname);
+    localStorageUtil.setValue(NICKNAME_KEY, nickname);
     setOpen(false);
   };
 

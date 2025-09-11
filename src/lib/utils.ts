@@ -5,21 +5,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const sessionUtil = {
+export const localStorageUtil = {
   setValue: (key: string, value: unknown) => {
     try {
       const serialized = JSON.stringify(value);
-      sessionStorage.setItem(key, serialized);
+      localStorage.setItem(key, serialized);
     } catch (error) {
-      console.error("세션스토리지 저장 실패:", error);
+      console.error("로컬스토리지 저장 실패:", error);
     }
   },
   getValue: <T>(key: string): T | null => {
     try {
-      const item = sessionStorage.getItem(key);
+      const item = localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : null;
     } catch (error) {
-      console.error("세션스토리지 조회 실패:", error);
+      console.error("로컬스토리지 조회 실패:", error);
       return null;
     }
   },
