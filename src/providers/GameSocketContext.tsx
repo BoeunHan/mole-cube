@@ -1,6 +1,6 @@
 "use client";
 
-import { NICKNAME_KEY } from "@/constants";
+import { NICKNAME_KEY, USERID_KEY } from "@/constants";
 import { localStorageUtil } from "@/lib/utils";
 import {
   createContext,
@@ -50,8 +50,10 @@ export const GameSocketContextProvider = ({
 
   const setNickname = (nickname: string) => {
     if (!socket) return;
+    const userId = localStorageUtil.getValue(USERID_KEY);
+    socket.emit("setNickname", { userId, nickname });
+
     localStorageUtil.setValue(NICKNAME_KEY, nickname);
-    socket.emit("setNickname", { nickname });
   };
 
   return (

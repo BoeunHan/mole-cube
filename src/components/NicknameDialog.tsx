@@ -8,12 +8,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useGameSocket } from "@/providers/GameSocketContext";
+import { localStorageUtil } from "@/lib/utils";
+import { NICKNAME_KEY } from "@/constants";
 
 export const NicknameDialog = () => {
   const { setNickname: emitNickname } = useGameSocket();
 
   const [open, setOpen] = useState(true);
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState(
+    localStorageUtil.getValue(NICKNAME_KEY) || ""
+  );
 
   const handleSubmit = () => {
     // TODO: 닉네임 경고 toast
@@ -31,7 +35,7 @@ export const NicknameDialog = () => {
         <Input
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
-          placeholder="두더지"
+          placeholder="입력"
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
         />
         <Button className="mt-4" onClick={handleSubmit}>
