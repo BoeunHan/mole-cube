@@ -3,6 +3,7 @@
 import { DEFAULT_CUBE_COLORS } from "@/cube-colors";
 import { Face } from "@/enums";
 import { useCubeControl } from "@/hooks/useCubeControl";
+import { useGameSocket } from "@/providers/GameSocketContext";
 import { Fragment } from "react";
 
 export const RotationButtonList = () => {
@@ -26,9 +27,15 @@ const RotationButton = ({
   clockwise: boolean;
 }) => {
   const { rotateFace } = useCubeControl();
+  const { rotateCube: emitRotateCube } = useGameSocket();
 
   const handleClick = () => {
     rotateFace(face, clockwise);
+    emitRotateCube({
+      face,
+      clockwise,
+      timestamp: Date.now(),
+    });
   };
 
   return (
