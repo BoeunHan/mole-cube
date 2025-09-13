@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { GameSocketContextProvider } from "@/providers/GameSocketContext";
+import { ClientInitializer } from "@/providers/ClientInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ClientInitializer />
         <GameSocketContextProvider>{children}</GameSocketContextProvider>
       </body>
     </html>
