@@ -64,14 +64,10 @@ export const GameSocketContextProvider = ({
       setPlayers(players);
     });
 
-    s.on("rotateCube:server", (action: CubeAction) => {
-      console.log("회전 이벤트 구독");
-      rotateCube(action.face, action.clockwise);
-    });
-
     s.on("cubeHistoryUpdate", (history: CubeActionHistory) => {
       console.log("회전 내역 업데이트: ");
       setHistories((histories) => [...histories, history]);
+      rotateCube(history.action.face, history.action.clockwise);
     });
 
     s.on(

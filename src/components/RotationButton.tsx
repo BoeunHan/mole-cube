@@ -26,11 +26,9 @@ const RotationButton = ({
   face: Face;
   clockwise: boolean;
 }) => {
-  const { rotateCube } = useCubeControl();
   const { emitRotateCube } = useGameSocket();
 
   const handleClick = () => {
-    rotateCube(face, clockwise);
     emitRotateCube({
       face,
       clockwise,
