@@ -61,6 +61,11 @@ export const useCubeControl = () => {
     makeFaceLabels();
   }
 
+  function setCubeColors(colors: Record<Face, Color[][]>) {
+    cubeColorsRef.current = colors;
+    updateCubeColors();
+  }
+
   function makeFaceLabels() {
     if (!sceneRef.current) return;
 
@@ -100,7 +105,13 @@ export const useCubeControl = () => {
   }
 
   function updateCubeColors() {
-    if (!cubesRef.current) return;
+    if (
+      !cubesRef.current ||
+      !rendererRef.current ||
+      !sceneRef.current ||
+      !cameraRef.current
+    )
+      return;
 
     for (let x = 0; x < cubeSize; x++) {
       for (let y = 0; y < cubeSize; y++) {
@@ -117,6 +128,7 @@ export const useCubeControl = () => {
         }
       }
     }
+    rendererRef.current.render(sceneRef.current, cameraRef.current);
   }
 
   function getColorsByPosition(x: number, y: number, z: number) {
@@ -299,5 +311,5 @@ export const useCubeControl = () => {
     }
   }
 
-  return { initCubes, rotateCube };
+  return { initCubes, setCubeColors, rotateCube };
 };
