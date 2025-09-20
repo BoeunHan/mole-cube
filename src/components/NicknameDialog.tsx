@@ -12,7 +12,7 @@ import { localStorageUtil } from "@/lib/utils";
 import { NICKNAME_KEY } from "@/constants";
 
 export const NicknameDialog = () => {
-  const { setNickname: emitNickname } = useGameSocket();
+  const { emitSetNickname } = useGameSocket();
 
   const [open, setOpen] = useState(true);
   const [nickname, setNickname] = useState(
@@ -22,7 +22,7 @@ export const NicknameDialog = () => {
   const handleSubmit = () => {
     // TODO: 닉네임 경고 toast
     if (!nickname.trim()) return;
-    emitNickname(nickname.trim());
+    emitSetNickname(nickname.trim());
     setOpen(false);
   };
 

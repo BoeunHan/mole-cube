@@ -1,6 +1,7 @@
 "use client";
 
 import { NICKNAME_KEY, USERID_KEY } from "@/constants";
+import { useCubeControl } from "@/hooks/useCubeControl";
 import { localStorageUtil } from "@/lib/utils";
 import { CubeAction } from "@/types";
 import {
@@ -16,8 +17,8 @@ type GameSocketContextType = {
   socket: Socket | null;
   players: Record<string, string>;
   histories: any[];
-  setNickname: (nickname: string) => void;
-  rotateCube: (action: CubeAction) => void;
+  emitSetNickname: (nickname: string) => void;
+  emitRotateCube: (action: CubeAction) => void;
 };
 
 const GameSocketContext = createContext<GameSocketContextType | null>(null);
@@ -27,6 +28,8 @@ export const GameSocketContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
+  const { rotateCube } = useCubeControl();
+
   const [socket, setSocket] = useState<Socket | null>(null);
   const [players, setPlayers] = useState<Record<string, string>>({});
   const [histories, setHistories] = useState([]);
@@ -38,12 +41,12 @@ export const GameSocketContextProvider = ({
     socket.emit(eventName, { userId, ...payload });
   };
 
-  const setNickname = (nickname: string) => {
+  const emitSetNickname = (nickname: string) => {
     emitSocketWithUserId("setNickname", { nickname });
     localStorageUtil.setValue(NICKNAME_KEY, nickname);
   };
 
-  const rotateCube = (action: CubeAction) => {
+  const emitRotateCube = (action: CubeAction) => {
     emitSocketWithUserId("rotateCube", action);
   };
 
@@ -63,9 +66,9 @@ export const GameSocketContextProvider = ({
       setPlayers(players);
     });
 
-    s.on("cubeHistoriesUpdate", (histories) => {
-      console.log("업데이트된 히스토리 목록: ", histories);
-      setHistories(histories);
+    s.on("rotateCube:server", (action) => {
+      console.log("회전 이벤트 구독");
+      rotateCube(action.face, action.clockwise);
     });
 
     return () => {
@@ -81,8 +84,8 @@ export const GameSocketContextProvider = ({
         socket,
         players,
         histories,
-        setNickname,
-        rotateCube,
+        emitSetNickname,
+        emitRotateCube,
       }}
     >
       {children}

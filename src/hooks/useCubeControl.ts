@@ -12,7 +12,6 @@ import {
   rotateMatrixClockwise,
   rotateMatrixCounterClockwise,
 } from "@/cube.helpers";
-
 const OFFSET = 1.1;
 
 export const useCubeControl = () => {
@@ -24,7 +23,6 @@ export const useCubeControl = () => {
     cubeColorsRef,
     cubeSize,
   } = useCube();
-
   const half = Math.floor(cubeSize / 2);
 
   function initCubes() {
@@ -137,7 +135,7 @@ export const useCubeControl = () => {
     return colors;
   }
 
-  function rotateFace(face: Face, clockwise: boolean) {
+  function rotateCube(face: Face, clockwise: boolean) {
     if (!rendererRef.current || !sceneRef.current || !cameraRef.current) return;
 
     const { faceGroup, addToFaceGroup, removeFromFaceGroup } =
@@ -301,5 +299,5 @@ export const useCubeControl = () => {
     }
   }
 
-  return { initCubes, rotateFace };
+  return { initCubes, rotateCube };
 };

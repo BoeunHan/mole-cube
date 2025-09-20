@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { GameSocketContextProvider } from "@/providers/GameSocketContext";
 import { ClientInitializer } from "@/providers/ClientInitializer";
+import { CubeProvider } from "@/providers/CubeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ClientInitializer />
-        <GameSocketContextProvider>{children}</GameSocketContextProvider>
+        <CubeProvider>
+          <GameSocketContextProvider>{children}</GameSocketContextProvider>
+        </CubeProvider>
       </body>
     </html>
   );
