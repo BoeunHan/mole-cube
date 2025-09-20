@@ -1,9 +1,10 @@
 "use client";
 
 import { NICKNAME_KEY, USERID_KEY } from "@/constants";
+import { Color, Face } from "@/enums";
 import { useCubeControl } from "@/hooks/useCubeControl";
 import { localStorageUtil } from "@/lib/utils";
-import { CubeAction } from "@/types";
+import { CubeAction, CubeActionHistory } from "@/types";
 import {
   createContext,
   ReactNode,
@@ -16,7 +17,7 @@ import { io, Socket } from "socket.io-client";
 type GameSocketContextType = {
   socket: Socket | null;
   players: Record<string, string>;
-  histories: any[];
+  histories: CubeActionHistory[];
   emitSetNickname: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
 };
@@ -32,22 +33,19 @@ export const GameSocketContextProvider = ({
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const [players, setPlayers] = useState<Record<string, string>>({});
-  const [histories, setHistories] = useState([]);
-
-  const emitSocketWithUserId = (eventName: string, payload?: any) => {
-    const userId = localStorageUtil.getValue(USERID_KEY);
-    if (!socket || !userId) return null;
-
-    socket.emit(eventName, { userId, ...payload });
-  };
+  const [histories, setHistories] = useState<CubeActionHistory[]>([]);
 
   const emitSetNickname = (nickname: string) => {
-    emitSocketWithUserId("setNickname", { nickname });
+    const userId = localStorageUtil.getValue(USERID_KEY);
+    if (!socket || !userId) return;
+
+    socket.emit("setNickname", { userId, nickname });
     localStorageUtil.setValue(NICKNAME_KEY, nickname);
   };
 
   const emitRotateCube = (action: CubeAction) => {
-    emitSocketWithUserId("rotateCube", action);
+    if (!socket) return;
+    socket.emit("rotateCube", action);
   };
 
   useEffect(() => {
@@ -66,15 +64,31 @@ export const GameSocketContextProvider = ({
       setPlayers(players);
     });
 
-    s.on("rotateCube:server", (action) => {
+    s.on("rotateCube:server", (action: CubeAction) => {
       console.log("회전 이벤트 구독");
       rotateCube(action.face, action.clockwise);
     });
 
-    s.on("initCubeState", (colors) => {
-      console.log("큐브 초기화 데이터: ", colors);
-      initCubes(colors);
+    s.on("cubeHistoryUpdate", (history: CubeActionHistory) => {
+      console.log("회전 내역 업데이트: ");
+      setHistories((histories) => [...histories, history]);
     });
+
+    s.on(
+      "initCubeState",
+      ({
+        cubeColors,
+        histories,
+      }: {
+        cubeColors: Record<Face, Color[][]>;
+        histories: CubeActionHistory[];
+      }) => {
+        console.log("큐브 초기화 데이터: ", cubeColors);
+        console.log("큐브 초기화 데이터: ", histories);
+        initCubes(cubeColors);
+        setHistories(histories);
+      }
+    );
 
     return () => {
       s.off("connect");

@@ -38,14 +38,17 @@ const HistoryContent = () => {
 
   return (
     <div>
-      {histories.map(({ userId, timestamp, face, clockwise }) => (
-        <div key={timestamp}>
-          <div>{userId}</div>
-          <div>{timestamp}</div>
-          <div>{face}</div>
-          <div>{clockwise}</div>
-        </div>
-      ))}
+      {histories.map(({ nickname, action }) => {
+        const { timestamp, face, clockwise } = action;
+        return (
+          <div key={timestamp}>
+            <div>{nickname}</div>
+            <div>{timestamp}</div>
+            <div>{face}</div>
+            <div>{clockwise}</div>
+          </div>
+        );
+      })}
     </div>
   );
 };
