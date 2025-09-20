@@ -54,7 +54,6 @@ export const CubeView = () => {
       cameraRef.current,
       rendererRef.current.domElement
     );
-    controls.rotateSpeed = 5;
     controls.noZoom = true;
     controls.noPan = true;
 
@@ -69,7 +68,12 @@ export const CubeView = () => {
     controls.addEventListener("start", handleControlStart);
     controls.addEventListener("end", handleControlEnd);
 
+    const clock = new THREE.Clock();
+
     const animate = () => {
+      const delta = clock.getDelta();
+
+      controls.rotateSpeed = 25 * (delta * 60);
       controls.update();
       rendererRef.current?.render(sceneRef.current!, cameraRef.current!);
     };
