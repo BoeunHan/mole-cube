@@ -28,7 +28,7 @@ export const GameSocketContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const { rotateCube, setCubeColors } = useCubeControl();
+  const { rotateCube, initCubes } = useCubeControl();
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const [players, setPlayers] = useState<Record<string, string>>({});
@@ -73,7 +73,7 @@ export const GameSocketContextProvider = ({
 
     s.on("initCubeState", (colors) => {
       console.log("큐브 초기화 데이터: ", colors);
-      setCubeColors(colors);
+      initCubes(colors);
     });
 
     return () => {

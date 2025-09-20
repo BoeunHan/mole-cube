@@ -3,15 +3,12 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
-import { useCubeControl } from "@/hooks/useCubeControl";
 import { useCube } from "@/providers/CubeContext";
 
 export const CubeView = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { sceneRef, cameraRef, rendererRef, setCubeSize } = useCube();
-
-  const { initCubes } = useCubeControl();
+  const { sceneRef, cameraRef, rendererRef } = useCube();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -44,10 +41,6 @@ export const CubeView = () => {
     rendererRef.current.setSize(width, height);
     rendererRef.current.setClearColor(0xeaeaea);
     container.appendChild(rendererRef.current.domElement);
-
-    // 큐브(박스) 만들기
-    setCubeSize(3);
-    initCubes();
 
     // 드래그
     const controls = new TrackballControls(
