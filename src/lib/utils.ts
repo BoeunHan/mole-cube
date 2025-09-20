@@ -8,6 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const localStorageUtil = {
   setValue: (key: string, value: unknown) => {
+    if (typeof window === "undefined") return;
     try {
       const serialized = JSON.stringify(value);
       localStorage.setItem(key, serialized);
@@ -16,6 +17,7 @@ export const localStorageUtil = {
     }
   },
   getValue: <T>(key: string): T | null => {
+    if (typeof window === "undefined") return null;
     try {
       const item = localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : null;
