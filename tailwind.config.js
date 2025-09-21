@@ -4,6 +4,7 @@ module.exports = {
     extend: {
       fontFamily: {
         mono: ["var(--font-nanum-gothic-coding)", "monospace"],
+        sans: ["Pretendard Variable", "sans-serif"],
       },
     },
   },

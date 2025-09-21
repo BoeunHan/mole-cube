@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/pretendard": "^5.2.5",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-popover": "^1.1.15",
     "@types/three": "^0.179.0",
