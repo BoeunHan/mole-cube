@@ -22,9 +22,9 @@ export const ChattingButton = () => {
       <PopoverContent
         align="start"
         side="top"
-        className="w-80 bg-black/40"
+        className="bg-[#262322]/80 w-80"
         onPointerDownOutside={(e) => {
-          e.preventDefault(); // 외부 클릭 무시
+          e.preventDefault();
         }}
       >
         <HistoryContent />
@@ -37,15 +37,25 @@ const HistoryContent = () => {
   const { histories } = useGameSocket();
 
   return (
-    <div>
+    <div className="h-[360px] overflow-y-scroll custom-scrollbar font-mono text-white">
       {histories.map(({ nickname, action }) => {
         const { timestamp, face, clockwise } = action;
+
+        const timeStr = new Date(timestamp).toLocaleTimeString("ko-KR", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+
         return (
-          <div key={timestamp}>
-            <div>{nickname}</div>
-            <div>{timestamp}</div>
-            <div>{face}</div>
-            <div>{clockwise}</div>
+          <div key={timestamp} className="flex gap-x-2 text-lg">
+            <span>$</span>
+            <span className="text-[#36d67e]">{timeStr}</span>
+            <span className="text-[#fffc42]">{nickname}</span>
+            <span>{">"}</span>
+            <span>{`${face}${clockwise ? `'` : ""}`}</span>
+            <span>{clockwise}</span>
           </div>
         );
       })}
