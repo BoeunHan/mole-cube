@@ -7,14 +7,14 @@ import { RotationButtonList } from "@/components/RotationButton";
 
 export default function Home() {
   return (
-    <div className="h-full border-red-300 box-border">
+    <div className="relative h-full w-full">
       <NicknameDialog />
       <CubeView />
-      <div className="fixed bottom-12 left-12">
-        <ChattingButton />
-      </div>
-      <div className="fixed bottom-12 left-1/2 -translate-x-1/2">
-        <RotationButtonList />
+      <div className="relative z-10 flex h-full w-full flex-col items-center justify-end gap-4 p-4">
+        <div className="flex w-full justify-between border-4 p-2">
+          <ChattingButton />
+          <RotationButtonList />
+        </div>
       </div>
     </div>
   );

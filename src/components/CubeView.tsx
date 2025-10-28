@@ -30,7 +30,7 @@ export const CubeView = () => {
       50,
       width / height,
       0.1,
-      2000
+      2000,
     );
     cameraRef.current.position.z = 12;
     cameraRef.current.add(light);
@@ -45,7 +45,7 @@ export const CubeView = () => {
     // 드래그
     const controls = new TrackballControls(
       cameraRef.current,
-      rendererRef.current.domElement
+      rendererRef.current.domElement,
     );
     controls.noZoom = true;
     controls.noPan = true;
@@ -101,7 +101,5 @@ export const CubeView = () => {
     };
   }, []);
 
-  return (
-    <div ref={containerRef} style={{ width: "100%", height: "100%" }}></div>
-  );
+  return <div ref={containerRef} className="absolute inset-0 z-0"></div>;
 };
