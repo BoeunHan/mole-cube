@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { GameSocketContextProvider } from "@/providers/GameSocketContext";
 import { ClientInitializer } from "@/providers/ClientInitializer";
 import { CubeProvider } from "@/providers/CubeContext";
+
+const bitbeat = localFont({
+  src: "../../public/fonts/DnfBitbeatV2.otf",
+  variable: "--font-bitbeat",
+  weight: "600",
+});
+const neodgm = localFont({
+  src: "../../public/fonts/NeoDungeunmoPro.ttf",
+  variable: "--font-neodgm",
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={`${bitbeat.variable} ${neodgm.variable} antialiased`}>
         <ClientInitializer />
         <CubeProvider>
           <GameSocketContextProvider>{children}</GameSocketContextProvider>

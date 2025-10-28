@@ -10,8 +10,12 @@ export default function Home() {
     <div className="relative h-full w-full">
       <NicknameDialog />
       <CubeView />
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-end gap-4 p-4">
-        <div className="flex w-full justify-between border-4 p-2">
+      <div className="pointer-events-none relative z-10 flex h-full w-full flex-col items-center justify-between px-4 py-10">
+        <div>
+          <div className="font-bitbeat text-primary text-xl">제 n번째 게임</div>
+          <div>접속 사용자 목록</div>
+        </div>
+        <div className="pointer-events-auto flex w-full justify-between p-2">
           <ChattingButton />
           <RotationButtonList />
         </div>

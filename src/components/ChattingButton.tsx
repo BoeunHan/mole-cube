@@ -42,7 +42,6 @@ const HistoryContent = () => {
   const checkScroll = () => {
     if (!containerRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-    console.log(scrollTop + clientHeight >= scrollHeight - 1);
     setIsScrollEnd(scrollTop + clientHeight >= scrollHeight - 1);
   };
 

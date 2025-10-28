@@ -39,7 +39,7 @@ export const CubeView = () => {
     // 렌더러
     rendererRef.current = new THREE.WebGLRenderer({ antialias: true });
     rendererRef.current.setSize(width, height);
-    rendererRef.current.setClearColor(0xeaeaea);
+    rendererRef.current.setClearColor("#D8D2CC");
     container.appendChild(rendererRef.current.domElement);
 
     // 드래그
@@ -101,5 +101,5 @@ export const CubeView = () => {
     };
   }, []);
 
-  return <div ref={containerRef} className="absolute inset-0 z-0"></div>;
+  return <div ref={containerRef} className="absolute inset-0 z-10"></div>;
 };
