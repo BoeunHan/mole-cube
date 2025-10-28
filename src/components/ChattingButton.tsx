@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquareMoreIcon } from "lucide-react";
+import Image from "next/image";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { useGameSocket } from "@/providers/GameSocketContext";
@@ -12,17 +12,22 @@ export const ChattingButton = () => {
   return (
     <Popover open={open}>
       <PopoverTrigger asChild>
-        <button
-          className="rounded-full shadow-lg p-4 bg-white cursor-pointer"
+        <Image
+          src={
+            open ? "/assets/history_active.png" : "/assets/history_inactive.png"
+          }
+          title="회전내역 버튼"
+          alt="회전내역"
+          width={64}
+          height={64}
+          className="cursor-pointer"
           onClick={() => setOpen((prev) => !prev)}
-        >
-          <MessageSquareMoreIcon />
-        </button>
+        />
       </PopoverTrigger>
       <PopoverContent
         align="start"
         side="top"
-        className="bg-[#262322]/80 w-80"
+        className="w-80 bg-[#262322]/80"
         onPointerDownOutside={(e) => {
           e.preventDefault();
         }}
@@ -55,7 +60,7 @@ const HistoryContent = () => {
     <div
       ref={containerRef}
       onScroll={checkScroll}
-      className="relative h-[360px] overflow-y-scroll custom-scrollbar font-mono text-white"
+      className="custom-scrollbar relative h-[360px] overflow-y-scroll font-mono text-white"
     >
       {histories.map(({ nickname, action }) => {
         const { timestamp, face, clockwise } = action;
@@ -68,7 +73,7 @@ const HistoryContent = () => {
         });
 
         return (
-          <div key={timestamp} className="flex gap-x-2 text-lg">
+          <div key={timestamp} className="font-neodgm flex gap-x-2 text-lg">
             <span>$</span>
             <span className="text-[#36d67e]">{timeStr}</span>
             <span className="text-[#fffc42]">{nickname}</span>
@@ -80,7 +85,7 @@ const HistoryContent = () => {
       })}
       {!isScrollEnd && (
         <button
-          className="font-sans hover:cursor-pointer fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/80 text-black px-3 py-1 rounded text-sm"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded bg-white/80 px-3 py-1 font-sans text-sm text-black hover:cursor-pointer"
           onClick={() => {
             if (containerRef.current) {
               containerRef.current.scrollTop =

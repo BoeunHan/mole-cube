@@ -2,6 +2,7 @@
 
 import { ChattingButton } from "@/components/ChattingButton";
 import { CubeView } from "@/components/CubeView";
+import { EmotionButton } from "@/components/EmotionButton";
 import { NicknameDialog } from "@/components/NicknameDialog";
 import { RotationButtonList } from "@/components/RotationButton";
 
@@ -15,8 +16,11 @@ export default function Home() {
           <div className="font-bitbeat text-primary text-xl">제 n번째 게임</div>
           <div>접속 사용자 목록</div>
         </div>
-        <div className="pointer-events-auto flex w-full justify-between p-2">
-          <ChattingButton />
+        <div className="pointer-events-auto flex w-full items-center justify-between p-2">
+          <div className="flex flex-col">
+            <ChattingButton />
+            <EmotionButton />
+          </div>
           <RotationButtonList />
         </div>
       </div>
