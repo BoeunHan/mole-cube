@@ -36,8 +36,9 @@ export const GameSocketContextProvider = ({
     {},
   );
 
+  const userId = localStorageUtil.getValue(USERID_KEY);
+
   const emitSetNickname = (nickname: string) => {
-    const userId = localStorageUtil.getValue(USERID_KEY);
     if (!socket || !userId) return;
 
     socket.emit("setNickname", { userId, nickname });
@@ -52,6 +53,7 @@ export const GameSocketContextProvider = ({
   useEffect(() => {
     const s = io(process.env.NEXT_PUBLIC_SERVER_URL, {
       transports: ["websocket"],
+      auth: { userId },
     });
     setSocket(s);
 
@@ -64,9 +66,11 @@ export const GameSocketContextProvider = ({
       "playersUpdate",
       ({
         players,
+        currentPlayerId,
         playerNickname,
       }: {
         players: string[];
+        currentPlayerId?: string;
         playerNickname: Record<string, string>;
       }) => {
         console.log("업데이트된 플레이어 목록: ", players);
@@ -75,6 +79,7 @@ export const GameSocketContextProvider = ({
           return {
             ...state,
             playerQueue: players,
+            currentPlayerId,
           };
         });
         setPlayerNickname(playerNickname);
@@ -91,6 +96,17 @@ export const GameSocketContextProvider = ({
         };
       });
       rotateCube(history.action.face, history.action.clockwise);
+    });
+
+    s.on("currentPlayerUpdate", (currentPlayerId: string) => {
+      console.log("플레이어 차례 업데이트: ", currentPlayerId);
+      setGameRoundState((state) => {
+        if (!state) return;
+        return {
+          ...state,
+          currentPlayerId,
+        };
+      });
     });
 
     s.on("initGameRound", (gameRound: GameRoundState) => {

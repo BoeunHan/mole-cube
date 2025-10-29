@@ -17,6 +17,7 @@ export interface CubeActionHistory {
 export interface GameRoundState {
   currentRound: number;
   playerQueue: string[];
+  currentPlayerId?: string;
   openedAt: Date | null;
   closedAt: Date | null;
   actionHistories: CubeActionHistory[];
