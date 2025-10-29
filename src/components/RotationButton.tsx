@@ -7,7 +7,7 @@ import { Fragment } from "react";
 
 export const RotationButtonList = () => {
   return (
-    <div className="flex h-24 w-fit flex-col flex-wrap gap-2">
+    <div className="grid w-full max-w-60 grid-flow-col auto-rows-fr grid-rows-2 gap-2">
       {Object.values(Face).map((face, idx) => (
         <Fragment key={idx}>
           <RotationButton face={face} clockwise={true} />
@@ -37,7 +37,7 @@ const RotationButton = ({
 
   return (
     <button
-      className="font-neodgm relative flex h-10 w-10 cursor-pointer items-center justify-center text-[22px]"
+      className="font-neodgm relative flex aspect-square items-center justify-center text-[18px]"
       title={clockwise ? "시계방향" : "반시계방향"}
       onClick={handleClick}
     >

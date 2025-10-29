@@ -16,8 +16,8 @@ export default function Home() {
           <div className="font-bitbeat text-primary text-xl">제 n번째 게임</div>
           <div>접속 사용자 목록</div>
         </div>
-        <div className="pointer-events-auto flex w-full items-center justify-between p-2">
-          <div className="flex flex-col">
+        <div className="pointer-events-auto flex w-full items-center justify-center gap-x-4 p-2">
+          <div className="flex shrink-0 flex-col">
             <ChattingButton />
             <EmotionButton />
           </div>
