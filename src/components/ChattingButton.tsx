@@ -18,8 +18,8 @@ export const ChattingButton = () => {
           }
           title="회전내역 버튼"
           alt="회전내역"
-          width={64}
-          height={64}
+          width={56}
+          height={56}
           className="cursor-pointer"
           onClick={() => setOpen((prev) => !prev)}
         />
@@ -40,7 +40,9 @@ export const ChattingButton = () => {
 
 const HistoryContent = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { histories } = useGameSocket();
+  const { gameRoundState } = useGameSocket();
+
+  const histories = gameRoundState?.actionHistories;
 
   const [isScrollEnd, setIsScrollEnd] = useState(true);
 
@@ -62,8 +64,8 @@ const HistoryContent = () => {
       onScroll={checkScroll}
       className="custom-scrollbar relative h-[360px] overflow-y-scroll font-mono text-white"
     >
-      {histories.map(({ nickname, action }) => {
-        const { timestamp, face, clockwise } = action;
+      {histories?.map(({ nickname, timestamp, action }) => {
+        const { face, clockwise } = action;
 
         const timeStr = new Date(timestamp).toLocaleTimeString("ko-KR", {
           hour12: false,
@@ -78,7 +80,7 @@ const HistoryContent = () => {
             <span className="text-[#36d67e]">{timeStr}</span>
             <span className="text-[#fffc42]">{nickname}</span>
             <span>{">"}</span>
-            <span>{`${face}${clockwise ? `'` : ""}`}</span>
+            <span>{`${face}${clockwise ? "" : `'`}`}</span>
             <span>{clockwise}</span>
           </div>
         );

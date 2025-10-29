@@ -17,8 +17,8 @@ export const EmotionButton = () => {
           }
           title="감정표현 버튼"
           alt="감정표현"
-          width={64}
-          height={64}
+          width={56}
+          height={56}
           className="cursor-pointer"
           onClick={() => setOpen((prev) => !prev)}
         />

@@ -31,7 +31,6 @@ const RotationButton = ({
     emitRotateCube({
       face,
       clockwise,
-      timestamp: Date.now(),
     });
   };
 

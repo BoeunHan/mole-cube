@@ -1,10 +1,9 @@
 "use client";
 
 import { NICKNAME_KEY, USERID_KEY } from "@/constants";
-import { Color, Face } from "@/enums";
 import { useCubeControl } from "@/hooks/useCubeControl";
 import { localStorageUtil } from "@/lib/utils";
-import { CubeAction, CubeActionHistory } from "@/types";
+import { CubeAction, CubeActionHistory, GameRoundState } from "@/types";
 import {
   createContext,
   ReactNode,
@@ -17,7 +16,7 @@ import { io, Socket } from "socket.io-client";
 type GameSocketContextType = {
   socket: Socket | null;
   players: Record<string, string>;
-  histories: CubeActionHistory[];
+  gameRoundState?: GameRoundState;
   emitSetNickname: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
 };
@@ -33,7 +32,7 @@ export const GameSocketContextProvider = ({
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const [players, setPlayers] = useState<Record<string, string>>({});
-  const [histories, setHistories] = useState<CubeActionHistory[]>([]);
+  const [gameRoundState, setGameRoundState] = useState<GameRoundState>();
 
   const emitSetNickname = (nickname: string) => {
     const userId = localStorageUtil.getValue(USERID_KEY);
@@ -65,26 +64,21 @@ export const GameSocketContextProvider = ({
     });
 
     s.on("cubeHistoryUpdate", (history: CubeActionHistory) => {
-      console.log("회전 내역 업데이트: ");
-      setHistories((histories) => [...histories, history]);
+      console.log("회전 내역 업데이트: ", history);
+      setGameRoundState((state) => {
+        if (!state) return;
+        return {
+          ...state,
+          actionHistories: [...state.actionHistories, history],
+        };
+      });
       rotateCube(history.action.face, history.action.clockwise);
     });
 
-    s.on(
-      "initCubeState",
-      ({
-        cubeColors,
-        histories,
-      }: {
-        cubeColors: Record<Face, Color[][]>;
-        histories: CubeActionHistory[];
-      }) => {
-        console.log("큐브 초기화 데이터: ", cubeColors);
-        console.log("큐브 초기화 데이터: ", histories);
-        initCubes(cubeColors);
-        setHistories(histories);
-      }
-    );
+    s.on("initGameRound", (gameRound: GameRoundState) => {
+      setGameRoundState(gameRound);
+      initCubes(gameRound.faceColors);
+    });
 
     return () => {
       s.off("connect");
@@ -98,7 +92,7 @@ export const GameSocketContextProvider = ({
       value={{
         socket,
         players,
-        histories,
+        gameRoundState,
         emitSetNickname,
         emitRotateCube,
       }}
@@ -112,7 +106,7 @@ export const useGameSocket = () => {
   const ctx = useContext(GameSocketContext);
   if (!ctx)
     throw new Error(
-      "useGameSocket must be used inside GameSocketContextProvider"
+      "useGameSocket must be used inside GameSocketContextProvider",
     );
   return ctx;
 };
