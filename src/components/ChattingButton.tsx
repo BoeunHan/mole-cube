@@ -40,7 +40,7 @@ export const ChattingButton = () => {
 
 const HistoryContent = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { gameRoundState } = useGameSocket();
+  const { gameRoundState, playerNickname } = useGameSocket();
 
   const histories = gameRoundState?.actionHistories;
 
@@ -64,7 +64,7 @@ const HistoryContent = () => {
       onScroll={checkScroll}
       className="custom-scrollbar relative h-[360px] overflow-y-scroll font-mono text-white"
     >
-      {histories?.map(({ nickname, timestamp, action }) => {
+      {histories?.map(({ userId, timestamp, action }) => {
         const { face, clockwise } = action;
 
         const timeStr = new Date(timestamp).toLocaleTimeString("ko-KR", {
@@ -78,7 +78,7 @@ const HistoryContent = () => {
           <div key={timestamp} className="font-neodgm flex gap-x-2 text-lg">
             <span>$</span>
             <span className="text-[#36d67e]">{timeStr}</span>
-            <span className="text-[#fffc42]">{nickname}</span>
+            <span className="text-[#fffc42]">{playerNickname[userId]}</span>
             <span>{">"}</span>
             <span>{`${face}${clockwise ? "" : `'`}`}</span>
             <span>{clockwise}</span>

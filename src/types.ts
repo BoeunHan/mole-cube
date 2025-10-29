@@ -10,13 +10,13 @@ export interface CubeAction {
 
 export interface CubeActionHistory {
   userId: string;
-  nickname: string;
   timestamp: number;
   action: CubeAction;
 }
 
 export interface GameRoundState {
   currentRound: number;
+  playerQueue: string[];
   openedAt: Date | null;
   closedAt: Date | null;
   actionHistories: CubeActionHistory[];

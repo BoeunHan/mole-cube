@@ -15,7 +15,7 @@ import { io, Socket } from "socket.io-client";
 
 type GameSocketContextType = {
   socket: Socket | null;
-  players: Record<string, string>;
+  playerNickname: Record<string, string>;
   gameRoundState?: GameRoundState;
   emitSetNickname: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
@@ -31,8 +31,10 @@ export const GameSocketContextProvider = ({
   const { rotateCube, initCubes } = useCubeControl();
 
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [players, setPlayers] = useState<Record<string, string>>({});
   const [gameRoundState, setGameRoundState] = useState<GameRoundState>();
+  const [playerNickname, setPlayerNickname] = useState<Record<string, string>>(
+    {},
+  );
 
   const emitSetNickname = (nickname: string) => {
     const userId = localStorageUtil.getValue(USERID_KEY);
@@ -58,10 +60,26 @@ export const GameSocketContextProvider = ({
       // TODO: 연결 완료 toast
     });
 
-    s.on("playersUpdate", (players) => {
-      console.log("업데이트된 플레이어 목록: ", players);
-      setPlayers(players);
-    });
+    s.on(
+      "playersUpdate",
+      ({
+        players,
+        playerNickname,
+      }: {
+        players: string[];
+        playerNickname: Record<string, string>;
+      }) => {
+        console.log("업데이트된 플레이어 목록: ", players);
+        setGameRoundState((state) => {
+          if (!state) return;
+          return {
+            ...state,
+            playerQueue: players,
+          };
+        });
+        setPlayerNickname(playerNickname);
+      },
+    );
 
     s.on("cubeHistoryUpdate", (history: CubeActionHistory) => {
       console.log("회전 내역 업데이트: ", history);
@@ -83,6 +101,8 @@ export const GameSocketContextProvider = ({
     return () => {
       s.off("connect");
       s.off("playersUpdate");
+      s.off("cubeHistoryUpdate");
+      s.off("initGameRound");
       s.disconnect();
     };
   }, []);
@@ -91,7 +111,7 @@ export const GameSocketContextProvider = ({
     <GameSocketContext.Provider
       value={{
         socket,
-        players,
+        playerNickname,
         gameRoundState,
         emitSetNickname,
         emitRotateCube,
