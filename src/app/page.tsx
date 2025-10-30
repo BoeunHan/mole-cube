@@ -6,6 +6,7 @@ import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { EmotionButton } from "@/components/EmotionButton";
 import { NicknameDialog } from "@/components/NicknameDialog";
 import { RotationButtonList } from "@/components/RotationButton";
+import { Timer } from "@/components/Timer";
 import { USERID_KEY } from "@/constants";
 import { localStorageUtil } from "@/lib/utils";
 import { useGameSocket } from "@/providers/GameSocketContext";
@@ -28,7 +29,10 @@ export default function Home() {
       <CubeView />
       <div className="pointer-events-none relative z-10 flex h-full w-full flex-col items-center justify-between px-4 py-10">
         <div className="flex w-full flex-col items-center gap-4">
-          <div className="text-xl">제 n번째 게임</div>
+          {gameRoundState && (
+            <div className="text-xl">{`제 ${gameRoundState.currentRound}번째 게임`}</div>
+          )}
+          <div className="text-xl">{gameRoundState?.turnEndTime}</div>
           <CurrentPlayers />
         </div>
         <div className="pointer-events-auto flex w-full items-center justify-center gap-x-4 p-2">
@@ -38,7 +42,10 @@ export default function Home() {
           </div>
           <div className="w-full max-w-60">
             {isCurrentPlayer ? (
-              <RotationButtonList />
+              <div className="flex flex-col gap-y-3">
+                <RotationButtonList />
+                <Timer />
+              </div>
             ) : (
               <div>기다리는 중...</div>
             )}

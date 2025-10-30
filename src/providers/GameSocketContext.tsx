@@ -68,10 +68,12 @@ export const GameSocketContextProvider = ({
         players,
         currentPlayerId,
         playerNickname,
+        turnEndTime,
       }: {
         players: string[];
         currentPlayerId?: string;
         playerNickname: Record<string, string>;
+        turnEndTime: number;
       }) => {
         console.log("업데이트된 플레이어 목록: ", players);
         setGameRoundState((state) => {
@@ -80,6 +82,7 @@ export const GameSocketContextProvider = ({
             ...state,
             playerQueue: players,
             currentPlayerId,
+            turnEndTime,
           };
         });
         setPlayerNickname(playerNickname);
@@ -98,16 +101,26 @@ export const GameSocketContextProvider = ({
       rotateCube(history.action.face, history.action.clockwise);
     });
 
-    s.on("currentPlayerUpdate", (currentPlayerId: string) => {
-      console.log("플레이어 차례 업데이트: ", currentPlayerId);
-      setGameRoundState((state) => {
-        if (!state) return;
-        return {
-          ...state,
-          currentPlayerId,
-        };
-      });
-    });
+    s.on(
+      "currentPlayerUpdate",
+      ({
+        currentPlayerId,
+        turnEndTime,
+      }: {
+        currentPlayerId: string;
+        turnEndTime: number;
+      }) => {
+        console.log("플레이어 차례 업데이트: ", currentPlayerId);
+        setGameRoundState((state) => {
+          if (!state) return;
+          return {
+            ...state,
+            currentPlayerId,
+            turnEndTime,
+          };
+        });
+      },
+    );
 
     s.on("initGameRound", (gameRound: GameRoundState) => {
       setGameRoundState(gameRound);
