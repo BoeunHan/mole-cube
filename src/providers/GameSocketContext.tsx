@@ -66,14 +66,10 @@ export const GameSocketContextProvider = ({
       "playersUpdate",
       ({
         players,
-        currentPlayerId,
         playerNickname,
-        turnEndTime,
       }: {
         players: string[];
-        currentPlayerId?: string;
         playerNickname: Record<string, string>;
-        turnEndTime: number;
       }) => {
         console.log("업데이트된 플레이어 목록: ", players);
         setGameRoundState((state) => {
@@ -81,8 +77,6 @@ export const GameSocketContextProvider = ({
           return {
             ...state,
             playerQueue: players,
-            currentPlayerId,
-            turnEndTime,
           };
         });
         setPlayerNickname(playerNickname);
@@ -102,7 +96,7 @@ export const GameSocketContextProvider = ({
     });
 
     s.on(
-      "currentPlayerUpdate",
+      "turnUpdated",
       ({
         currentPlayerId,
         turnEndTime,

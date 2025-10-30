@@ -32,7 +32,6 @@ export default function Home() {
           {gameRoundState && (
             <div className="text-xl">{`제 ${gameRoundState.currentRound}번째 게임`}</div>
           )}
-          <div className="text-xl">{gameRoundState?.turnEndTime}</div>
           <CurrentPlayers />
         </div>
         <div className="pointer-events-auto flex w-full items-center justify-center gap-x-4 p-2">
