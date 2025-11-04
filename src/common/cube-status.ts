@@ -19,9 +19,9 @@ const SUHFFLE_COUNT = {
 export class CubeStatus {
   faceColors: Record<Face, Color[][]>;
 
-  constructor(level: 'easy' | 'normal' | 'hard') {
+  constructor(level?: 'easy' | 'normal' | 'hard') {
     this.faceColors = this.createCubeColors(3);
-    this.shuffleCube(level);
+    if (level) this.shuffleCube(level);
   }
 
   private shuffleCube(level: 'easy' | 'normal' | 'hard') {
@@ -135,5 +135,22 @@ export class CubeStatus {
           break;
       }
     }
+  }
+
+  isCubeSolved() {
+    const faces = Object.values(this.faceColors);
+
+    for (const face of faces) {
+      const firstColor = face[0][0];
+      for (const row of face) {
+        for (const color of row) {
+          if (color !== firstColor) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   }
 }

@@ -22,28 +22,30 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private roundState = new GameRoundState();
 
   onModuleInit() {
-    this.startRound();
+    this.roundState.startNextRound();
     this.roundState.on(
       'turnUpdated',
       ({
         currentPlayerId,
-        turnEndTime,
+        timerEndTime,
       }: {
         currentPlayerId: string;
-        turnEndTime: number;
+        timerEndTime: number;
       }) => {
         this.server.emit('turnUpdated', {
           currentPlayerId,
-          turnEndTime,
+          timerEndTime,
         });
       },
     );
-  }
 
-  private startRound() {
-    this.roundState.openNextRound();
+    this.roundState.on('solved', () => {
+      this.server.emit('solved', this.roundState.getDisplayInfo());
+    });
 
-    this.server.emit('startRound', this.roundState);
+    this.roundState.on('roundStateUpdated', () => {
+      this.server.emit('setGameRound', this.roundState.getDisplayInfo());
+    });
   }
 
   handleConnection(client: Socket) {
@@ -52,7 +54,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (userId) {
       client.data.userId = userId;
     }
-    client.emit('initGameRound', this.roundState.getDisplayInfo());
+    client.emit('setGameRound', this.roundState.getDisplayInfo());
   }
 
   handleDisconnect(client: Socket) {
