@@ -1,13 +1,13 @@
-import { useGameSocket } from "@/providers/GameSocketContext";
 import { useEffect, useRef, useState } from "react";
 
-const TURN_TIME = 10;
+interface TimerProps {
+  endTime: number;
+  totalMs: number;
+}
 
-export const Timer = () => {
-  const { gameRoundState } = useGameSocket();
-
-  const remainingMs = useCountdown(gameRoundState?.turnEndTime);
-  const ratio = Math.max(remainingMs / (TURN_TIME * 1000), 0);
+export const Timer = ({ endTime, totalMs }: TimerProps) => {
+  const remainingMs = useCountdown(endTime);
+  const ratio = Math.max(remainingMs / totalMs, 0);
 
   return (
     <div className="flex items-center gap-x-2">

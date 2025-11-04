@@ -35,7 +35,6 @@ export const GameSocketContextProvider = ({
   const [playerNickname, setPlayerNickname] = useState<Record<string, string>>(
     {},
   );
-
   const userId = localStorageUtil.getValue(USERID_KEY);
 
   const emitSetNickname = (nickname: string) => {
@@ -71,7 +70,6 @@ export const GameSocketContextProvider = ({
         players: string[];
         playerNickname: Record<string, string>;
       }) => {
-        console.log("업데이트된 플레이어 목록: ", players);
         setGameRoundState((state) => {
           if (!state) return;
           return {
@@ -84,7 +82,6 @@ export const GameSocketContextProvider = ({
     );
 
     s.on("cubeHistoryUpdate", (history: CubeActionHistory) => {
-      console.log("회전 내역 업데이트: ", history);
       setGameRoundState((state) => {
         if (!state) return;
         return {
@@ -99,33 +96,37 @@ export const GameSocketContextProvider = ({
       "turnUpdated",
       ({
         currentPlayerId,
-        turnEndTime,
+        timerEndTime,
       }: {
         currentPlayerId: string;
-        turnEndTime: number;
+        timerEndTime: number;
       }) => {
-        console.log("플레이어 차례 업데이트: ", currentPlayerId);
         setGameRoundState((state) => {
           if (!state) return;
           return {
             ...state,
             currentPlayerId,
-            turnEndTime,
+            timerEndTime,
           };
         });
       },
     );
 
-    s.on("initGameRound", (gameRound: GameRoundState) => {
-      setGameRoundState(gameRound);
-      initCubes(gameRound.faceColors);
+    s.on("setGameRound", (roundState: GameRoundState) => {
+      setGameRoundState(roundState);
+      initCubes(roundState.faceColors);
+    });
+
+    s.on("solved", (roundState: GameRoundState) => {
+      setGameRoundState(roundState);
     });
 
     return () => {
       s.off("connect");
       s.off("playersUpdate");
       s.off("cubeHistoryUpdate");
-      s.off("initGameRound");
+      s.off("setGameRound");
+      s.off("solved");
       s.disconnect();
     };
   }, []);

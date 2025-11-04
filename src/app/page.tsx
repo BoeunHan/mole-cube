@@ -12,6 +12,9 @@ import { localStorageUtil } from "@/lib/utils";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { useMemo } from "react";
 
+const TURN_TIME = 10;
+const ROUND_INTERVAL = 10;
+
 export default function Home() {
   const { gameRoundState } = useGameSocket();
 
@@ -40,14 +43,28 @@ export default function Home() {
             <EmotionButton />
           </div>
           <div className="w-full max-w-60">
-            {isCurrentPlayer ? (
-              <div className="flex flex-col gap-y-3">
-                <RotationButtonList />
-                <Timer />
-              </div>
-            ) : (
-              <div>기다리는 중...</div>
-            )}
+            {gameRoundState &&
+              (gameRoundState.isOpen ? (
+                isCurrentPlayer ? (
+                  <div className="flex flex-col gap-y-3">
+                    <RotationButtonList />
+                    <Timer
+                      totalMs={TURN_TIME * 1000}
+                      endTime={gameRoundState.timerEndTime}
+                    />
+                  </div>
+                ) : (
+                  <div>기다리는 중...</div>
+                )
+              ) : (
+                <>
+                  <div>다음 게임 대기중</div>
+                  <Timer
+                    totalMs={ROUND_INTERVAL * 1000}
+                    endTime={gameRoundState.timerEndTime}
+                  />
+                </>
+              ))}
           </div>
         </div>
       </div>
