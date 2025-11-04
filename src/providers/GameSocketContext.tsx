@@ -17,6 +17,7 @@ type GameSocketContextType = {
   socket: Socket | null;
   playerNickname: Record<string, string>;
   gameRoundState?: GameRoundState;
+  isSolved: boolean;
   emitSetNickname: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
 };
@@ -32,6 +33,7 @@ export const GameSocketContextProvider = ({
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const [gameRoundState, setGameRoundState] = useState<GameRoundState>();
+  const [isSolved, setIsSolved] = useState(false);
   const [playerNickname, setPlayerNickname] = useState<Record<string, string>>(
     {},
   );
@@ -115,10 +117,12 @@ export const GameSocketContextProvider = ({
     s.on("setGameRound", (roundState: GameRoundState) => {
       setGameRoundState(roundState);
       initCubes(roundState.faceColors);
+      setIsSolved(false);
     });
 
     s.on("solved", (roundState: GameRoundState) => {
       setGameRoundState(roundState);
+      setIsSolved(true);
     });
 
     return () => {
@@ -137,6 +141,7 @@ export const GameSocketContextProvider = ({
         socket,
         playerNickname,
         gameRoundState,
+        isSolved,
         emitSetNickname,
         emitRotateCube,
       }}

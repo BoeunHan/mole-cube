@@ -1,6 +1,7 @@
 "use client";
 
 import { ChattingButton } from "@/components/ChattingButton";
+import { ConfettiCanvas } from "@/components/ConfettiCanvas";
 import { CubeView } from "@/components/CubeView";
 import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { EmotionButton } from "@/components/EmotionButton";
@@ -16,7 +17,7 @@ const TURN_TIME = 10;
 const ROUND_INTERVAL = 10;
 
 export default function Home() {
-  const { gameRoundState } = useGameSocket();
+  const { gameRoundState, isSolved } = useGameSocket();
 
   const userId = localStorageUtil.getValue(USERID_KEY) as string;
   const currentPlayerId = gameRoundState?.currentPlayerId;
@@ -37,6 +38,7 @@ export default function Home() {
           )}
           <CurrentPlayers />
         </div>
+        {isSolved && <ConfettiCanvas />}
         <div className="pointer-events-auto flex w-full items-center justify-center gap-x-4 p-2">
           <div className="flex shrink-0 flex-col">
             <ChattingButton />
