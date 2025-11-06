@@ -14,7 +14,7 @@ export class GameRoundState extends EventEmitter {
   cubeStatus = new CubeStatus();
 
   private TURN_TIME = 10;
-  private ROUND_INTERVAL = 30;
+  private ROUND_INTERVAL = 15;
   private timerTimeout?: NodeJS.Timeout;
 
   join(playerId: string) {
