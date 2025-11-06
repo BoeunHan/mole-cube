@@ -11,12 +11,12 @@ export const Timer = ({ endTime, totalMs }: TimerProps) => {
 
   return (
     <div className="flex items-center gap-x-2">
-      <span className="font-bitbeat w-12 text-center text-[#CE6464]">
+      <span className="font-bitbeat w-14 text-center text-[#CE6464]">
         {Math.ceil(remainingMs / 1000)}초
       </span>
-      <div className="h-4 w-full rounded-full bg-[#BFBFBF]">
+      <div className="h-4 w-full overflow-hidden rounded-full bg-[#BFBFBF]">
         <div
-          className="h-full rounded-full bg-[#CE6464] transition-none"
+          className="h-full rounded-l-full bg-[#CE6464] transition-none"
           style={{ width: `${ratio * 100}%` }}
         />
       </div>
