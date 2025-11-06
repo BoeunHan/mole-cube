@@ -1,8 +1,8 @@
 "use client";
 
-import { NICKNAME_KEY, USERID_KEY } from "@/constants";
+import { NICKNAME_KEY } from "@/constants";
 import { useCubeControl } from "@/hooks/useCubeControl";
-import { localStorageUtil } from "@/lib/utils";
+import { getUserId, localStorageUtil } from "@/lib/utils";
 import { CubeAction, CubeActionHistory, GameRoundState } from "@/types";
 import {
   createContext,
@@ -14,6 +14,7 @@ import {
 import { io, Socket } from "socket.io-client";
 
 type GameSocketContextType = {
+  userId: string;
   socket: Socket | null;
   playerNickname: Record<string, string>;
   gameRoundState?: GameRoundState;
@@ -31,13 +32,13 @@ export const GameSocketContextProvider = ({
 }) => {
   const { rotateCube, initCubes } = useCubeControl();
 
+  const [userId, setUserId] = useState("");
   const [socket, setSocket] = useState<Socket | null>(null);
   const [gameRoundState, setGameRoundState] = useState<GameRoundState>();
   const [isSolved, setIsSolved] = useState(false);
   const [playerNickname, setPlayerNickname] = useState<Record<string, string>>(
     {},
   );
-  const userId = localStorageUtil.getValue(USERID_KEY);
 
   const emitSetNickname = (nickname: string) => {
     if (!socket || !userId) return;
@@ -52,6 +53,8 @@ export const GameSocketContextProvider = ({
   };
 
   useEffect(() => {
+    if (!userId) return;
+
     const s = io(process.env.NEXT_PUBLIC_SERVER_URL, {
       transports: ["websocket"],
       auth: { userId },
@@ -133,11 +136,20 @@ export const GameSocketContextProvider = ({
       s.off("solved");
       s.disconnect();
     };
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = await getUserId();
+      if (userId) setUserId(userId);
+    };
+    fetchUserId();
   }, []);
 
   return (
     <GameSocketContext.Provider
       value={{
+        userId,
         socket,
         playerNickname,
         gameRoundState,

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { GameSocketContextProvider } from "@/providers/GameSocketContext";
-import { ClientInitializer } from "@/providers/ClientInitializer";
 import { CubeProvider } from "@/providers/CubeContext";
 
 const bitbeat = localFont({
@@ -29,7 +28,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${bitbeat.variable} ${neodgm.variable} antialiased`}>
-        <ClientInitializer />
         <CubeProvider>
           <GameSocketContextProvider>{children}</GameSocketContextProvider>
         </CubeProvider>

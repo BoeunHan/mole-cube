@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { v4 as uuidV4 } from "uuid";
+import { getUserKeyForGame } from "@apps-in-toss/web-framework";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -28,6 +28,26 @@ export const localStorageUtil = {
   },
 };
 
-export function createUUID() {
-  return uuidV4();
+export async function getUserId(): Promise<string | undefined> {
+  const result = await getUserKeyForGame();
+
+  if (!result) {
+    console.warn("지원하지 않는 앱 버전이에요.");
+    return;
+  }
+
+  if (result === "INVALID_CATEGORY") {
+    console.error("게임 카테고리가 아닌 미니앱이에요.");
+    return;
+  }
+
+  if (result === "ERROR") {
+    console.error("사용자 키 조회 중 오류가 발생했어요.");
+    return;
+  }
+
+  if (result.type === "HASH") {
+    console.log("사용자 키:", result.hash);
+    return result.hash;
+  }
 }

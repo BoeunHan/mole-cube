@@ -8,8 +8,6 @@ import { EmotionButton } from "@/components/EmotionButton";
 import { NicknameDialog } from "@/components/NicknameDialog";
 import { RotationButtonList } from "@/components/RotationButton";
 import { Timer } from "@/components/Timer";
-import { USERID_KEY } from "@/constants";
-import { localStorageUtil } from "@/lib/utils";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { useMemo } from "react";
 
@@ -17,9 +15,8 @@ const TURN_TIME = 10;
 const ROUND_INTERVAL = 15;
 
 export default function Home() {
-  const { gameRoundState, isSolved } = useGameSocket();
+  const { userId, gameRoundState, isSolved } = useGameSocket();
 
-  const userId = localStorageUtil.getValue(USERID_KEY) as string;
   const currentPlayerId = gameRoundState?.currentPlayerId;
 
   const isCurrentPlayer = useMemo(
