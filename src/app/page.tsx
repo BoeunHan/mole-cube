@@ -14,7 +14,7 @@ import { useGameSocket } from "@/providers/GameSocketContext";
 import { useMemo } from "react";
 
 const TURN_TIME = 10;
-const ROUND_INTERVAL = 10;
+const ROUND_INTERVAL = 30;
 
 export default function Home() {
   const { gameRoundState, isSolved } = useGameSocket();
