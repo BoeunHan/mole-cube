@@ -1,7 +1,7 @@
 import { adjacentEdgesMap, EdgePosition } from './edges';
 import { Color, Face } from './enums';
 
-export const DEFAULT_CUBE_COLORS: Record<Face, Color> = {
+const DEFAULT_CUBE_COLORS: Record<Face, Color> = {
   [Face.R]: Color.RED,
   [Face.L]: Color.BLUE,
   [Face.U]: Color.GREEN,
@@ -11,24 +11,25 @@ export const DEFAULT_CUBE_COLORS: Record<Face, Color> = {
 };
 
 const SUHFFLE_COUNT = {
-  easy: 22,
+  easy: 1,
   normal: 35,
   hard: 50,
 };
 
 export class CubeStatus {
-  faceColors: Record<Face, Color[][]>;
+  private faceColors: Record<Face, Color[][]>;
+  private shuffleCnt: number;
 
-  constructor(level?: 'easy' | 'normal' | 'hard') {
+  constructor(level: 'easy' | 'normal' | 'hard') {
     this.faceColors = this.createCubeColors(3);
-    if (level) this.shuffleCube(level);
+    this.shuffleCnt = SUHFFLE_COUNT[level];
+    if (level) this.shuffleCube(this.shuffleCnt);
   }
 
-  private shuffleCube(level: 'easy' | 'normal' | 'hard') {
-    const shuffleCount = SUHFFLE_COUNT[level];
+  private shuffleCube(shuffleCnt: number) {
     const faces = Object.values(Face);
 
-    for (let i = 0; i < shuffleCount; i++) {
+    for (let i = 0; i < shuffleCnt; i++) {
       const randomFace = faces[Math.floor(Math.random() * faces.length)];
       const randomClockwise = Math.random() < 0.5;
       this.rotateCubeFace(randomFace, randomClockwise);
@@ -137,7 +138,7 @@ export class CubeStatus {
     }
   }
 
-  isCubeSolved() {
+  isSolved() {
     const faces = Object.values(this.faceColors);
 
     for (const face of faces) {
@@ -152,5 +153,12 @@ export class CubeStatus {
     }
 
     return true;
+  }
+
+  getStatus() {
+    return {
+      faceColors: this.faceColors,
+      shuffleCnt: this.shuffleCnt,
+    };
   }
 }
