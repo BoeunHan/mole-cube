@@ -16,12 +16,13 @@ export class GameRoundState {
 
   rotateCube(
     userId: string,
+    nickname: string,
     action: CubeAction,
   ): { isSolved: boolean; history: CubeActionHistory } {
     this.cubeStatus.rotateCubeFace(action.face, action.clockwise);
 
     const timestamp = Date.now();
-    const history = { userId, timestamp, action };
+    const history = { userId, nickname, timestamp, action };
     this.actionHistories.push(history);
 
     return {

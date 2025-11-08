@@ -26,6 +26,7 @@ export class GameRoomState {
   }
 
   getNextRoundNumber: () => number;
+  getUserNickname: (userId: string) => string;
 
   startNewRound(roundNumber: number) {
     this.currentRoundNumber = roundNumber;
@@ -82,7 +83,11 @@ export class GameRoomState {
       );
     }
 
-    const { isSolved, history } = this.currentRound.rotateCube(userId, action);
+    const { isSolved, history } = this.currentRound.rotateCube(
+      userId,
+      this.getUserNickname(userId),
+      action,
+    );
 
     if (isSolved) {
       this.currentRound.closeRound();

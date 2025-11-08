@@ -25,8 +25,9 @@ export class GameService {
       this.eventEmitter,
     );
 
-    // 라운드가 끝나면 → 여기서 전역 라운드 증가 & 새 라운드 시작
     room.getNextRoundNumber = () => ++this.currentRoundNumber;
+    room.getUserNickname = (userId: string) =>
+      this.userNicknames.get(userId) ?? '';
 
     this.rooms.set(roomId, room);
     return room;
