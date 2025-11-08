@@ -46,6 +46,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleJoinGame(client: Socket, { nickname }: { nickname: string }) {
     const userId = client.data.userId as string;
     const room = this.gameService.joinRoom(userId, nickname);
+    if (!room) return;
+
     client.join(room.roomId);
 
     // 같은 방에 나를 제외한 사람들에게 플레이어 업데이트 알림

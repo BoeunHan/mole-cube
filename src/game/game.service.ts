@@ -42,7 +42,11 @@ export class GameService {
     return roomId ? this.rooms.get(roomId) : undefined;
   }
 
-  joinRoom(userId: string, nickname: string): GameRoomState {
+  joinRoom(userId: string, nickname: string): GameRoomState | undefined {
+    if (this.userRooms[userId]) {
+      console.error(`User ${userId} has already joined the game.`);
+      return;
+    }
     const room = this.findOrCreateRoom();
     room.join(userId);
     this.userRooms.set(userId, room.roomId);
