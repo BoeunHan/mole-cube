@@ -7,7 +7,7 @@ export const CurrentPlayers = () => {
   const players = gameRoomState?.players;
   const currentPlayerId = gameRoomState?.currentPlayerId;
   return (
-    <div className="flex h-24 w-full flex-wrap items-center justify-center overflow-y-auto">
+    <div className="mt-4 flex h-16 w-full flex-wrap items-center justify-center overflow-y-auto">
       {players?.map((userId) => (
         <Image
           key={userId}

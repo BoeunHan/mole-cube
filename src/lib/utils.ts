@@ -74,3 +74,26 @@ export function getTurnsLeft(
     return players.length - currentIndex + myIndex;
   }
 }
+
+export function diffTime(start: Date, end: Date) {
+  if (start >= end) return null;
+
+  const diffMs = end.getTime() - start.getTime();
+
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+  return { hours, minutes, seconds };
+}
+
+export function getPlayTimeLabel(
+  hours: number,
+  minutes: number,
+  seconds: number,
+) {
+  if (hours === 0 && minutes === 0 && seconds === 0) return "0초";
+  if (hours === 0 && minutes === 0) return `${seconds}초`;
+  if (hours === 0) return `${minutes}분 ${seconds}초`;
+  return `${hours}시간 ${minutes}분 ${seconds}초`;
+}

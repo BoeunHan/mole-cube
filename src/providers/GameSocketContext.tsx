@@ -117,8 +117,10 @@ export const GameSocketContextProvider = ({
     });
 
     s.on("solved", (roomState: GameRoomState) => {
-      setGameRoomState(roomState);
-      setIsSolved(true);
+      setTimeout(() => {
+        setGameRoomState(roomState);
+        setIsSolved(true);
+      }, 300);
     });
 
     return () => {
