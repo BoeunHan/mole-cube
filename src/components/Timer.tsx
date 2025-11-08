@@ -1,13 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 
 interface TimerProps {
-  endTime: number;
-  totalMs: number;
+  timerEndTime: number;
+  initialMs: number;
 }
 
-export const Timer = ({ endTime, totalMs }: TimerProps) => {
-  const remainingMs = useCountdown(endTime);
-  const ratio = Math.max(remainingMs / totalMs, 0);
+export const Timer = ({ timerEndTime, initialMs }: TimerProps) => {
+  const [remainingMs, setRemainingMs] = useState(initialMs);
+  const frameRef = useRef<number>(0);
+  const startTimeRef = useRef<number>(Date.now());
+
+  useEffect(() => {
+    console.log("timerendtime changed", timerEndTime);
+    startTimeRef.current = Date.now();
+
+    const update = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const next = initialMs - elapsed;
+      setRemainingMs(next > 0 ? next : 0);
+
+      if (next > 0) {
+        frameRef.current = requestAnimationFrame(update);
+      }
+    };
+
+    frameRef.current = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(frameRef.current!);
+  }, [timerEndTime]);
+
+  const ratio = Math.max(remainingMs / initialMs, 0);
 
   return (
     <div className="flex w-full items-center gap-x-2">
@@ -22,24 +43,4 @@ export const Timer = ({ endTime, totalMs }: TimerProps) => {
       </div>
     </div>
   );
-};
-
-export const useCountdown = (endTime?: number) => {
-  const [remainingMs, setRemainingMs] = useState(0);
-  const frameRef = useRef<number>(0);
-
-  useEffect(() => {
-    const update = () => {
-      if (!endTime) return;
-
-      const r = endTime - Date.now();
-      setRemainingMs(r > 0 ? r : 0);
-      frameRef.current = requestAnimationFrame(update);
-    };
-
-    frameRef.current = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(frameRef.current!);
-  }, [endTime]);
-
-  return remainingMs;
 };

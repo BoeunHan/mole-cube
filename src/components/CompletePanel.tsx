@@ -5,8 +5,6 @@ import { Timer } from "@/components/Timer";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { diffTime, getPlayTimeLabel } from "@/lib/utils";
 
-const ROUND_INTERVAL = 15;
-
 export const CompletePanel = () => {
   const { gameRoomState } = useGameSocket();
 
@@ -49,8 +47,8 @@ export const CompletePanel = () => {
       </div>
       <div className="mb-4">다음 게임 시작까지...</div>
       <Timer
-        totalMs={ROUND_INTERVAL * 1000}
-        endTime={gameRoomState.timerEndTime}
+        timerEndTime={gameRoomState.timerEndTime}
+        initialMs={gameRoomState.remainingMs}
       />
     </div>
   );

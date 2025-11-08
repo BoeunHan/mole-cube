@@ -8,8 +8,6 @@ import { useGameSocket } from "@/providers/GameSocketContext";
 import { useMemo } from "react";
 import { EmotionButton } from "./EmotionButton";
 
-const TURN_TIME = 10;
-
 export const ControlPanel = () => {
   const { userId, gameRoomState } = useGameSocket();
 
@@ -33,8 +31,8 @@ export const ControlPanel = () => {
           <div className="flex flex-col gap-y-3">
             <RotationButtonList />
             <Timer
-              totalMs={TURN_TIME * 1000}
-              endTime={gameRoomState.timerEndTime}
+              timerEndTime={gameRoomState.timerEndTime}
+              initialMs={gameRoomState.remainingMs}
             />
           </div>
         ) : (

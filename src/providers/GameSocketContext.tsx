@@ -62,6 +62,7 @@ export const GameSocketContextProvider = ({
         currentPlayerId: string | null;
         currentPlayerNickname: string;
         timerEndTime: number;
+        remainingMs: number;
       }) => {
         setGameRoomState((state) => {
           if (!state) return;
@@ -71,6 +72,7 @@ export const GameSocketContextProvider = ({
             currentPlayerId: payload.currentPlayerId,
             currentPlayerNickname: payload.currentPlayerNickname,
             timerEndTime: payload.timerEndTime,
+            remainingMs: payload.remainingMs,
           };
         });
       },
@@ -97,7 +99,9 @@ export const GameSocketContextProvider = ({
         currentPlayerId: string;
         currentPlayerNickname: string;
         timerEndTime: number;
+        remainingMs: number;
       }) => {
+        console.log("turn updated", payload.remainingMs);
         setGameRoomState((state) => {
           if (!state) return;
           return {
@@ -105,22 +109,29 @@ export const GameSocketContextProvider = ({
             currentPlayerId: payload.currentPlayerId,
             currentPlayerNickname: payload.currentPlayerNickname,
             timerEndTime: payload.timerEndTime,
+            remainingMs: payload.remainingMs,
           };
         });
       },
     );
 
     s.on("setGameRound", (roomState: GameRoomState) => {
+      console.log("setGameRound", roomState.remainingMs);
       setGameRoomState(roomState);
       initCubes(roomState.roundState.cubeStatus.faceColors);
       if (roomState.roundState.status !== "solved") setIsSolved(false);
     });
 
     s.on("solved", (roomState: GameRoomState) => {
+      const delay = 300;
       setTimeout(() => {
-        setGameRoomState(roomState);
+        console.log("setGameRound", roomState.remainingMs);
+        setGameRoomState({
+          ...roomState,
+          remainingMs: roomState.remainingMs - delay,
+        });
         setIsSolved(true);
-      }, 300);
+      }, delay);
     });
 
     return () => {
