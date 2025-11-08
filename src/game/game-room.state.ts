@@ -129,8 +129,7 @@ export class GameRoomState {
 
     this.eventEmitter.emit('game.turnUpdated', {
       roomId: this.roomId,
-      currentPlayerId: this.currentPlayerId,
-      timerEndTime: this.timerEndTime,
+      ...this.getTurnInfo(),
     });
 
     if (this.timerTimeout) clearTimeout(this.timerTimeout);
@@ -148,8 +147,21 @@ export class GameRoomState {
       currentRoundNumber: this.currentRoundNumber,
       roundState: this.currentRound.getState(),
       currentPlayerId: this.currentPlayerId,
+      currentPlayerNickname: this.currentPlayerId
+        ? this.getUserNickname(this.currentPlayerId)
+        : '',
       timerEndTime: this.timerEndTime,
       status: this.status,
+    };
+  }
+
+  getTurnInfo() {
+    return {
+      currentPlayerId: this.currentPlayerId,
+      currentPlayerNickname: this.currentPlayerId
+        ? this.getUserNickname(this.currentPlayerId)
+        : '',
+      timerEndTime: this.timerEndTime,
     };
   }
 

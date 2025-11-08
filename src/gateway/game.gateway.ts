@@ -38,8 +38,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.leave(room.roomId);
     this.server.to(room.roomId).emit('playersUpdated', {
       players: room.players,
-      currentPlayerId: room.currentPlayerId,
-      timerEndTime: room.timerEndTime,
+      ...room.getTurnInfo(),
     });
   }
 
@@ -52,8 +51,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // 같은 방에 나를 제외한 사람들에게 플레이어 업데이트 알림
     client.broadcast.to(room.roomId).emit('playersUpdated', {
       players: room.players,
-      currentPlayerId: room.currentPlayerId,
-      timerEndTime: room.timerEndTime,
+      ...room.getTurnInfo(),
     });
 
     // 나에게 게임 라운드 진행상황 세팅 알림
@@ -78,10 +76,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleTurnUpdated(payload: {
     roomId: string;
     currentPlayerId: string;
+    currentPlayerNickname: string;
     timerEndTime: number;
   }) {
     this.server.to(payload.roomId).emit('turnUpdated', {
       currentPlayerId: payload.currentPlayerId,
+      currentPlayerNickname: payload.currentPlayerNickname,
       timerEndTime: payload.timerEndTime,
     });
   }
