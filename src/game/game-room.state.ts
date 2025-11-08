@@ -12,6 +12,7 @@ export class GameRoomState {
   currentPlayerId: string | null; // 현재 차례인 플레이어 ID
   status: 'playing' | 'break'; // 라운드 진행 중인지, 쉬는 시간인지
   timerEndTime: number = 0;
+  remainingMs: number = 0;
 
   private currentRound: GameRoundState;
   private timerTimeout?: NodeJS.Timeout;
@@ -100,7 +101,8 @@ export class GameRoomState {
 
     if (isSolved) {
       this.currentRound.closeRound();
-      this.timerEndTime = Date.now() + ROUND_INTERVAL * 1000;
+      this.remainingMs = ROUND_INTERVAL * 1000;
+      this.timerEndTime = Date.now() + this.remainingMs;
       this.currentPlayerId = this.getNextPlayer(this.currentPlayerId);
       this.status = 'break';
 
@@ -109,7 +111,7 @@ export class GameRoomState {
       this.timerTimeout = setTimeout(() => {
         this.startNewRound(this.getNextRoundNumber());
         this.status = 'playing';
-      }, ROUND_INTERVAL * 1000);
+      }, this.remainingMs);
     } else {
       const nextPlayerId = this.getNextPlayer(userId);
       if (nextPlayerId) this.setTurn(nextPlayerId);
@@ -125,7 +127,8 @@ export class GameRoomState {
 
   private setTurn(userId: string) {
     this.currentPlayerId = userId;
-    this.timerEndTime = Date.now() + TURN_TIME * 1000;
+    this.remainingMs = TURN_TIME * 1000;
+    this.timerEndTime = Date.now() + this.remainingMs;
 
     this.eventEmitter.emit('game.turnUpdated', {
       roomId: this.roomId,
@@ -138,7 +141,7 @@ export class GameRoomState {
       const nextPlayerId = this.getNextPlayer(this.currentPlayerId);
       if (nextPlayerId) this.setTurn(nextPlayerId);
       else this.setTurn(this.currentPlayerId);
-    }, TURN_TIME * 1000);
+    }, this.remainingMs);
   }
 
   getState() {
@@ -151,6 +154,7 @@ export class GameRoomState {
         ? this.getUserNickname(this.currentPlayerId)
         : '',
       timerEndTime: this.timerEndTime,
+      remainingMs: this.remainingMs,
       status: this.status,
     };
   }
@@ -162,6 +166,7 @@ export class GameRoomState {
         ? this.getUserNickname(this.currentPlayerId)
         : '',
       timerEndTime: this.timerEndTime,
+      remainingMs: this.remainingMs,
     };
   }
 

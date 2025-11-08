@@ -80,11 +80,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     currentPlayerId: string;
     currentPlayerNickname: string;
     timerEndTime: number;
+    remainingMs: number;
   }) {
     this.server.to(payload.roomId).emit('turnUpdated', {
       currentPlayerId: payload.currentPlayerId,
       currentPlayerNickname: payload.currentPlayerNickname,
       timerEndTime: payload.timerEndTime,
+      remainingMs: payload.remainingMs,
     });
   }
 
