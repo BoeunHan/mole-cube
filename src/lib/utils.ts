@@ -53,3 +53,24 @@ export async function getUserId(): Promise<string | undefined> {
   // }
   return await generateUUID();
 }
+
+export function getTurnsLeft(
+  players: string[],
+  currentPlayerId: string,
+  myUserId: string,
+) {
+  const currentIndex = players.indexOf(currentPlayerId);
+  const myIndex = players.indexOf(myUserId);
+
+  if (currentIndex === -1 || myIndex === -1) {
+    throw new Error(
+      "players 리스트 안에 currentPlayerId 혹은 myUserId가 없습니다.",
+    );
+  }
+
+  if (myIndex >= currentIndex) {
+    return myIndex - currentIndex;
+  } else {
+    return players.length - currentIndex + myIndex;
+  }
+}

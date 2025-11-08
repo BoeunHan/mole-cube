@@ -31,6 +31,7 @@ export interface GameRoomState {
   currentRoundNumber: number;
   roundState: GameRoundState;
   currentPlayerId: string | null;
+  currentPlayerNickname: string;
   timerEndTime: number;
   status: string;
 }

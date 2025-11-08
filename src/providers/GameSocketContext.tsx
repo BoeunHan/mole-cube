@@ -60,6 +60,7 @@ export const GameSocketContextProvider = ({
       (payload: {
         players: string[];
         currentPlayerId: string | null;
+        currentPlayerNickname: string;
         timerEndTime: number;
       }) => {
         setGameRoomState((state) => {
@@ -68,6 +69,7 @@ export const GameSocketContextProvider = ({
             ...state,
             players: payload.players,
             currentPlayerId: payload.currentPlayerId,
+            currentPlayerNickname: payload.currentPlayerNickname,
             timerEndTime: payload.timerEndTime,
           };
         });
@@ -91,12 +93,17 @@ export const GameSocketContextProvider = ({
 
     s.on(
       "turnUpdated",
-      (payload: { currentPlayerId: string; timerEndTime: number }) => {
+      (payload: {
+        currentPlayerId: string;
+        currentPlayerNickname: string;
+        timerEndTime: number;
+      }) => {
         setGameRoomState((state) => {
           if (!state) return;
           return {
             ...state,
             currentPlayerId: payload.currentPlayerId,
+            currentPlayerNickname: payload.currentPlayerNickname,
             timerEndTime: payload.timerEndTime,
           };
         });
