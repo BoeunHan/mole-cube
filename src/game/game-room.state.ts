@@ -51,14 +51,23 @@ export class GameRoomState {
   leave(userId: string) {
     if (this.players.length === 1) {
       // 한 명 남았는데 나가는 경우
-      this.currentPlayerId = null;
+      this.clearTurn();
     } else if (this.currentPlayerId === userId) {
       // 현재 차례인 사람이 나가는 경우
-      const nextPlayerId = this.getNextPlayer(userId);
-      if (nextPlayerId) this.setTurn(nextPlayerId);
-      else this.currentPlayerId = null;
+      if (this.status === 'break') {
+        this.currentPlayerId = this.getNextPlayer(userId);
+      } else {
+        const nextPlayerId = this.getNextPlayer(userId);
+        if (nextPlayerId) this.setTurn(nextPlayerId);
+        else this.clearTurn();
+      }
     }
     this.players = this.players.filter((player) => player !== userId);
+  }
+
+  private clearTurn() {
+    this.currentPlayerId = null;
+    if (this.timerTimeout) clearTimeout(this.timerTimeout);
   }
 
   rotate(
@@ -93,6 +102,7 @@ export class GameRoomState {
       this.currentRound.closeRound();
       this.timerEndTime = Date.now() + ROUND_INTERVAL * 1000;
       this.currentPlayerId = this.getNextPlayer(this.currentPlayerId);
+      this.status = 'break';
 
       if (this.timerTimeout) clearTimeout(this.timerTimeout);
 
