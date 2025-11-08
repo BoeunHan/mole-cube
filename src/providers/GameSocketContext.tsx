@@ -55,15 +55,24 @@ export const GameSocketContextProvider = ({
     });
     socketRef.current = s;
 
-    s.on("playersUpdated", (players: string[]) => {
-      setGameRoomState((state) => {
-        if (!state) return;
-        return {
-          ...state,
-          players,
-        };
-      });
-    });
+    s.on(
+      "playersUpdated",
+      (payload: {
+        players: string[];
+        currentPlayerId: string | null;
+        timerEndTime: number;
+      }) => {
+        setGameRoomState((state) => {
+          if (!state) return;
+          return {
+            ...state,
+            players: payload.players,
+            currentPlayerId: payload.currentPlayerId,
+            timerEndTime: payload.timerEndTime,
+          };
+        });
+      },
+    );
 
     s.on("cubeHistoryUpdated", (history: CubeActionHistory) => {
       setGameRoomState((state) => {
