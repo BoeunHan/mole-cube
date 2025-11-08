@@ -1,14 +1,14 @@
 "use client";
 
-import { NICKNAME_KEY } from "@/constants";
 import { useCubeControl } from "@/hooks/useCubeControl";
-import { getUserId, localStorageUtil } from "@/lib/utils";
-import { CubeAction, CubeActionHistory, GameRoundState } from "@/types";
+import { getUserId } from "@/lib/utils";
+import { CubeAction, CubeActionHistory, GameRoomState } from "@/types";
 import {
   createContext,
   ReactNode,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
@@ -16,10 +16,9 @@ import { io, Socket } from "socket.io-client";
 type GameSocketContextType = {
   userId: string;
   socket: Socket | null;
-  playerNickname: Record<string, string>;
-  gameRoundState?: GameRoundState;
+  gameRoomState?: GameRoomState;
   isSolved: boolean;
-  emitSetNickname: (nickname: string) => void;
+  emitJoinGame: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
 };
 
@@ -32,24 +31,19 @@ export const GameSocketContextProvider = ({
 }) => {
   const { rotateCube, initCubes } = useCubeControl();
 
+  const socketRef = useRef<Socket | null>(null);
   const [userId, setUserId] = useState("");
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [gameRoundState, setGameRoundState] = useState<GameRoundState>();
+  const [gameRoomState, setGameRoomState] = useState<GameRoomState>();
   const [isSolved, setIsSolved] = useState(false);
-  const [playerNickname, setPlayerNickname] = useState<Record<string, string>>(
-    {},
-  );
 
-  const emitSetNickname = (nickname: string) => {
-    if (!socket || !userId) return;
-
-    socket.emit("setNickname", { userId, nickname });
-    localStorageUtil.setValue(NICKNAME_KEY, nickname);
+  const emitJoinGame = (nickname: string) => {
+    if (!socketRef.current) return;
+    socketRef.current.emit("joinGame", { nickname });
   };
 
   const emitRotateCube = (action: CubeAction) => {
-    if (!socket) return;
-    socket.emit("rotateCube", action);
+    if (!socketRef.current) return;
+    socketRef.current.emit("rotateCube", action);
   };
 
   useEffect(() => {
@@ -59,79 +53,62 @@ export const GameSocketContextProvider = ({
       transports: ["websocket"],
       auth: { userId },
     });
-    setSocket(s);
+    socketRef.current = s;
 
-    s.on("connect", () => {
-      console.log("Socket connected: ", s.id);
-      // TODO: 연결 완료 toast
-    });
-
-    s.on(
-      "playersUpdate",
-      ({
-        players,
-        playerNickname,
-      }: {
-        players: string[];
-        playerNickname: Record<string, string>;
-      }) => {
-        setGameRoundState((state) => {
-          if (!state) return;
-          return {
-            ...state,
-            playerQueue: players,
-          };
-        });
-        setPlayerNickname(playerNickname);
-      },
-    );
-
-    s.on("cubeHistoryUpdate", (history: CubeActionHistory) => {
-      setGameRoundState((state) => {
+    s.on("playersUpdated", (players: string[]) => {
+      setGameRoomState((state) => {
         if (!state) return;
         return {
           ...state,
-          actionHistories: [...state.actionHistories, history],
+          players,
         };
       });
+    });
+
+    s.on("cubeHistoryUpdated", (history: CubeActionHistory) => {
+      setGameRoomState((state) => {
+        if (!state) return state;
+        return {
+          ...state,
+          roundState: {
+            ...state.roundState,
+            actionHistories: [...state.roundState.actionHistories, history],
+          },
+        };
+      });
+
       rotateCube(history.action.face, history.action.clockwise);
     });
 
     s.on(
       "turnUpdated",
-      ({
-        currentPlayerId,
-        timerEndTime,
-      }: {
-        currentPlayerId: string;
-        timerEndTime: number;
-      }) => {
-        setGameRoundState((state) => {
+      (payload: { currentPlayerId: string; timerEndTime: number }) => {
+        setGameRoomState((state) => {
           if (!state) return;
           return {
             ...state,
-            currentPlayerId,
-            timerEndTime,
+            currentPlayerId: payload.currentPlayerId,
+            timerEndTime: payload.timerEndTime,
           };
         });
       },
     );
 
-    s.on("setGameRound", (roundState: GameRoundState) => {
-      setGameRoundState(roundState);
-      initCubes(roundState.faceColors);
-      setIsSolved(false);
+    s.on("setGameRound", (roomState: GameRoomState) => {
+      setGameRoomState(roomState);
+      initCubes(roomState.roundState.cubeStatus.faceColors);
+      if (roomState.roundState.status !== "solved") setIsSolved(false);
     });
 
-    s.on("solved", (roundState: GameRoundState) => {
-      setGameRoundState(roundState);
+    s.on("solved", (roomState: GameRoomState) => {
+      setGameRoomState(roomState);
       setIsSolved(true);
     });
 
     return () => {
-      s.off("connect");
-      s.off("playersUpdate");
-      s.off("cubeHistoryUpdate");
+      s.off("playersUpdated");
+      s.off("turnUpdated");
+      s.off("cubeHistoryUpdated");
       s.off("setGameRound");
       s.off("solved");
       s.disconnect();
@@ -150,11 +127,10 @@ export const GameSocketContextProvider = ({
     <GameSocketContext.Provider
       value={{
         userId,
-        socket,
-        playerNickname,
-        gameRoundState,
+        socket: socketRef.current,
+        gameRoomState,
         isSolved,
-        emitSetNickname,
+        emitJoinGame,
         emitRotateCube,
       }}
     >

@@ -15,9 +15,9 @@ const TURN_TIME = 10;
 const ROUND_INTERVAL = 15;
 
 export default function Home() {
-  const { userId, gameRoundState, isSolved } = useGameSocket();
+  const { userId, gameRoomState, isSolved } = useGameSocket();
 
-  const currentPlayerId = gameRoundState?.currentPlayerId;
+  const currentPlayerId = gameRoomState?.currentPlayerId;
 
   const isCurrentPlayer = useMemo(
     () => userId === currentPlayerId,
@@ -30,8 +30,8 @@ export default function Home() {
       <CubeView />
       <div className="pointer-events-none relative z-10 flex h-full w-full flex-col items-center justify-between px-4 py-10">
         <div className="flex w-full flex-col items-center gap-4">
-          {gameRoundState && (
-            <div className="text-xl">{`제 ${gameRoundState.currentRound}번째 게임`}</div>
+          {gameRoomState && (
+            <div className="text-xl">{`제 ${gameRoomState.currentRoundNumber}번째 게임`}</div>
           )}
           <CurrentPlayers />
         </div>
@@ -42,14 +42,14 @@ export default function Home() {
             <EmotionButton />
           </div>
           <div className="w-full max-w-60">
-            {gameRoundState &&
-              (gameRoundState.isOpen ? (
+            {gameRoomState &&
+              (gameRoomState.roundState.status === "opened" ? (
                 isCurrentPlayer ? (
                   <div className="flex flex-col gap-y-3">
                     <RotationButtonList />
                     <Timer
                       totalMs={TURN_TIME * 1000}
-                      endTime={gameRoundState.timerEndTime}
+                      endTime={gameRoomState.timerEndTime}
                     />
                   </div>
                 ) : (
@@ -60,7 +60,7 @@ export default function Home() {
                   <div>다음 게임 대기중</div>
                   <Timer
                     totalMs={ROUND_INTERVAL * 1000}
-                    endTime={gameRoundState.timerEndTime}
+                    endTime={gameRoomState.timerEndTime}
                   />
                 </>
               ))}

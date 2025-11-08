@@ -12,17 +12,20 @@ import { localStorageUtil } from "@/lib/utils";
 import { NICKNAME_KEY } from "@/constants";
 
 export const NicknameDialog = () => {
-  const { emitSetNickname } = useGameSocket();
+  const { emitJoinGame } = useGameSocket();
 
   const [open, setOpen] = useState(true);
   const [nickname, setNickname] = useState(
-    localStorageUtil.getValue(NICKNAME_KEY) || ""
+    localStorageUtil.getValue(NICKNAME_KEY) || "",
   );
 
   const handleSubmit = () => {
     // TODO: 닉네임 경고 toast
-    if (!nickname.trim()) return;
-    emitSetNickname(nickname.trim());
+    const trimmedNickname = nickname.trim();
+    if (!trimmedNickname) return;
+    emitJoinGame(trimmedNickname);
+    localStorageUtil.setValue(NICKNAME_KEY, nickname);
+
     setOpen(false);
   };
 

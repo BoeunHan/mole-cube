@@ -40,9 +40,9 @@ export const ChattingButton = () => {
 
 const HistoryContent = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { gameRoundState, playerNickname } = useGameSocket();
+  const { gameRoomState } = useGameSocket();
 
-  const histories = gameRoundState?.actionHistories;
+  const histories = gameRoomState?.roundState.actionHistories;
 
   const [isScrollEnd, setIsScrollEnd] = useState(true);
 
@@ -78,7 +78,7 @@ const HistoryContent = () => {
           <div key={timestamp} className="font-neodgm flex gap-x-2 text-lg">
             <span>$</span>
             <span className="text-[#36d67e]">{timeStr}</span>
-            <span className="text-[#fffc42]">{playerNickname[userId]}</span>
+            <span className="text-[#fffc42]">{userId}</span>
             <span>{">"}</span>
             <span>{`${face}${clockwise ? "" : `'`}`}</span>
             <span>{clockwise}</span>

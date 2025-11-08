@@ -15,13 +15,21 @@ export interface CubeActionHistory {
 }
 
 export interface GameRoundState {
-  currentRound: number;
-  playerQueue: string[];
-  currentPlayerId?: string;
-  timerEndTime: number;
-  isOpen: boolean;
+  status: string;
   openedAt: Date | null;
   closedAt: Date | null;
   actionHistories: CubeActionHistory[];
-  faceColors: Record<Face, Color[][]>;
+  cubeStatus: {
+    faceColors: Record<Face, Color[][]>;
+    shuffleCnt: number;
+  };
+}
+
+export interface GameRoomState {
+  players: string[];
+  currentRoundNumber: number;
+  roundState: GameRoundState;
+  currentPlayerId: string | null;
+  timerEndTime: number;
+  status: string;
 }
