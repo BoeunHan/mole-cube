@@ -4,7 +4,9 @@ import Image from "next/image";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { useGameSocket } from "@/providers/GameSocketContext";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { formatDate, groupActionHistoriesByDate } from "@/lib/utils";
+import { ChevronDownIcon } from "lucide-react";
 
 export const ChattingButton = () => {
   const [open, setOpen] = useState(false);
@@ -52,6 +54,11 @@ const HistoryContent = () => {
     setIsScrollEnd(scrollTop + clientHeight >= scrollHeight - 1);
   };
 
+  const groupedHistories = useMemo(
+    () => (histories ? groupActionHistoriesByDate(histories) : []),
+    [histories],
+  );
+
   useEffect(() => {
     if (!containerRef.current) return;
     containerRef.current.scrollTop = containerRef.current.scrollHeight;
@@ -59,35 +66,41 @@ const HistoryContent = () => {
   }, [histories]);
 
   return (
-    <div
-      ref={containerRef}
-      onScroll={checkScroll}
-      className="custom-scrollbar relative h-[360px] overflow-y-scroll font-mono text-white"
-    >
-      {histories?.map(({ nickname, timestamp, action }) => {
-        const { face, clockwise } = action;
+    <div className="font-neodgm relative h-[360px] p-1 text-white">
+      <div
+        ref={containerRef}
+        onScroll={checkScroll}
+        className="custom-scrollbar h-full overflow-y-scroll"
+      >
+        {groupedHistories?.map(([date, histories]) => {
+          return (
+            <div key={date}>
+              <div className="my-3 text-center text-sm">
+                -&nbsp;&nbsp;{date}&nbsp;&nbsp;-
+              </div>
+              {histories.map(({ timestamp, nickname, action }) => {
+                const { face, clockwise } = action;
 
-        const timeStr = new Date(timestamp).toLocaleTimeString("ko-KR", {
-          hour12: false,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        });
-
-        return (
-          <div key={timestamp} className="font-neodgm flex gap-x-2 text-lg">
-            <span>$</span>
-            <span className="text-[#36d67e]">{timeStr}</span>
-            <span className="text-[#fffc42]">{nickname}</span>
-            <span>{">"}</span>
-            <span>{`${face}${clockwise ? "" : `'`}`}</span>
-            <span>{clockwise}</span>
-          </div>
-        );
-      })}
+                return (
+                  <div key={timestamp} className="flex gap-x-2 text-lg">
+                    <span>$</span>
+                    <span className="text-[#F3FF52]">
+                      {formatDate(timestamp, "A hh:mm:ss")}
+                    </span>
+                    <span className="text-[#E150C9]">{nickname}</span>
+                    <span>{">"}</span>
+                    <span>{`${face}${clockwise ? "" : `'`}`}</span>
+                    <span>{clockwise}</span>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
       {!isScrollEnd && (
         <button
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded bg-white/80 px-3 py-1 font-sans text-sm text-black hover:cursor-pointer"
+          className="font-neodgm absolute bottom-1 left-1 flex h-8 w-8 cursor-pointer opacity-80"
           onClick={() => {
             if (containerRef.current) {
               containerRef.current.scrollTop =
@@ -95,7 +108,13 @@ const HistoryContent = () => {
             }
           }}
         >
-          최근으로 이동 ↓
+          <Image
+            src="/assets/bt_blank.png"
+            alt="최근으로 이동 버튼"
+            fill
+            className="object-cover"
+          />
+          <ChevronDownIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-black" />
         </button>
       )}
     </div>

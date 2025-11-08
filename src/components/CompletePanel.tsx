@@ -22,7 +22,7 @@ export const CompletePanel = () => {
   const participantCount = new Set(actionHistories.map((h) => h.userId)).size;
 
   return (
-    <div className="flex w-full flex-col items-center px-10">
+    <div className="flex w-full max-w-96 flex-col items-center px-10">
       <ConfettiCanvas />
       <Image
         src={"/assets/confetti.png"}

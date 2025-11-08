@@ -1,7 +1,14 @@
+import { CubeActionHistory } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import duration from "dayjs/plugin/duration";
 import { generateUUID } from "three/src/math/MathUtils.js";
 // import { getUserKeyForGame } from "@apps-in-toss/web-framework";
+
+dayjs.locale("ko");
+dayjs.extend(duration);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -76,15 +83,15 @@ export function getTurnsLeft(
 }
 
 export function diffTime(start: Date, end: Date) {
-  if (start >= end) return null;
+  const startDate = dayjs(start);
+  const endDate = dayjs(end);
 
-  const diffMs = end.getTime() - start.getTime();
+  if (!startDate.isBefore(endDate)) return null;
 
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+  const diffMs = endDate.diff(startDate);
+  const d = dayjs.duration(diffMs);
 
-  return { hours, minutes, seconds };
+  return { hours: d.hours(), minutes: d.minutes(), seconds: d.seconds() };
 }
 
 export function getPlayTimeLabel(
@@ -96,4 +103,24 @@ export function getPlayTimeLabel(
   if (hours === 0 && minutes === 0) return `${seconds}초`;
   if (hours === 0) return `${minutes}분 ${seconds}초`;
   return `${hours}시간 ${minutes}분 ${seconds}초`;
+}
+
+export function groupActionHistoriesByDate(
+  actionHistories: CubeActionHistory[],
+): [string, CubeActionHistory[]][] {
+  const grouped: Record<string, CubeActionHistory[]> = {};
+
+  actionHistories.forEach((history) => {
+    const day = dayjs(history.timestamp).format("YYYY년 M월 D일");
+    if (!grouped[day]) grouped[day] = [];
+    grouped[day].push(history);
+  });
+
+  return Object.entries(grouped).sort(
+    ([dateA], [dateB]) => dayjs(dateA).valueOf() - dayjs(dateB).valueOf(),
+  );
+}
+
+export function formatDate(date: Date | number, format: string): string {
+  return dayjs(date).format(format);
 }
