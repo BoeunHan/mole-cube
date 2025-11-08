@@ -13,9 +13,59 @@ export const useCubeControl = () => {
     useCube();
 
   function initCubes(cubeColors: Record<Face, Color[][]>) {
-    if (!sceneRef.current) return;
-
+    removeOldCubes();
+    removeOldLabels();
     cubeStatusRef.current = new CubeStatus(cubeColors);
+    createNewCubes();
+    updateCubeColors();
+    createFaceLabels();
+  }
+
+  function rerender() {
+    if (!rendererRef.current || !sceneRef.current || !cameraRef.current) return;
+    rendererRef.current.render(sceneRef.current, cameraRef.current);
+  }
+
+  function removeOldCubes() {
+    if (!sceneRef.current) return;
+    if (cubesRef.current) {
+      const oldCubes = cubesRef.current;
+      const size = oldCubes.length;
+      for (let x = 0; x < size; x++) {
+        for (let y = 0; y < size; y++) {
+          for (let z = 0; z < size; z++) {
+            const cube = oldCubes[x][y][z];
+            sceneRef.current.remove(cube);
+            // 메모리 해제
+            if (cube.geometry) cube.geometry.dispose();
+            if (cube.material) {
+              if (Array.isArray(cube.material)) {
+                cube.material.forEach((m) => m.dispose());
+              } else {
+                cube.material.dispose();
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function removeOldLabels() {
+    if (!sceneRef.current) return;
+    sceneRef.current.children
+      .filter((obj) => obj.type === "Sprite" && obj.name === "FaceLabel")
+      .forEach((sprite) => {
+        if (!sceneRef.current) return;
+        sceneRef.current.remove(sprite);
+        const material = (sprite as THREE.Sprite)
+          .material as THREE.SpriteMaterial;
+        if (material.map) material.map.dispose();
+        material.dispose();
+      });
+  }
+  function createNewCubes() {
+    if (!sceneRef.current) return;
     const size = cubeStatusRef.current!.getSize();
     const half = Math.floor(size / 2);
     const cubes: CubeData = [];
@@ -28,13 +78,13 @@ export const useCubeControl = () => {
           const geometry = new THREE.BoxGeometry(1, 1, 1);
           const materials = Array.from(
             { length: 6 },
-            () => new THREE.MeshBasicMaterial({ color: Color.NONE })
+            () => new THREE.MeshBasicMaterial({ color: Color.NONE }),
           );
           const cube = new THREE.Mesh(geometry, materials);
           cube.position.set(
             (x - half) * OFFSET,
             (y - half) * OFFSET,
-            (z - half) * OFFSET
+            (z - half) * OFFSET,
           );
 
           sceneRef.current.add(cube);
@@ -44,17 +94,9 @@ export const useCubeControl = () => {
     }
 
     cubesRef.current = cubes;
-
-    updateCubeColors();
-    makeFaceLabels();
   }
 
-  function rerender() {
-    if (!rendererRef.current || !sceneRef.current || !cameraRef.current) return;
-    rendererRef.current.render(sceneRef.current, cameraRef.current);
-  }
-
-  function makeFaceLabels() {
+  function createFaceLabels() {
     if (!sceneRef.current || !cubeStatusRef.current) return;
 
     const size = cubeStatusRef.current.getSize();
@@ -88,6 +130,7 @@ export const useCubeControl = () => {
       });
 
       const sprite = new THREE.Sprite(material);
+      sprite.name = "FaceLabel";
       sprite.scale.set(0.5, 0.5, 1);
       sprite.position.copy(new THREE.Vector3(x, y, z));
 
