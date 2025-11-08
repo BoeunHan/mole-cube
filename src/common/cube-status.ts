@@ -11,7 +11,7 @@ const DEFAULT_CUBE_COLORS: Record<Face, Color> = {
 };
 
 const SUHFFLE_COUNT = {
-  easy: 1,
+  easy: 22,
   normal: 35,
   hard: 50,
 };
