@@ -39,7 +39,7 @@ export default function Home() {
         <div className="pointer-events-auto flex w-full items-center justify-center gap-x-4 p-2">
           <div className="flex shrink-0 flex-col">
             <ChattingButton />
-            <EmotionButton />
+            {/* <EmotionButton /> */}
           </div>
           <div className="w-full max-w-60">
             {gameRoomState &&
