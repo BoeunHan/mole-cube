@@ -4,6 +4,7 @@ import { CubeStatus } from "@/cube-status";
 import { CubeData } from "@/types";
 import { createContext, ReactNode, useContext, useRef } from "react";
 import * as THREE from "three";
+import { TrackballControls } from "three/examples/jsm/Addons.js";
 
 type CubeContextType = {
   cubesRef: React.RefObject<CubeData | null>;
@@ -11,6 +12,7 @@ type CubeContextType = {
   rendererRef: React.RefObject<THREE.WebGLRenderer | null>;
   sceneRef: React.RefObject<THREE.Scene | null>;
   cameraRef: React.RefObject<THREE.PerspectiveCamera | null>;
+  controlsRef: React.RefObject<TrackballControls | null>;
 };
 
 const CubeContext = createContext<CubeContextType | null>(null);
@@ -21,6 +23,7 @@ export const CubeProvider = ({ children }: { children: ReactNode }) => {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const cubeStatusRef = useRef<CubeStatus | null>(null);
+  const controlsRef = useRef<TrackballControls | null>(null);
 
   return (
     <CubeContext.Provider
@@ -30,6 +33,7 @@ export const CubeProvider = ({ children }: { children: ReactNode }) => {
         cameraRef,
         cubesRef,
         cubeStatusRef,
+        controlsRef,
       }}
     >
       {children}

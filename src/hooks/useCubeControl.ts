@@ -9,16 +9,28 @@ import { CubeStatus } from "@/cube-status";
 const OFFSET = 1.1;
 
 export const useCubeControl = () => {
-  const { rendererRef, sceneRef, cameraRef, cubesRef, cubeStatusRef } =
-    useCube();
+  const {
+    rendererRef,
+    sceneRef,
+    cameraRef,
+    cubesRef,
+    cubeStatusRef,
+    controlsRef,
+  } = useCube();
 
   function initCubes(cubeColors: Record<Face, Color[][]>) {
+    controlsRef.current?.reset();
+    cameraRef.current?.position.set(-6, 6, 16);
+    cameraRef.current?.lookAt(new THREE.Vector3(0, 0, 0));
+
     removeOldCubes();
     removeOldLabels();
     cubeStatusRef.current = new CubeStatus(cubeColors);
     createNewCubes();
     updateCubeColors();
     createFaceLabels();
+
+    rerender();
   }
 
   function rerender() {
@@ -64,9 +76,11 @@ export const useCubeControl = () => {
         material.dispose();
       });
   }
+
   function createNewCubes() {
-    if (!sceneRef.current) return;
-    const size = cubeStatusRef.current!.getSize();
+    if (!sceneRef.current || !cubeStatusRef.current) return;
+
+    const size = cubeStatusRef.current.getSize();
     const half = Math.floor(size / 2);
     const cubes: CubeData = [];
 
@@ -86,7 +100,6 @@ export const useCubeControl = () => {
             (y - half) * OFFSET,
             (z - half) * OFFSET,
           );
-
           sceneRef.current.add(cube);
           cubes[x][y][z] = cube;
         }
@@ -136,8 +149,6 @@ export const useCubeControl = () => {
 
       sceneRef.current.add(sprite);
     }
-
-    rerender();
   }
 
   function updateCubeColors() {
@@ -249,6 +260,7 @@ export const useCubeControl = () => {
           for (let z = 0; z < size; z++) {
             const cube = cubesRef.current[x][y][z];
             if (isIncluded(x, y, z)) {
+              sceneRef.current.remove(cube);
               faceGroup.add(cube);
             }
           }
@@ -274,6 +286,7 @@ export const useCubeControl = () => {
           }
         }
       }
+      sceneRef.current.remove(faceGroup);
     };
 
     return { faceGroup, addToFaceGroup, removeFromFaceGroup };

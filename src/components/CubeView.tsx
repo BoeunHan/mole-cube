@@ -8,7 +8,7 @@ import { useCube } from "@/providers/CubeContext";
 export const CubeView = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { sceneRef, cameraRef, rendererRef } = useCube();
+  const { sceneRef, cameraRef, rendererRef, controlsRef } = useCube();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -43,15 +43,15 @@ export const CubeView = () => {
     container.appendChild(rendererRef.current.domElement);
 
     // 드래그
-    const controls = new TrackballControls(
+    controlsRef.current = new TrackballControls(
       cameraRef.current,
       rendererRef.current.domElement,
     );
 
-    controls.rotateSpeed = 4;
-    controls.noZoom = true;
-    controls.noPan = true;
-    controls.staticMoving = true;
+    controlsRef.current.rotateSpeed = 4;
+    controlsRef.current.noZoom = true;
+    controlsRef.current.noPan = true;
+    controlsRef.current.staticMoving = true;
 
     const handleControlStart = () => {
       rendererRef.current?.setAnimationLoop(animate);
@@ -61,11 +61,11 @@ export const CubeView = () => {
       rendererRef.current?.setAnimationLoop(null);
     };
 
-    controls.addEventListener("start", handleControlStart);
-    controls.addEventListener("end", handleControlEnd);
+    controlsRef.current.addEventListener("start", handleControlStart);
+    controlsRef.current.addEventListener("end", handleControlEnd);
 
     const animate = () => {
-      controls.update();
+      controlsRef.current?.update();
       rendererRef.current?.render(sceneRef.current!, cameraRef.current!);
     };
 
@@ -89,8 +89,8 @@ export const CubeView = () => {
     // 클린업 함수 (컴포넌트 언마운트 시 정리)
     return () => {
       window.removeEventListener("resize", handleResize);
-      controls.removeEventListener("start", handleControlStart);
-      controls.removeEventListener("end", handleControlEnd);
+      controlsRef.current?.removeEventListener("start", handleControlStart);
+      controlsRef.current?.removeEventListener("end", handleControlEnd);
 
       rendererRef.current?.dispose();
       if (container && rendererRef.current) {
