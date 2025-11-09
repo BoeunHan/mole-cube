@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Face } from "@/enums";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { Fragment } from "react";
+import { RotateCcwIcon, RotateCwIcon } from "lucide-react";
 
 export const RotationButtonList = () => {
   return (
@@ -42,11 +43,24 @@ const RotationButton = ({
     >
       <Image
         src="/assets/bt_blank.png"
-        alt="이미지 버튼"
+        alt={`${face} ${clockwise ? "시계방향" : "반시계방향"} 회전 버튼`}
         fill
         className="object-cover"
       />
-      <span className="z-10">{clockwise ? face : `${face}'`}</span>
+
+      <span className="z-10">{face}</span>
+      {clockwise && (
+        <RotateCwIcon
+          strokeWidth={1.5}
+          className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 text-stone-400"
+        />
+      )}
+      {!clockwise && (
+        <RotateCcwIcon
+          strokeWidth={1.5}
+          className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 text-stone-400"
+        />
+      )}
     </button>
   );
 };
