@@ -32,7 +32,7 @@ export const CubeView = () => {
       0.1,
       2000,
     );
-    cameraRef.current.position.z = 12;
+    cameraRef.current.position.z = 16;
     cameraRef.current.add(light);
     sceneRef.current.add(cameraRef.current);
 
@@ -47,8 +47,11 @@ export const CubeView = () => {
       cameraRef.current,
       rendererRef.current.domElement,
     );
+
+    controls.rotateSpeed = 4;
     controls.noZoom = true;
     controls.noPan = true;
+    controls.staticMoving = true;
 
     const handleControlStart = () => {
       rendererRef.current?.setAnimationLoop(animate);
@@ -61,12 +64,7 @@ export const CubeView = () => {
     controls.addEventListener("start", handleControlStart);
     controls.addEventListener("end", handleControlEnd);
 
-    const clock = new THREE.Clock();
-
     const animate = () => {
-      const delta = clock.getDelta();
-
-      controls.rotateSpeed = 25 * (delta * 60);
       controls.update();
       rendererRef.current?.render(sceneRef.current!, cameraRef.current!);
     };
