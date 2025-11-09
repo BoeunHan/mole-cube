@@ -32,7 +32,6 @@ export const CubeView = () => {
       0.1,
       2000,
     );
-    cameraRef.current.position.z = 16;
     cameraRef.current.add(light);
     sceneRef.current.add(cameraRef.current);
 

@@ -1,11 +1,5 @@
 export enum Color {
-  RED = "#ffc4b7",
-  ORANGE = "#ffd1a6",
-  YELLOW = "#fff3c0",
-  GREEN = "#d0f8b8",
-  BLUE = "#93cef6",
-  WHITE = "#fafaf8",
-  NONE = "#888888",
+  NONE = "#736D69",
 }
 
 export enum Face {

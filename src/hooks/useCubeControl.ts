@@ -6,7 +6,8 @@ import { CubeData } from "@/types";
 import { Color, Face } from "@/enums";
 import { getRotationAxis, getRotationDirection } from "@/cube.helpers";
 import { CubeStatus } from "@/cube-status";
-const OFFSET = 1.1;
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+const OFFSET = 1.05;
 
 export const useCubeControl = () => {
   const {
@@ -20,7 +21,7 @@ export const useCubeControl = () => {
 
   function initCubes(cubeColors: Record<Face, Color[][]>) {
     controlsRef.current?.reset();
-    cameraRef.current?.position.set(-6, 6, 16);
+    cameraRef.current?.position.set(-6, 6, 12);
     cameraRef.current?.lookAt(new THREE.Vector3(0, 0, 0));
 
     removeOldCubes();
@@ -89,7 +90,7 @@ export const useCubeControl = () => {
       for (let y = 0; y < size; y++) {
         cubes[x][y] = [];
         for (let z = 0; z < size; z++) {
-          const geometry = new THREE.BoxGeometry(1, 1, 1);
+          const geometry = new RoundedBoxGeometry(1, 1, 1, 4, 0.2);
           const materials = Array.from(
             { length: 6 },
             () => new THREE.MeshBasicMaterial({ color: Color.NONE }),
@@ -109,7 +110,7 @@ export const useCubeControl = () => {
     cubesRef.current = cubes;
   }
 
-  function createFaceLabels() {
+  async function createFaceLabels() {
     if (!sceneRef.current || !cubeStatusRef.current) return;
 
     const size = cubeStatusRef.current.getSize();
@@ -130,8 +131,8 @@ export const useCubeControl = () => {
       canvas.width = 256;
       canvas.height = 256;
 
-      context.font = "120px Arial";
-      context.fillStyle = "black";
+      context.font = "bold 120px 'Courier New'";
+      context.fillStyle = "#111111";
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillText(face, canvas.width / 2, canvas.height / 2);
@@ -144,7 +145,7 @@ export const useCubeControl = () => {
 
       const sprite = new THREE.Sprite(material);
       sprite.name = "FaceLabel";
-      sprite.scale.set(0.5, 0.5, 1);
+      sprite.scale.set(1, 1, 1);
       sprite.position.copy(new THREE.Vector3(x, y, z));
 
       sceneRef.current.add(sprite);

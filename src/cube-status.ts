@@ -1,15 +1,6 @@
 import { adjacentEdgesMap, EdgePosition } from "./edges";
 import { Color, Face } from "./enums";
 
-export const DEFAULT_CUBE_COLORS: Record<Face, Color> = {
-  [Face.R]: Color.RED,
-  [Face.L]: Color.BLUE,
-  [Face.U]: Color.GREEN,
-  [Face.D]: Color.YELLOW,
-  [Face.F]: Color.ORANGE,
-  [Face.B]: Color.WHITE,
-};
-
 export class CubeStatus {
   faceColors: Record<Face, Color[][]>;
 
@@ -27,7 +18,7 @@ export class CubeStatus {
 
     const rotatedColors = this.rotateMatrix(
       currentColors,
-      isOpposite ? !clockwise : clockwise
+      isOpposite ? !clockwise : clockwise,
     );
 
     this.faceColors[face] = rotatedColors;

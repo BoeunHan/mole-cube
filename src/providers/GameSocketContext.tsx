@@ -101,7 +101,6 @@ export const GameSocketContextProvider = ({
         timerEndTime: number;
         remainingMs: number;
       }) => {
-        console.log("turn updated", payload.remainingMs);
         setGameRoomState((state) => {
           if (!state) return;
           return {
@@ -116,7 +115,6 @@ export const GameSocketContextProvider = ({
     );
 
     s.on("setGameRound", (roomState: GameRoomState) => {
-      console.log("setGameRound", roomState.remainingMs);
       setGameRoomState(roomState);
       initCubes(roomState.roundState.cubeStatus.faceColors);
       if (roomState.roundState.status !== "solved") setIsSolved(false);
@@ -125,7 +123,6 @@ export const GameSocketContextProvider = ({
     s.on("solved", (roomState: GameRoomState) => {
       const delay = 300;
       setTimeout(() => {
-        console.log("setGameRound", roomState.remainingMs);
         setGameRoomState({
           ...roomState,
           remainingMs: roomState.remainingMs - delay,

@@ -11,7 +11,6 @@ export const Timer = ({ timerEndTime, initialMs }: TimerProps) => {
   const startTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
-    console.log("timerendtime changed", timerEndTime);
     startTimeRef.current = Date.now();
 
     const update = () => {
