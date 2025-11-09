@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
 import { useCube } from "@/providers/CubeContext";
+import { isMobile } from "@/lib/utils";
 
 export const CubeView = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export const CubeView = () => {
       rendererRef.current.domElement,
     );
 
-    controlsRef.current.rotateSpeed = 4;
+    controlsRef.current.rotateSpeed = isMobile() ? 4 : 14;
     controlsRef.current.noZoom = true;
     controlsRef.current.noPan = true;
     controlsRef.current.staticMoving = true;
