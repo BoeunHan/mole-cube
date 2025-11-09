@@ -125,19 +125,25 @@ export const useCubeControl = () => {
       { face: Face.B, x: 0, y: 0, z: -(half + 0.7) * OFFSET },
     ];
 
+    const canvasSize = 216;
+    const dpr = window.devicePixelRatio || 1;
+
     for (const { face, x, y, z } of labelData) {
       const canvas = document.createElement("canvas");
+      canvas.width = canvasSize * dpr;
+      canvas.height = canvasSize * dpr;
       const context = canvas.getContext("2d")!;
-      canvas.width = 256;
-      canvas.height = 256;
+      context.scale(dpr, dpr);
 
-      context.font = "bold 120px 'Courier New'";
+      context.font = "bold 90px 'Courier New'";
       context.fillStyle = "#111111";
       context.textAlign = "center";
       context.textBaseline = "middle";
-      context.fillText(face, canvas.width / 2, canvas.height / 2);
+      context.fillText(face, canvasSize / 2, canvasSize / 2);
 
       const texture = new THREE.CanvasTexture(canvas);
+      texture.needsUpdate = true;
+
       const material = new THREE.SpriteMaterial({
         map: texture,
         transparent: true,
@@ -145,8 +151,10 @@ export const useCubeControl = () => {
 
       const sprite = new THREE.Sprite(material);
       sprite.name = "FaceLabel";
+
       sprite.scale.set(1, 1, 1);
-      sprite.position.copy(new THREE.Vector3(x, y, z));
+
+      sprite.position.set(x, y, z);
 
       sceneRef.current.add(sprite);
     }
