@@ -14,22 +14,27 @@ export const ChattingButton = () => {
   return (
     <Popover open={open}>
       <PopoverTrigger asChild>
-        <Image
-          src={
-            open ? "/assets/history_active.png" : "/assets/history_inactive.png"
-          }
-          title="회전내역 버튼"
-          alt="회전내역"
-          width={56}
-          height={56}
-          className="cursor-pointer"
+        <div
+          className="relative h-15 w-15 cursor-pointer md:h-20 md:w-20"
           onClick={() => setOpen((prev) => !prev)}
-        />
+        >
+          <Image
+            src={
+              open
+                ? "/assets/history_active.png"
+                : "/assets/history_inactive.png"
+            }
+            title="회전내역 버튼"
+            alt="회전내역"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        </div>
       </PopoverTrigger>
       <PopoverContent
         align="start"
         side="top"
-        className="w-80 bg-[#262322]/80"
+        className="w-80 bg-[#262322]/80 md:w-[420px]"
         onPointerDownOutside={(e) => {
           e.preventDefault();
         }}
@@ -66,7 +71,7 @@ const HistoryContent = () => {
   }, [histories]);
 
   return (
-    <div className="font-neodgm relative h-[360px] p-1 text-white">
+    <div className="font-neodgm relative h-[360px] p-1 text-white md:h-[500px]">
       <div
         ref={containerRef}
         onScroll={checkScroll}
@@ -75,14 +80,17 @@ const HistoryContent = () => {
         {groupedHistories?.map(([date, histories]) => {
           return (
             <div key={date}>
-              <div className="my-3 text-center text-sm">
+              <div className="md:text-md my-3 text-center text-sm">
                 -&nbsp;&nbsp;{date}&nbsp;&nbsp;-
               </div>
               {histories.map(({ timestamp, nickname, action }) => {
                 const { face, clockwise } = action;
 
                 return (
-                  <div key={timestamp} className="flex gap-x-2 text-lg">
+                  <div
+                    key={timestamp}
+                    className="flex gap-x-2 text-lg md:text-xl"
+                  >
                     <span>$</span>
                     <span className="text-[#F3FF52]">
                       {formatDate(timestamp, "A hh:mm:ss")}

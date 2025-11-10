@@ -7,19 +7,20 @@ export const CurrentPlayers = () => {
   const players = gameRoomState?.players;
   const currentPlayerId = gameRoomState?.currentPlayerId;
   return (
-    <div className="mt-4 flex h-16 w-full flex-wrap items-center justify-center overflow-y-auto">
+    <div className="mt-4 flex h-20 w-full items-center justify-center">
       {players?.map((userId) => (
-        <Image
-          key={userId}
-          width={48}
-          height={48}
-          src={
-            currentPlayerId === userId
-              ? "/assets/mole_turn.png"
-              : "/assets/mole.png"
-          }
-          alt="유저 이미지"
-        />
+        <div key={userId} className="relative h-15 w-15 md:h-20 md:w-20">
+          <Image
+            src={
+              currentPlayerId === userId
+                ? "/assets/mole_turn.png"
+                : "/assets/mole.png"
+            }
+            alt="유저 이미지"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        </div>
       ))}
     </div>
   );

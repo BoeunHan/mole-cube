@@ -26,7 +26,7 @@ export const ControlPanel = () => {
         <ChattingButton />
         {/* <EmotionButton /> */}
       </div>
-      <div className="h-full w-full max-w-60">
+      <div className="h-full w-full max-w-60 md:max-w-80">
         {isCurrentPlayer ? (
           <div className="flex flex-col gap-y-3">
             <RotationButtonList />
@@ -37,7 +37,7 @@ export const ControlPanel = () => {
           </div>
         ) : (
           currentPlayerId && (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-y-2">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-y-2 md:text-2xl">
               <div>
                 {gameRoomState.currentPlayerNickname} 님을 기다리는 중...
               </div>

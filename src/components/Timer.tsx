@@ -30,8 +30,8 @@ export const Timer = ({ timerEndTime, initialMs }: TimerProps) => {
   const ratio = Math.max(remainingMs / initialMs, 0);
 
   return (
-    <div className="flex w-full items-center gap-x-2">
-      <span className="font-bitbeat w-14 text-center text-[#CE6464]">
+    <div className="flex w-full items-center gap-x-2 md:text-2xl">
+      <span className="font-bitbeat w-14 text-center text-[#CE6464] md:w-20">
         {Math.ceil(remainingMs / 1000)}초
       </span>
       <div className="h-4 w-full overflow-hidden rounded-full bg-[#BFBFBF]">
