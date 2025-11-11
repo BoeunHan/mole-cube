@@ -33,6 +33,6 @@ export interface GameRoomState {
   currentPlayerId: string | null;
   currentPlayerNickname: string;
   timerEndTime: number;
-  remainingMs: number;
-  status: string;
+  timerTotalTime: number;
+  status: "playing" | "break";
 }

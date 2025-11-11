@@ -49,8 +49,8 @@ export const CompletePanel = () => {
       </div>
       <div className="mb-4 md:text-2xl">다음 게임 시작까지...</div>
       <Timer
-        timerEndTime={gameRoomState.timerEndTime}
-        initialMs={gameRoomState.remainingMs}
+        totalMs={gameRoomState.timerTotalTime}
+        endTime={gameRoomState.timerEndTime}
       />
     </div>
   );

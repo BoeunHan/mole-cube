@@ -6,14 +6,20 @@ import { CubeView } from "@/components/CubeView";
 import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { NicknameDialog } from "@/components/NicknameDialog";
 import { useGameSocket } from "@/providers/GameSocketContext";
+import { useMemo } from "react";
 
 export default function Home() {
-  const { gameRoomState, isSolved } = useGameSocket();
+  const { gameRoomState } = useGameSocket();
+
+  const isBreak = useMemo(
+    () => gameRoomState?.status === "break",
+    [gameRoomState?.status],
+  );
 
   return (
     <div className="font-bitbeat text-primary relative flex h-full w-full items-center bg-[#D8D2CC]">
       <NicknameDialog />
-      <div className={`${isSolved ? "invisible" : "block"}`}>
+      <div className={`${isBreak ? "invisible" : "block"}`}>
         <CubeView />
       </div>
       <div className="pointer-events-none relative z-10 flex h-full max-h-[760px] w-full flex-col items-center justify-between px-4 py-10 md:max-h-[900px]">
@@ -22,9 +28,9 @@ export default function Home() {
             <div className="text-xl md:text-3xl">{`제 ${gameRoomState.currentRoundNumber}번째 게임`}</div>
           )}
           <CurrentPlayers />
-          {isSolved && <CompletePanel />}
+          {isBreak && <CompletePanel />}
         </div>
-        {!isSolved && <ControlPanel />}
+        {!isBreak && <ControlPanel />}
       </div>
     </div>
   );

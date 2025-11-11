@@ -31,8 +31,8 @@ export const ControlPanel = () => {
           <div className="flex flex-col gap-y-3">
             <RotationButtonList />
             <Timer
-              timerEndTime={gameRoomState.timerEndTime}
-              initialMs={gameRoomState.remainingMs}
+              totalMs={gameRoomState.timerTotalTime}
+              endTime={gameRoomState.timerEndTime}
             />
           </div>
         ) : (

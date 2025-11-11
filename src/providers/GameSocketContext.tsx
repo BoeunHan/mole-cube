@@ -62,8 +62,10 @@ export const GameSocketContextProvider = ({
         currentPlayerId: string | null;
         currentPlayerNickname: string;
         timerEndTime: number;
-        remainingMs: number;
+        timerTotalTime: number;
+        serverNow: number;
       }) => {
+        const timeDiff = payload.serverNow - Date.now();
         setGameRoomState((state) => {
           if (!state) return;
           return {
@@ -71,8 +73,8 @@ export const GameSocketContextProvider = ({
             players: payload.players,
             currentPlayerId: payload.currentPlayerId,
             currentPlayerNickname: payload.currentPlayerNickname,
-            timerEndTime: payload.timerEndTime,
-            remainingMs: payload.remainingMs,
+            timerEndTime: payload.timerEndTime - timeDiff,
+            timerTotalTime: payload.timerTotalTime,
           };
         });
       },
@@ -98,38 +100,50 @@ export const GameSocketContextProvider = ({
       (payload: {
         currentPlayerId: string;
         currentPlayerNickname: string;
+        timerTotalTime: number;
         timerEndTime: number;
-        remainingMs: number;
+        serverNow: number;
       }) => {
+        const timeDiff = payload.serverNow - Date.now();
         setGameRoomState((state) => {
           if (!state) return;
           return {
             ...state,
             currentPlayerId: payload.currentPlayerId,
             currentPlayerNickname: payload.currentPlayerNickname,
-            timerEndTime: payload.timerEndTime,
-            remainingMs: payload.remainingMs,
+            timerTotalTime: payload.timerTotalTime,
+            timerEndTime: payload.timerEndTime - timeDiff,
           };
         });
       },
     );
 
-    s.on("setGameRound", (roomState: GameRoomState) => {
-      setGameRoomState(roomState);
-      initCubes(roomState.roundState.cubeStatus.faceColors);
-      if (roomState.roundState.status !== "solved") setIsSolved(false);
-    });
-
-    s.on("solved", (roomState: GameRoomState) => {
-      const delay = 300;
-      setTimeout(() => {
+    s.on(
+      "setGameRound",
+      ({ serverNow, ...roomState }: GameRoomState & { serverNow: number }) => {
+        const timeDiff = serverNow - Date.now();
         setGameRoomState({
           ...roomState,
-          remainingMs: roomState.remainingMs - delay,
+          timerEndTime: roomState.timerEndTime - timeDiff,
         });
-        setIsSolved(true);
-      }, delay);
-    });
+        initCubes(roomState.roundState.cubeStatus.faceColors);
+        if (roomState.roundState.status !== "solved") setIsSolved(false);
+      },
+    );
+
+    s.on(
+      "solved",
+      ({ serverNow, ...roomState }: GameRoomState & { serverNow: number }) => {
+        const timeDiff = serverNow - Date.now();
+        setTimeout(() => {
+          setGameRoomState({
+            ...roomState,
+            timerEndTime: roomState.timerEndTime - timeDiff,
+          });
+          setIsSolved(true);
+        }, 300);
+      },
+    );
 
     return () => {
       s.off("playersUpdated");
