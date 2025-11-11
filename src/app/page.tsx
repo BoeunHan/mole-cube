@@ -5,16 +5,26 @@ import { ControlPanel } from "@/components/ControlPanel";
 import { CubeView } from "@/components/CubeView";
 import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { NicknameDialog } from "@/components/NicknameDialog";
+import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export default function Home() {
   const { gameRoomState } = useGameSocket();
+  const { playBGM } = useAudio();
 
   const isBreak = useMemo(
     () => gameRoomState?.status === "break",
     [gameRoomState?.status],
   );
+
+  useEffect(() => {
+    if (gameRoomState?.roundState.status === "solved") {
+      playBGM("/sounds/solved.mp3");
+    } else {
+      playBGM("/sounds/background.mp3");
+    }
+  }, [gameRoomState?.roundState.status]);
 
   return (
     <div className="font-bitbeat text-primary relative flex h-full w-full items-center bg-[#D8D2CC]">

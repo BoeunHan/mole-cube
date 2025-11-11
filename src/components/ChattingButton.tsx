@@ -7,8 +7,11 @@ import { useGameSocket } from "@/providers/GameSocketContext";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatDate, groupActionHistoriesByDate } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
+import { useAudio } from "@/providers/AudioContext";
 
 export const ChattingButton = () => {
+  const { playEffect } = useAudio();
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,7 +19,10 @@ export const ChattingButton = () => {
       <PopoverTrigger asChild>
         <div
           className="relative h-15 w-15 cursor-pointer md:h-20 md:w-20"
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={() => {
+            setOpen((prev) => !prev);
+            playEffect("/sounds/click.wav");
+          }}
         >
           <Image
             src={
