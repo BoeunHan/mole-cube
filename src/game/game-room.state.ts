@@ -12,7 +12,7 @@ export class GameRoomState {
   currentPlayerId: string | null; // 현재 차례인 플레이어 ID
   status: 'playing' | 'break'; // 라운드 진행 중인지, 쉬는 시간인지
   timerEndTime: number = 0;
-  remainingMs: number = 0;
+  timerTotalTime: number = 0;
 
   private currentRound: GameRoundState;
   private timerTimeout?: NodeJS.Timeout;
@@ -101,8 +101,8 @@ export class GameRoomState {
 
     if (isSolved) {
       this.currentRound.closeRound();
-      this.remainingMs = ROUND_INTERVAL * 1000;
-      this.timerEndTime = Date.now() + this.remainingMs;
+      this.timerTotalTime = ROUND_INTERVAL * 1000;
+      this.timerEndTime = Date.now() + this.timerTotalTime;
       this.currentPlayerId = this.getNextPlayer(this.currentPlayerId);
       this.status = 'break';
 
@@ -111,7 +111,7 @@ export class GameRoomState {
       this.timerTimeout = setTimeout(() => {
         this.startNewRound(this.getNextRoundNumber());
         this.status = 'playing';
-      }, this.remainingMs);
+      }, ROUND_INTERVAL * 1000);
     } else {
       const nextPlayerId = this.getNextPlayer(userId);
       if (nextPlayerId) this.setTurn(nextPlayerId);
@@ -127,8 +127,8 @@ export class GameRoomState {
 
   private setTurn(userId: string) {
     this.currentPlayerId = userId;
-    this.remainingMs = TURN_TIME * 1000;
-    this.timerEndTime = Date.now() + this.remainingMs;
+    this.timerTotalTime = TURN_TIME * 1000;
+    this.timerEndTime = Date.now() + this.timerTotalTime;
 
     this.eventEmitter.emit('game.turnUpdated', {
       roomId: this.roomId,
@@ -141,7 +141,7 @@ export class GameRoomState {
       const nextPlayerId = this.getNextPlayer(this.currentPlayerId);
       if (nextPlayerId) this.setTurn(nextPlayerId);
       else this.setTurn(this.currentPlayerId);
-    }, this.remainingMs);
+    }, this.timerTotalTime);
   }
 
   getState() {
@@ -154,7 +154,7 @@ export class GameRoomState {
         ? this.getUserNickname(this.currentPlayerId)
         : '',
       timerEndTime: this.timerEndTime,
-      remainingMs: this.remainingMs,
+      timerTotalTime: this.timerTotalTime,
       status: this.status,
     };
   }
@@ -165,8 +165,8 @@ export class GameRoomState {
       currentPlayerNickname: this.currentPlayerId
         ? this.getUserNickname(this.currentPlayerId)
         : '',
+      timerTotalTime: this.timerTotalTime,
       timerEndTime: this.timerEndTime,
-      remainingMs: this.remainingMs,
     };
   }
 

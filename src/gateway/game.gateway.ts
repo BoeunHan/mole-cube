@@ -38,6 +38,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.leave(room.roomId);
     this.server.to(room.roomId).emit('playersUpdated', {
       players: room.players,
+      serverNow: Date.now(),
       ...room.getTurnInfo(),
     });
   }
@@ -53,11 +54,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // 같은 방에 나를 제외한 사람들에게 플레이어 업데이트 알림
     client.broadcast.to(room.roomId).emit('playersUpdated', {
       players: room.players,
+      serverNow: Date.now(),
       ...room.getTurnInfo(),
     });
 
     // 나에게 게임 라운드 진행상황 세팅 알림
-    client.emit('setGameRound', room.getState());
+    client.emit('setGameRound', {
+      serverNow: Date.now(),
+      ...room.getState(),
+    });
   }
 
   @SubscribeMessage('rotateCube')
@@ -70,7 +75,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (isSolved) {
       this.server.to(room.roomId).emit('cubeHistoryUpdated', history);
-      this.server.to(room.roomId).emit('solved', room.getState());
+      this.server.to(room.roomId).emit('solved', {
+        serverNow: Date.now(),
+        ...room.getState(),
+      });
     } else this.server.to(room.roomId).emit('cubeHistoryUpdated', history);
   }
 
@@ -79,14 +87,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     roomId: string;
     currentPlayerId: string;
     currentPlayerNickname: string;
+    timerTotalTime: number;
     timerEndTime: number;
-    remainingMs: number;
   }) {
     this.server.to(payload.roomId).emit('turnUpdated', {
-      currentPlayerId: payload.currentPlayerId,
-      currentPlayerNickname: payload.currentPlayerNickname,
-      timerEndTime: payload.timerEndTime,
-      remainingMs: payload.remainingMs,
+      ...payload,
+      serverNow: Date.now(),
     });
   }
 
@@ -94,6 +100,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleStartNewRound(payload: { roomId: string }) {
     const room = this.gameService.findRoomByRoomId(payload.roomId);
     if (!room) return;
-    this.server.to(payload.roomId).emit('setGameRound', room.getState());
+    this.server.to(payload.roomId).emit('setGameRound', {
+      serverNow: Date.now(),
+      ...room.getState(),
+    });
   }
 }
