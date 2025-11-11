@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GameRoomState } from './game-room.state';
 import { generateRandomAlphabet } from 'src/common/utils';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class GameService {
@@ -66,8 +66,16 @@ export class GameService {
     return room;
   }
 
-  generateRoomId() {
+  private generateRoomId() {
     const timestamp = Date.now().toString(36);
     return `room-${timestamp}-${generateRandomAlphabet(3)}`;
+  }
+
+  @OnEvent('game.roomClosed')
+  private handleRoomClosed({ roomId }: { roomId: string }) {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    this.rooms.delete(roomId);
   }
 }

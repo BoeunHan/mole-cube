@@ -52,7 +52,11 @@ export class GameRoomState {
   leave(userId: string) {
     if (this.players.length === 1) {
       // 한 명 남았는데 나가는 경우
-      this.clearTurn();
+      if (this.status === 'break') {
+        this.eventEmitter.emit('game.roomClosed', { roomId: this.roomId });
+      } else {
+        this.clearTurn();
+      }
     } else if (this.currentPlayerId === userId) {
       // 현재 차례인 사람이 나가는 경우
       if (this.status === 'break') {
