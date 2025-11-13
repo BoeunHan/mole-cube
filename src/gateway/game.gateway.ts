@@ -82,6 +82,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } else this.server.to(room.roomId).emit('cubeHistoryUpdated', history);
   }
 
+  @SubscribeMessage('sendEmotion')
+  sendEmotion(client: Socket, emotion: string) {
+    const userId = client.data.userId as string;
+    const room = this.gameService.findRoomByUserId(userId);
+
+    if (!room) throw new Error('No room found');
+
+    this.server.to(room.roomId).emit('showEmotion', {
+      userId: userId,
+      emotion,
+    });
+  }
+
   @OnEvent('game.turnUpdated')
   handleTurnUpdated(payload: {
     roomId: string;
