@@ -15,12 +15,11 @@ export const ChattingButton = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <Popover open={open}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div
           className="relative h-15 w-15 cursor-pointer md:h-20 md:w-20"
           onClick={() => {
-            setOpen((prev) => !prev);
             playEffect("/sounds/click.wav");
           }}
         >
@@ -41,9 +40,6 @@ export const ChattingButton = () => {
         align="start"
         side="top"
         className="w-80 bg-[#262322]/80 md:w-[420px]"
-        onPointerDownOutside={(e) => {
-          e.preventDefault();
-        }}
       >
         <HistoryContent />
       </PopoverContent>

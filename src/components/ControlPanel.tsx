@@ -24,7 +24,7 @@ export const ControlPanel = () => {
     <div className="pointer-events-auto flex h-32 w-full items-center justify-center gap-x-4 p-2">
       <div className="flex shrink-0 flex-col justify-center self-stretch">
         <ChattingButton />
-        {/* <EmotionButton /> */}
+        <EmotionButton />
       </div>
       <div className="h-full w-full max-w-60 md:max-w-80">
         {isCurrentPlayer ? (
