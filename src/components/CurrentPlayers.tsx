@@ -57,16 +57,16 @@ export const CurrentPlayers = () => {
           {status === "entering" ? (
             <Sprite
               src="/assets/mole_in.png"
-              frames={10}
-              fps={20}
+              frames={6}
+              fps={12}
               size={128}
               handleAnimationEnd={() => handleAnimationEnd(id, "enter")}
             />
           ) : status === "exiting" ? (
             <Sprite
               src="/assets/mole_out.png"
-              frames={10}
-              fps={30}
+              frames={6}
+              fps={16}
               size={128}
               handleAnimationEnd={() => handleAnimationEnd(id, "exit")}
             />
