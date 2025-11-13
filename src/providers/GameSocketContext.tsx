@@ -18,8 +18,10 @@ type GameSocketContextType = {
   socket: Socket | null;
   gameRoomState?: GameRoomState;
   isSolved: boolean;
+  emotions: Record<string, string>;
   emitJoinGame: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
+  emitSendEmotion: (emotion: string) => void;
 };
 
 const GameSocketContext = createContext<GameSocketContextType | null>(null);
@@ -35,6 +37,7 @@ export const GameSocketContextProvider = ({
   const [userId, setUserId] = useState("");
   const [gameRoomState, setGameRoomState] = useState<GameRoomState>();
   const [isSolved, setIsSolved] = useState(false);
+  const [emotions, setEmotions] = useState<Record<string, string>>({});
 
   const emitJoinGame = (nickname: string) => {
     if (!socketRef.current) return;
@@ -44,6 +47,11 @@ export const GameSocketContextProvider = ({
   const emitRotateCube = (action: CubeAction) => {
     if (!socketRef.current) return;
     socketRef.current.emit("rotateCube", action);
+  };
+
+  const emitSendEmotion = (emotion: string) => {
+    if (!socketRef.current) return;
+    socketRef.current.emit("sendEmotion", emotion);
   };
 
   useEffect(() => {
@@ -145,12 +153,32 @@ export const GameSocketContextProvider = ({
       },
     );
 
+    s.on(
+      "showEmotion",
+      ({ userId, emotion }: { userId: string; emotion: string }) => {
+        setEmotions((prev) => {
+          if (prev[userId]) return prev;
+
+          setTimeout(() => {
+            setEmotions((prev) => {
+              const newState = { ...prev };
+              delete newState[userId];
+              return newState;
+            });
+          }, 3000);
+
+          return { ...prev, [userId]: emotion };
+        });
+      },
+    );
+
     return () => {
       s.off("playersUpdated");
       s.off("turnUpdated");
       s.off("cubeHistoryUpdated");
       s.off("setGameRound");
       s.off("solved");
+      s.off("showEmotion");
       s.disconnect();
     };
   }, [userId]);
@@ -170,8 +198,10 @@ export const GameSocketContextProvider = ({
         socket: socketRef.current,
         gameRoomState,
         isSolved,
+        emotions,
         emitJoinGame,
         emitRotateCube,
+        emitSendEmotion,
       }}
     >
       {children}

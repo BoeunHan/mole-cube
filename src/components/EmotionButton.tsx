@@ -5,8 +5,11 @@ import { Popover, PopoverContent } from "@/components/ui/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { useState } from "react";
 import { useAudio } from "@/providers/AudioContext";
+import { useGameSocket } from "@/providers/GameSocketContext";
+import { EMOTIONS } from "@/constants";
 
 export const EmotionButton = () => {
+  const { emitSendEmotion } = useGameSocket();
   const { playEffect } = useAudio();
 
   const [open, setOpen] = useState(false);
@@ -38,8 +41,9 @@ export const EmotionButton = () => {
         side="top"
         className="mx-auto flex w-80 flex-wrap bg-stone-400/80 md:w-[420px]"
       >
-        {Object.entries(emotions).map(([emotion, src]) => (
+        {Object.entries(EMOTIONS).map(([emotion, src]) => (
           <Image
+            onClick={() => emitSendEmotion(emotion)}
             className="hover:cursor-pointer"
             key={emotion}
             width={60}
@@ -51,14 +55,4 @@ export const EmotionButton = () => {
       </PopoverContent>
     </Popover>
   );
-};
-
-const emotions = {
-  happy: "/assets/emotion_happy.png",
-  sad: "/assets/emotion_sad.png",
-  annoying: "/assets/emotion_annoying.png",
-  angry: "/assets/emotion_angry.png",
-  tired: "/assets/emotion_tired.png",
-  curious: "/assets/emotion_curious.png",
-  surprised: "/assets/emotion_surprised.png",
 };

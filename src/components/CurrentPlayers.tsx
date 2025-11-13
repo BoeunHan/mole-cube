@@ -3,6 +3,7 @@ import { useGameSocket } from "@/providers/GameSocketContext";
 import { useEffect, useRef, useState } from "react";
 import { useAudio } from "@/providers/AudioContext";
 import { Sprite } from "./ui/sprite";
+import { EMOTIONS } from "@/constants";
 
 type PlayerState = {
   id: string;
@@ -11,7 +12,7 @@ type PlayerState = {
 
 export const CurrentPlayers = () => {
   const prevPlayersRef = useRef<string[]>([]);
-  const { gameRoomState } = useGameSocket();
+  const { gameRoomState, emotions } = useGameSocket();
   const { playEffect } = useAudio();
 
   const players = gameRoomState?.players;
@@ -53,7 +54,7 @@ export const CurrentPlayers = () => {
   return (
     <div className="mt-4 flex h-20 w-full items-center justify-center">
       {displayPlayers?.map(({ id, status }) => (
-        <div key={id} className="relative h-15 w-15 md:h-20 md:w-20">
+        <div key={id} className="relative h-17 w-17 md:h-20 md:w-20">
           {status === "entering" ? (
             <Sprite
               src="/assets/mole_in.png"
@@ -71,12 +72,26 @@ export const CurrentPlayers = () => {
               handleAnimationEnd={() => handleAnimationEnd(id, "exit")}
             />
           ) : (
-            <Image
-              src="/assets/mole.png"
-              alt="유저 이미지"
-              fill
-              style={{ objectFit: "contain" }}
-            />
+            <div className="relative h-full w-full">
+              <Image
+                src="/assets/mole.png"
+                alt="유저 이미지"
+                fill
+                style={{ objectFit: "contain" }}
+                unoptimized
+              />
+
+              {emotions[id] && (
+                <Image
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[calc(50%+6px)]"
+                  src={EMOTIONS[emotions[id] as keyof typeof EMOTIONS]}
+                  alt={emotions[id]}
+                  width={52}
+                  height={52}
+                  unoptimized
+                />
+              )}
+            </div>
           )}
         </div>
       ))}
