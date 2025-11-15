@@ -35,7 +35,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.gameService.leaveRoom(userId);
     if (!room) return;
 
-    client.leave(room.roomId);
+    client.leave(getRoomKey(room.roomId));
+    client.leave(getUserKey(userId));
+
     this.server.to(room.roomId).emit('playersUpdated', {
       players: room.players,
       serverNow: Date.now(),
@@ -49,10 +51,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.gameService.joinRoom(userId, nickname);
     if (!room) return;
 
-    client.join(room.roomId);
+    client.join([getRoomKey(room.roomId), getUserKey(userId)]);
 
     // 같은 방에 나를 제외한 사람들에게 플레이어 업데이트 알림
-    client.broadcast.to(room.roomId).emit('playersUpdated', {
+    client.broadcast.to(getRoomKey(room.roomId)).emit('playersUpdated', {
       players: room.players,
       serverNow: Date.now(),
       ...room.getTurnInfo(),
@@ -61,6 +63,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // 나에게 게임 라운드 진행상황 세팅 알림
     client.emit('setGameRound', {
       serverNow: Date.now(),
+      coin: this.gameService.getUserCoin(userId),
       ...room.getState(),
     });
   }
@@ -73,13 +76,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!room) throw new Error('No room found');
     const { isSolved, history } = room.rotate(userId, action);
 
+    const roomKey = getRoomKey(room.roomId);
+
     if (isSolved) {
-      this.server.to(room.roomId).emit('cubeHistoryUpdated', history);
-      this.server.to(room.roomId).emit('solved', {
+      this.server.to(roomKey).emit('cubeHistoryUpdated', history);
+      this.server.to(roomKey).emit('solved', {
         serverNow: Date.now(),
         ...room.getState(),
       });
-    } else this.server.to(room.roomId).emit('cubeHistoryUpdated', history);
+    } else this.server.to(roomKey).emit('cubeHistoryUpdated', history);
   }
 
   @SubscribeMessage('sendEmotion')
@@ -89,7 +94,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (!room) throw new Error('No room found');
 
-    this.server.to(room.roomId).emit('showEmotion', {
+    this.server.to(getRoomKey(room.roomId)).emit('showEmotion', {
       userId: userId,
       emotion,
     });
@@ -103,7 +108,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     timerTotalTime: number;
     timerEndTime: number;
   }) {
-    this.server.to(payload.roomId).emit('turnUpdated', {
+    this.server.to(getRoomKey(payload.roomId)).emit('turnUpdated', {
       ...payload,
       serverNow: Date.now(),
     });
@@ -113,9 +118,28 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleStartNewRound(payload: { roomId: string }) {
     const room = this.gameService.findRoomByRoomId(payload.roomId);
     if (!room) return;
-    this.server.to(payload.roomId).emit('setGameRound', {
-      serverNow: Date.now(),
-      ...room.getState(),
+
+    room.players.forEach((userId) => {
+      this.server.to(getUserKey(userId)).emit('setGameRound', {
+        serverNow: Date.now(),
+        coin: this.gameService.getUserCoin(userId),
+        ...room.getState(),
+      });
     });
   }
+
+  @OnEvent('game.updateCoin')
+  handleUpdateCoins(payload: { coins: Record<string, number> }) {
+    Object.entries(payload.coins).forEach(([userId, coin]) => {
+      this.server.to(getUserKey(userId)).emit('updateCoin', coin);
+    });
+  }
+}
+
+function getRoomKey(roomId: string) {
+  return `room:${roomId}`;
+}
+
+function getUserKey(userId: string) {
+  return `user:${userId}`;
 }

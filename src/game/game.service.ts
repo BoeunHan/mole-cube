@@ -9,6 +9,7 @@ export class GameService {
   private rooms: Map<string, GameRoomState> = new Map();
   private userNicknames = new Map<string, string>();
   private userRooms = new Map<string, string>();
+  private userCoins = new Map<string, number>();
 
   constructor(private readonly eventEmitter: EventEmitter2) {}
 
@@ -66,6 +67,10 @@ export class GameService {
     return room;
   }
 
+  getUserCoin(userId: string) {
+    return this.userCoins.get(userId) ?? 0;
+  }
+
   private generateRoomId() {
     const timestamp = Date.now().toString(36);
     return `room-${timestamp}-${generateRandomAlphabet(3)}`;
@@ -77,5 +82,18 @@ export class GameService {
     if (!room) return;
 
     this.rooms.delete(roomId);
+  }
+
+  @OnEvent('game.addCoin')
+  private handleAddCoins({ coins }: { coins: Record<string, number> }) {
+    const updatedCoins = {};
+
+    Object.entries(coins).forEach(([userId, coin]) => {
+      const updatedCoin = (this.userCoins.get(userId) ?? 0) + coin;
+      this.userCoins.set(userId, updatedCoin);
+      updatedCoins[userId] = updatedCoin;
+    });
+
+    this.eventEmitter.emit('game.updateCoin', { coins: updatedCoins });
   }
 }

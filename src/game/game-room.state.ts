@@ -106,6 +106,8 @@ export class GameRoomState {
 
     if (isSolved) {
       this.currentRound.closeRound();
+      this.calculateScores(this.currentRound);
+
       this.timerTotalTime = ROUND_INTERVAL * 1000;
       this.timerEndTime = Date.now() + this.timerTotalTime;
       this.currentPlayerId = this.getNextPlayer(this.currentPlayerId);
@@ -183,5 +185,36 @@ export class GameRoomState {
     }
     const nextIndex = (currentIndex + 1) % this.players.length;
     return this.players[nextIndex];
+  }
+
+  calculateScores(currentRound: GameRoundState) {
+    const { cubeStatus, actionHistories } = currentRound.getState();
+    const shuffleCnt = cubeStatus.shuffleCnt;
+    const totalTurnCnt = actionHistories.length;
+
+    if (shuffleCnt === 0 || totalTurnCnt === 0) return;
+
+    const roundScore =
+      20 * shuffleCnt + Math.max(0, 5 * shuffleCnt - totalTurnCnt) * 10;
+
+    const userTurnCnt = actionHistories.reduce(
+      (acc, cur) => {
+        const { userId } = cur;
+        acc[userId] = (acc[userId] ?? 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    const userScores = Object.fromEntries(
+      Object.entries(userTurnCnt).map(([userId, turnCnt]) => [
+        userId,
+        roundScore * (turnCnt / totalTurnCnt),
+      ]),
+    );
+
+    this.eventEmitter.emit('game.addCoin', {
+      coins: userScores,
+    });
   }
 }
