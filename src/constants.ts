@@ -12,7 +12,7 @@ export const EMOTIONS = {
 
 export const SKINS = {
   default: { src: "/assets/mole.png", label: "더지", coin: 0 },
-  sprout: { src: "/assets/mole_sprout.png", label: "새싹더지", coin: 2000 },
+  sprout: { src: "/assets/mole_sprout.png", label: "새싹더지", coin: 10 },
   sunflower: {
     src: "/assets/mole_sunflower.png",
     label: "해바라기더지",

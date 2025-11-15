@@ -21,10 +21,12 @@ type GameSocketContextType = {
   emotions: Record<string, string>;
   coin: { delta: number; total: number };
   ownedSkins: string[];
+  playerSkins: Partial<Record<string, string>>;
   emitJoinGame: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
   emitSendEmotion: (emotion: string) => void;
   emitBuySkin: (skin: string, coin: number) => void;
+  emitSelectSkin: (skin: string) => void;
 };
 
 const GameSocketContext = createContext<GameSocketContextType | null>(null);
@@ -42,6 +44,9 @@ export const GameSocketContextProvider = ({
   const [isSolved, setIsSolved] = useState(false);
   const [emotions, setEmotions] = useState<Record<string, string>>({});
   const [ownedSkins, setOwnedSkins] = useState<string[]>([]);
+  const [playerSkins, setPlayerSkins] = useState<
+    Partial<Record<string, string>>
+  >({});
   const [coin, setCoin] = useState<{ delta: number; total: number }>({
     delta: 0,
     total: 0,
@@ -70,6 +75,10 @@ export const GameSocketContextProvider = ({
     socketRef.current?.emit("buySkin", { skin, coin: skinCoin });
   };
 
+  const emitSelectSkin = (skin: string) => {
+    socketRef.current?.emit("selectSkin", skin);
+  };
+
   useEffect(() => {
     if (!userId) return;
 
@@ -83,6 +92,7 @@ export const GameSocketContextProvider = ({
       "playersUpdated",
       (payload: {
         players: string[];
+        playerSkins?: Partial<Record<string, string>>;
         currentPlayerId: string | null;
         currentPlayerNickname: string;
         timerEndTime: number;
@@ -101,6 +111,14 @@ export const GameSocketContextProvider = ({
             timerTotalTime: payload.timerTotalTime,
           };
         });
+        if (payload.playerSkins) setPlayerSkins(payload.playerSkins);
+      },
+    );
+
+    s.on(
+      "playerSkinsUpdated",
+      (payload: { playerSkins: Partial<Record<string, string>> }) => {
+        setPlayerSkins(payload.playerSkins);
       },
     );
 
@@ -148,10 +166,12 @@ export const GameSocketContextProvider = ({
         serverNow,
         coin,
         skins,
+        playerSkins,
         ...roomState
       }: GameRoomState & {
-        coin: number;
-        skins: string[];
+        coin?: number;
+        skins?: string[];
+        playerSkins?: Partial<Record<string, string>>;
         serverNow: number;
       }) => {
         const timeDiff = serverNow - Date.now();
@@ -159,11 +179,17 @@ export const GameSocketContextProvider = ({
           ...roomState,
           timerEndTime: roomState.timerEndTime - timeDiff,
         });
-        setCoin((prev) => {
-          if (prev.total === coin) return prev;
-          return { total: coin, delta: 0 };
-        });
-        setOwnedSkins(["default", ...skins]);
+        if (coin) {
+          setCoin((prev) => {
+            if (prev.total === coin) return prev;
+            return { total: coin, delta: 0 };
+          });
+        }
+        if (skins) {
+          if (skins?.length > 0) setOwnedSkins(["default", ...skins]);
+          else setOwnedSkins(["default"]);
+        }
+        if (playerSkins) setPlayerSkins(playerSkins);
         initCubes(roomState.roundState.cubeStatus.faceColors);
         if (roomState.roundState.status !== "solved") setIsSolved(false);
       },
@@ -225,12 +251,14 @@ export const GameSocketContextProvider = ({
             delta: coins - prev.total,
           };
         });
-        setOwnedSkins(["default", ...skins]);
+        if (skins?.length > 0) setOwnedSkins(["default", ...skins]);
+        else setOwnedSkins(["default"]);
       },
     );
 
     return () => {
       s.off("playersUpdated");
+      s.off("playerSkinsUpdated");
       s.off("turnUpdated");
       s.off("cubeHistoryUpdated");
       s.off("setGameRound");
@@ -260,10 +288,12 @@ export const GameSocketContextProvider = ({
         emotions,
         coin,
         ownedSkins,
+        playerSkins,
         emitJoinGame,
         emitRotateCube,
         emitSendEmotion,
         emitBuySkin,
+        emitSelectSkin,
       }}
     >
       {children}

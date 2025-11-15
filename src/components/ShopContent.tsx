@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { SKINS } from "@/constants";
-import { useState } from "react";
 import { useGameSocket } from "@/providers/GameSocketContext";
 
 export const ShopContent = () => {
-  const { emitBuySkin, ownedSkins } = useGameSocket();
-  const [selectedSkin, setSelectedSkin] = useState("default");
+  const { emitBuySkin, emitSelectSkin, userId, playerSkins, ownedSkins } =
+    useGameSocket();
+
+  const mySelectedSkin = playerSkins[userId] ?? "default";
 
   return (
     <div className="flex h-full flex-col items-center gap-y-2">
@@ -34,7 +35,7 @@ export const ShopContent = () => {
               )}
             </div>
             <span>{label}</span>
-            {key === selectedSkin && (
+            {key === mySelectedSkin && (
               <span className="my-auto w-full text-center text-[#658DBB]">
                 선택됨
               </span>
@@ -57,10 +58,10 @@ export const ShopContent = () => {
               </div>
             )}
             {(key === "default" || ownedSkins.includes(key)) &&
-              key !== selectedSkin && (
+              key !== mySelectedSkin && (
                 <div
                   className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
-                  onClick={() => setSelectedSkin(key)}
+                  onClick={() => emitSelectSkin(key)}
                 >
                   <Image
                     src="/assets/bt_blue.png"
@@ -69,7 +70,7 @@ export const ShopContent = () => {
                     style={{ objectFit: "contain" }}
                     unoptimized
                   />
-                  <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-white">
+                  <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-sm text-white md:text-base">
                     선택하기
                   </span>
                 </div>

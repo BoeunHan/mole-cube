@@ -12,13 +12,26 @@ type PlayerState = {
 
 export const CurrentPlayers = () => {
   const prevPlayersRef = useRef<string[]>([]);
-  const { userId, gameRoomState, emotions } = useGameSocket();
+  const { userId, gameRoomState, emotions, playerSkins } = useGameSocket();
   const { playEffect } = useAudio();
 
   const players = gameRoomState?.players;
   const currentPlayerId = gameRoomState?.currentPlayerId;
 
   const [displayPlayers, setDisplayPlayers] = useState<PlayerState[]>([]);
+
+  const handleAnimationEnd = (id: string, type: "enter" | "exit") => {
+    setDisplayPlayers(
+      (prev) =>
+        prev
+          .map((p) => {
+            if (p.id !== id) return p;
+            if (type === "enter") return { ...p, status: "playing" };
+            return null;
+          })
+          .filter(Boolean) as PlayerState[],
+    );
+  };
 
   useEffect(() => {
     if (!players) return;
@@ -37,19 +50,6 @@ export const CurrentPlayers = () => {
 
     if (entering.length) playEffect("/sounds/digging.mp3", 0.7);
   }, [players]);
-
-  const handleAnimationEnd = (id: string, type: "enter" | "exit") => {
-    setDisplayPlayers(
-      (prev) =>
-        prev
-          .map((p) => {
-            if (p.id !== id) return p;
-            if (type === "enter") return { ...p, status: "playing" };
-            return null;
-          })
-          .filter(Boolean) as PlayerState[],
-    );
-  };
 
   return (
     <div className="mt-4 flex h-20 w-full items-center justify-center">
@@ -73,6 +73,7 @@ export const CurrentPlayers = () => {
             />
           ) : (
             <div className="relative h-full w-full">
+              {playerSkins[id] ?? "default"}
               <Image
                 src="/assets/mole.png"
                 alt="유저 이미지"
