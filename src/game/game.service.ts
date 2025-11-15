@@ -10,7 +10,8 @@ export class GameService {
   private userNicknames = new Map<string, string>();
   private userRooms = new Map<string, string>();
   private userCoins = new Map<string, number>();
-  private userSkins = new Map<string, string[]>();
+  private userOwnedSkins = new Map<string, string[]>();
+  private userSelectedSkins = new Map<string, string>();
 
   constructor(private readonly eventEmitter: EventEmitter2) {}
 
@@ -72,25 +73,38 @@ export class GameService {
     return this.userCoins.get(userId) ?? 0;
   }
 
-  getUserSkins(userId: string) {
-    return this.userSkins.get(userId) ?? [];
+  getUserOwnedSkins(userId: string) {
+    return this.userOwnedSkins.get(userId) ?? [];
+  }
+
+  getUserSelectedSkin(userId: string) {
+    return this.userSelectedSkins.get(userId);
   }
 
   buySkin(userId: string, skin: string, coin: number) {
     const prevCoins = this.userCoins.get(userId) ?? 0;
     if (prevCoins < coin) return;
-    const prevSkins = this.userSkins.get(userId) ?? [];
+    const prevSkins = this.userOwnedSkins.get(userId) ?? [];
     if (prevSkins.includes(skin)) return;
 
     const newCoins = prevCoins - coin;
     const newSkins = [...prevSkins, skin];
     this.userCoins.set(userId, newCoins);
-    this.userSkins.set(userId, newSkins);
+    this.userOwnedSkins.set(userId, newSkins);
 
     return {
       coins: newCoins,
       skins: newSkins,
     };
+  }
+
+  selectSkin(userId: string, skin: string) {
+    if (skin === 'default') {
+      this.userSelectedSkins.delete(userId);
+    } else {
+      if (!(this.userOwnedSkins.get(userId) ?? []).includes(skin)) return;
+      this.userSelectedSkins.set(userId, skin);
+    }
   }
 
   private generateRoomId() {

@@ -53,10 +53,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join([getRoomKey(room.roomId), getUserKey(userId)]);
 
+    const playerSkins = {};
+    room.players.forEach((userId) => {
+      playerSkins[userId] = this.gameService.getUserSelectedSkin(userId);
+    });
+
     // 같은 방에 나를 제외한 사람들에게 플레이어 업데이트 알림
     client.broadcast.to(getRoomKey(room.roomId)).emit('playersUpdated', {
       players: room.players,
       serverNow: Date.now(),
+      playerSkins,
       ...room.getTurnInfo(),
     });
 
@@ -64,7 +70,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('setGameRound', {
       serverNow: Date.now(),
       coin: this.gameService.getUserCoin(userId),
-      skins: this.gameService.getUserSkins(userId),
+      skins: this.gameService.getUserOwnedSkins(userId),
+      playerSkins,
       ...room.getState(),
     });
   }
@@ -109,6 +116,26 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('buySkinResult', result);
   }
 
+  @SubscribeMessage('selectSkin')
+  selectSkin(client: Socket, skin: string) {
+    const userId = client.data.userId as string;
+
+    const room = this.gameService.findRoomByUserId(userId);
+    if (!room) throw new Error('No room found');
+
+    this.gameService.selectSkin(userId, skin);
+
+    const playerSkins = {};
+
+    room.players.forEach((userId) => {
+      playerSkins[userId] = this.gameService.getUserSelectedSkin(userId);
+    });
+
+    this.server
+      .to(getRoomKey(room.roomId))
+      .emit('playerSkinsUpdated', { playerSkins });
+  }
+
   @OnEvent('game.turnUpdated')
   handleTurnUpdated(payload: {
     roomId: string;
@@ -131,7 +158,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     room.players.forEach((userId) => {
       this.server.to(getUserKey(userId)).emit('setGameRound', {
         serverNow: Date.now(),
-        coin: this.gameService.getUserCoin(userId),
         ...room.getState(),
       });
     });
