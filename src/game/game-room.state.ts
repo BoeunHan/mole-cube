@@ -191,6 +191,7 @@ export class GameRoomState {
     const { cubeStatus, actionHistories } = currentRound.getState();
     const shuffleCnt = cubeStatus.shuffleCnt;
     const totalTurnCnt = actionHistories.length;
+    const solvedUserId = actionHistories[totalTurnCnt - 1].userId;
 
     if (shuffleCnt === 0 || totalTurnCnt === 0) return;
 
@@ -212,6 +213,8 @@ export class GameRoomState {
         roundScore * (turnCnt / totalTurnCnt),
       ]),
     );
+
+    userScores[solvedUserId] += 10;
 
     this.eventEmitter.emit('game.addCoin', {
       coins: userScores,
