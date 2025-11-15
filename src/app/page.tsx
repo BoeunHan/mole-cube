@@ -6,6 +6,7 @@ import { CubeView } from "@/components/CubeView";
 import { CurrentCoin } from "@/components/CurrentCoin";
 import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { NicknameDialog } from "@/components/NicknameDialog";
+import { MenuIcons } from "@/components/MenuIcons";
 import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { useEffect, useMemo } from "react";
@@ -30,8 +31,9 @@ export default function Home() {
   return (
     <div className="font-bitbeat text-primary relative flex h-full w-full items-center bg-[#D8D2CC]">
       {gameRoomState && (
-        <div className="fixed top-7 left-7 z-20">
+        <div className="fixed top-7 z-20 flex w-full items-center justify-between px-7">
           <CurrentCoin />
+          <MenuIcons />
         </div>
       )}
       <NicknameDialog />

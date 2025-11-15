@@ -1,7 +1,11 @@
 import { generateUUID } from "three/src/math/MathUtils.js";
-import { submitGameCenterLeaderBoardScore } from "@apps-in-toss/web-framework";
+import {
+  submitGameCenterLeaderBoardScore,
+  isMinVersionSupported,
+  openGameCenterLeaderboard,
+  // getUserKeyForGame
+} from "@apps-in-toss/web-framework";
 import { localStorageUtil } from "./utils";
-// import { getUserKeyForGame } from "@apps-in-toss/web-framework";
 
 export async function getUserId(): Promise<string | undefined> {
   // const result = await getUserKeyForGame();
@@ -55,4 +59,18 @@ export async function submitScore(score: number) {
   } catch (error) {
     console.error("점수 제출 중 오류가 발생했어요.", error);
   }
+}
+
+export function openLeaderboard() {
+  const isSupported = isMinVersionSupported({
+    android: "5.221.0",
+    ios: "5.221.0",
+  });
+
+  if (!isSupported) {
+    console.warn("지원하지 않는 앱 버전이에요.");
+    return;
+  }
+
+  openGameCenterLeaderboard();
 }
