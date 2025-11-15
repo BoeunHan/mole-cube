@@ -2,6 +2,7 @@ import { openLeaderboard } from "@/lib/toss-utils";
 import Image from "next/image";
 import { Overlay } from "./ui/overlay";
 import { useState } from "react";
+import { ShopContent } from "./ShopContent";
 
 export const MenuIcons = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
@@ -43,7 +44,7 @@ export const MenuIcons = () => {
           setIsShopOpen(false);
         }}
       >
-        상점
+        <ShopContent />
       </Overlay>
     </div>
   );
