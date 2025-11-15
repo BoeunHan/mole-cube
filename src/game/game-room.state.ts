@@ -53,6 +53,7 @@ export class GameRoomState {
     if (this.players.length === 1) {
       // 한 명 남았는데 나가는 경우
       if (this.status === 'break') {
+        clearTimeout(this.timerTimeout);
         this.eventEmitter.emit('game.roomClosed', { roomId: this.roomId });
       } else {
         this.clearTurn();
