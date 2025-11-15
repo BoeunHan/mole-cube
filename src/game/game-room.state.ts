@@ -210,7 +210,7 @@ export class GameRoomState {
     const userScores = Object.fromEntries(
       Object.entries(userTurnCnt).map(([userId, turnCnt]) => [
         userId,
-        roundScore * (turnCnt / totalTurnCnt),
+        Math.floor(roundScore * (turnCnt / totalTurnCnt)),
       ]),
     );
 
