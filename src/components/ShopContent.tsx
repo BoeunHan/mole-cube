@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { SKINS } from "@/constants";
 import { useState } from "react";
+import { useGameSocket } from "@/providers/GameSocketContext";
 
 export const ShopContent = () => {
+  const { emitBuySkin, ownedSkins } = useGameSocket();
   const [selectedSkin, setSelectedSkin] = useState("default");
-  const ownedSkins: string[] = ["sunflower"];
 
   return (
     <div className="flex h-full flex-col items-center gap-y-2">
@@ -20,15 +21,17 @@ export const ShopContent = () => {
                 style={{ objectFit: "contain" }}
                 unoptimized
               />
-              <div className="absolute top-0 right-0 flex items-center">
-                <Image
-                  src="/assets/coin.png"
-                  alt="코인 이미지"
-                  width={20}
-                  height={20}
-                />
-                <span className="text-xs">{coin}</span>
-              </div>
+              {!ownedSkins.includes(key) && (
+                <div className="absolute top-0 right-0 flex items-center">
+                  <Image
+                    src="/assets/coin.png"
+                    alt="코인 이미지"
+                    width={20}
+                    height={20}
+                  />
+                  <span className="text-xs">{coin}</span>
+                </div>
+              )}
             </div>
             <span>{label}</span>
             {key === selectedSkin && (
@@ -39,7 +42,7 @@ export const ShopContent = () => {
             {key !== "default" && !ownedSkins.includes(key) && (
               <div
                 className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
-                onClick={() => console.log(`${label} 구매하기`)}
+                onClick={() => emitBuySkin(key, coin)}
               >
                 <Image
                   src="/assets/bt_red.png"
