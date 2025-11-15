@@ -10,6 +10,7 @@ export class GameService {
   private userNicknames = new Map<string, string>();
   private userRooms = new Map<string, string>();
   private userCoins = new Map<string, number>();
+  private userSkins = new Map<string, string[]>();
 
   constructor(private readonly eventEmitter: EventEmitter2) {}
 
@@ -69,6 +70,27 @@ export class GameService {
 
   getUserCoin(userId: string) {
     return this.userCoins.get(userId) ?? 0;
+  }
+
+  getUserSkins(userId: string) {
+    return this.userSkins.get(userId) ?? [];
+  }
+
+  buySkin(userId: string, skin: string, coin: number) {
+    const prevCoins = this.userCoins.get(userId) ?? 0;
+    if (prevCoins < coin) return;
+    const prevSkins = this.userSkins.get(userId) ?? [];
+    if (prevSkins.includes(skin)) return;
+
+    const newCoins = prevCoins - coin;
+    const newSkins = [...prevSkins, skin];
+    this.userCoins.set(userId, newCoins);
+    this.userSkins.set(userId, newSkins);
+
+    return {
+      coins: newCoins,
+      skins: newSkins,
+    };
   }
 
   private generateRoomId() {

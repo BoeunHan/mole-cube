@@ -46,7 +46,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('joinGame')
-  handleJoinGame(client: Socket, { nickname }: { nickname: string }) {
+  handleJoinGame(client: Socket, nickname: string) {
     const userId = client.data.userId as string;
     const room = this.gameService.joinRoom(userId, nickname);
     if (!room) return;
@@ -64,6 +64,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('setGameRound', {
       serverNow: Date.now(),
       coin: this.gameService.getUserCoin(userId),
+      skins: this.gameService.getUserSkins(userId),
       ...room.getState(),
     });
   }
@@ -98,6 +99,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       userId: userId,
       emotion,
     });
+  }
+
+  @SubscribeMessage('buySkin')
+  buySkin(client: Socket, data: { skin: string; coin: number }) {
+    const userId = client.data.userId as string;
+
+    const result = this.gameService.buySkin(userId, data.skin, data.coin);
+    client.emit('buySkinResult', result);
   }
 
   @OnEvent('game.turnUpdated')
