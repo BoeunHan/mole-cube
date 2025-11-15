@@ -143,7 +143,10 @@ export const GameSocketContextProvider = ({
           ...roomState,
           timerEndTime: roomState.timerEndTime - timeDiff,
         });
-        setCoin({ total: coin, delta: 0 });
+        setCoin((prev) => {
+          if (prev.total === coin) return prev;
+          return { total: coin, delta: 0 };
+        });
         initCubes(roomState.roundState.cubeStatus.faceColors);
         if (roomState.roundState.status !== "solved") setIsSolved(false);
       },
@@ -185,6 +188,7 @@ export const GameSocketContextProvider = ({
     s.on("updateCoin", (coin: number) => {
       setCoin((prev) => {
         const delta = coin - prev.total;
+        if (delta === 0) return prev;
         if (delta >= 0) {
           // TODO: 토스점수 업데이트
         }

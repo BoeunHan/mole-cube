@@ -42,7 +42,6 @@ export default function Home() {
         <div className="flex w-full flex-col items-center gap-y-2 md:gap-y-4">
           {gameRoomState && (
             <>
-              <div>{gameRoomState.roomId}</div>
               <div className="text-xl md:text-3xl">{`제 ${gameRoomState.currentRoundNumber}번째 게임`}</div>
             </>
           )}

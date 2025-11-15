@@ -17,7 +17,10 @@ export const CurrentCoin = () => {
       <div className="relative flex flex-col text-sm md:text-lg">
         {coin.total}
         {coin.delta !== 0 && (
-          <span className={"coin-float absolute top-full"}>
+          <span
+            key={`${coin.total}-${coin.delta}`}
+            className={"coin-float absolute top-full"}
+          >
             {coin.delta > 0 ? `+${coin.delta}` : coin.delta}
           </span>
         )}
