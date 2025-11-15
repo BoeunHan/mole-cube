@@ -38,7 +38,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.leave(getRoomKey(room.roomId));
     client.leave(getUserKey(userId));
 
-    this.server.to(room.roomId).emit('playersUpdated', {
+    this.server.to(getRoomKey(room.roomId)).emit('playersUpdated', {
       players: room.players,
       serverNow: Date.now(),
       ...room.getTurnInfo(),
