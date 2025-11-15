@@ -19,6 +19,7 @@ type GameSocketContextType = {
   gameRoomState?: GameRoomState;
   isSolved: boolean;
   emotions: Record<string, string>;
+  coin: { delta: number; total: number };
   emitJoinGame: (nickname: string) => void;
   emitRotateCube: (action: CubeAction) => void;
   emitSendEmotion: (emotion: string) => void;
@@ -38,6 +39,10 @@ export const GameSocketContextProvider = ({
   const [gameRoomState, setGameRoomState] = useState<GameRoomState>();
   const [isSolved, setIsSolved] = useState(false);
   const [emotions, setEmotions] = useState<Record<string, string>>({});
+  const [coin, setCoin] = useState<{ delta: number; total: number }>({
+    delta: 0,
+    total: 0,
+  });
 
   const emitJoinGame = (nickname: string) => {
     if (!socketRef.current) return;
@@ -128,12 +133,17 @@ export const GameSocketContextProvider = ({
 
     s.on(
       "setGameRound",
-      ({ serverNow, ...roomState }: GameRoomState & { serverNow: number }) => {
+      ({
+        serverNow,
+        coin,
+        ...roomState
+      }: GameRoomState & { coin: number; serverNow: number }) => {
         const timeDiff = serverNow - Date.now();
         setGameRoomState({
           ...roomState,
           timerEndTime: roomState.timerEndTime - timeDiff,
         });
+        setCoin({ total: coin, delta: 0 });
         initCubes(roomState.roundState.cubeStatus.faceColors);
         if (roomState.roundState.status !== "solved") setIsSolved(false);
       },
@@ -172,6 +182,19 @@ export const GameSocketContextProvider = ({
       },
     );
 
+    s.on("updateCoin", (coin: number) => {
+      setCoin((prev) => {
+        const delta = coin - prev.total;
+        if (delta >= 0) {
+          // TODO: 토스점수 업데이트
+        }
+        return {
+          total: coin,
+          delta,
+        };
+      });
+    });
+
     return () => {
       s.off("playersUpdated");
       s.off("turnUpdated");
@@ -179,6 +202,7 @@ export const GameSocketContextProvider = ({
       s.off("setGameRound");
       s.off("solved");
       s.off("showEmotion");
+      s.off("updateCoin");
       s.disconnect();
     };
   }, [userId]);
@@ -199,6 +223,7 @@ export const GameSocketContextProvider = ({
         gameRoomState,
         isSolved,
         emotions,
+        coin,
         emitJoinGame,
         emitRotateCube,
         emitSendEmotion,

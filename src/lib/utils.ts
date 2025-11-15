@@ -58,7 +58,15 @@ export async function getUserId(): Promise<string | undefined> {
   //   console.log("사용자 키:", result.hash);
   //   return result.hash;
   // }
-  return await generateUUID();
+
+  const userId = localStorageUtil.getValue("user_id") as string;
+  if (!userId) {
+    const newUserId = await generateUUID();
+    localStorageUtil.setValue("user_id", newUserId);
+    return newUserId;
+  }
+
+  return userId;
 }
 
 export function getTurnsLeft(
