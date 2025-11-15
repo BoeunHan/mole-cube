@@ -4,6 +4,7 @@ import "./globals.css";
 import { GameSocketContextProvider } from "@/providers/GameSocketContext";
 import { CubeProvider } from "@/providers/CubeContext";
 import { AudioProvider } from "@/providers/AudioContext";
+import { NicknameDialog } from "@/components/NicknameDialog";
 
 const bitbeat = localFont({
   src: "../../public/fonts/DnfBitbeatV2.otf",
@@ -31,7 +32,10 @@ export default function RootLayout({
       <body className={`${bitbeat.variable} ${neodgm.variable} antialiased`}>
         <AudioProvider>
           <CubeProvider>
-            <GameSocketContextProvider>{children}</GameSocketContextProvider>
+            <GameSocketContextProvider>
+              <NicknameDialog />
+              {children}
+            </GameSocketContextProvider>
           </CubeProvider>
         </AudioProvider>
       </body>

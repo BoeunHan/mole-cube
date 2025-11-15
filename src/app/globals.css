@@ -175,3 +175,18 @@ body {
 .turn-arrow-float {
   animation: floatHorizontal 2s ease-in-out infinite;
 }
+
+.overlay-paper {
+  border-style: solid;
+  border-width: 24px;
+  transform: translateZ(0) !important;
+  backface-visibility: hidden;
+  border-image-source: url("/assets/paper.png");
+  border-image-slice: 24 fill;
+  border-image-repeat: repeat;
+  image-rendering: pixelated;
+
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+}

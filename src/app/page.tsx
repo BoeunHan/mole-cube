@@ -5,7 +5,6 @@ import { ControlPanel } from "@/components/ControlPanel";
 import { CubeView } from "@/components/CubeView";
 import { CurrentCoin } from "@/components/CurrentCoin";
 import { CurrentPlayers } from "@/components/CurrentPlayers";
-import { NicknameDialog } from "@/components/NicknameDialog";
 import { MenuIcons } from "@/components/MenuIcons";
 import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
@@ -36,7 +35,6 @@ export default function Home() {
           <MenuIcons />
         </div>
       )}
-      <NicknameDialog />
       <div className={`${isBreak ? "invisible" : "block"}`}>
         <CubeView />
       </div>

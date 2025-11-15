@@ -1,16 +1,17 @@
 import { openLeaderboard } from "@/lib/toss-utils";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { Overlay } from "./ui/overlay";
+import { useState } from "react";
 
 export const MenuIcons = () => {
-  const router = useRouter();
+  const [isShopOpen, setIsShopOpen] = useState(false);
 
   return (
     <div className="flex gap-2">
       <div
-        className="relative h-10 w-10 cursor-pointer md:h-14 md:w-14"
+        className="relative h-8 w-8 cursor-pointer md:h-14 md:w-14"
         onClick={() => {
-          router.push("/shop");
+          setIsShopOpen(true);
         }}
       >
         <Image
@@ -22,7 +23,7 @@ export const MenuIcons = () => {
         />
       </div>
       <div
-        className="relative h-10 w-10 cursor-pointer md:h-14 md:w-14"
+        className="relative h-8 w-8 cursor-pointer md:h-14 md:w-14"
         onClick={() => {
           openLeaderboard();
         }}
@@ -35,6 +36,15 @@ export const MenuIcons = () => {
           style={{ objectFit: "contain" }}
         />
       </div>
+
+      <Overlay
+        open={isShopOpen}
+        onClose={() => {
+          setIsShopOpen(false);
+        }}
+      >
+        상점
+      </Overlay>
     </div>
   );
 };
