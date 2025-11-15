@@ -12,7 +12,7 @@ type PlayerState = {
 
 export const CurrentPlayers = () => {
   const prevPlayersRef = useRef<string[]>([]);
-  const { gameRoomState, emotions } = useGameSocket();
+  const { userId, gameRoomState, emotions } = useGameSocket();
   const { playEffect } = useAudio();
 
   const players = gameRoomState?.players;
@@ -80,7 +80,6 @@ export const CurrentPlayers = () => {
                 style={{ objectFit: "contain" }}
                 unoptimized
               />
-
               {emotions[id] && (
                 <Image
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[calc(50%+6px)]"
@@ -89,6 +88,24 @@ export const CurrentPlayers = () => {
                   width={52}
                   height={52}
                   unoptimized
+                />
+              )}
+              {id === userId && (
+                <Image
+                  className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-2"
+                  src="/assets/me_tag.png"
+                  alt="나"
+                  width={40}
+                  height={20}
+                />
+              )}
+              {id === currentPlayerId && (
+                <Image
+                  className="turn-arrow-float absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3"
+                  src="/assets/turn_arrow.png"
+                  alt="현재 차례"
+                  width={28}
+                  height={28}
                 />
               )}
             </div>

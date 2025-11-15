@@ -159,3 +159,19 @@ body {
 .coin-float {
   animation: floatUp 0.5s ease-out forwards;
 }
+
+@keyframes floatHorizontal {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.turn-arrow-float {
+  animation: floatHorizontal 2s ease-in-out infinite;
+}
