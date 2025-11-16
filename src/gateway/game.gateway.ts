@@ -45,6 +45,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('leaveGame')
+  handleLeaveGame(client: Socket) {
+    this.handleDisconnect(client);
+  }
+
   @SubscribeMessage('joinGame')
   handleJoinGame(client: Socket, nickname: string) {
     const userId = client.data.userId as string;
