@@ -16,6 +16,16 @@ export const SKINS = {
   sunflower: {
     src: "/assets/mole_sunflower.png",
     label: "해바라기더지",
-    coin: 2000,
+    coin: 10,
+  },
+  acorn: {
+    src: "/assets/mole_acorn.png",
+    label: "도토리더지",
+    coin: 10,
+  },
+  ribbon: {
+    src: "/assets/mole_ribbon.png",
+    label: "리본더지",
+    coin: 10,
   },
 };

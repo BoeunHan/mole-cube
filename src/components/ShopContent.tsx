@@ -40,7 +40,7 @@ export const ShopContent = () => {
                 선택됨
               </span>
             )}
-            {key !== "default" && !ownedSkins.includes(key) && (
+            {!ownedSkins.includes(key) && (
               <div
                 className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
                 onClick={() => emitBuySkin(key, coin)}
@@ -57,24 +57,23 @@ export const ShopContent = () => {
                 </span>
               </div>
             )}
-            {(key === "default" || ownedSkins.includes(key)) &&
-              key !== mySelectedSkin && (
-                <div
-                  className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
-                  onClick={() => emitSelectSkin(key)}
-                >
-                  <Image
-                    src="/assets/bt_blue.png"
-                    alt={`${label} 선택 버튼`}
-                    fill
-                    style={{ objectFit: "contain" }}
-                    unoptimized
-                  />
-                  <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-sm text-white md:text-base">
-                    선택하기
-                  </span>
-                </div>
-              )}
+            {ownedSkins.includes(key) && key !== mySelectedSkin && (
+              <div
+                className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
+                onClick={() => emitSelectSkin(key)}
+              >
+                <Image
+                  src="/assets/bt_blue.png"
+                  alt={`${label} 선택 버튼`}
+                  fill
+                  style={{ objectFit: "contain" }}
+                  unoptimized
+                />
+                <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-sm text-white md:text-base">
+                  선택하기
+                </span>
+              </div>
+            )}
           </div>
         ))}
       </div>

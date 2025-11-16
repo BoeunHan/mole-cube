@@ -3,7 +3,7 @@ import { useGameSocket } from "@/providers/GameSocketContext";
 import { useEffect, useRef, useState } from "react";
 import { useAudio } from "@/providers/AudioContext";
 import { Sprite } from "./ui/sprite";
-import { EMOTIONS } from "@/constants";
+import { EMOTIONS, SKINS } from "@/constants";
 
 type PlayerState = {
   id: string;
@@ -73,9 +73,11 @@ export const CurrentPlayers = () => {
             />
           ) : (
             <div className="relative h-full w-full">
-              {playerSkins[id] ?? "default"}
               <Image
-                src="/assets/mole.png"
+                src={
+                  SKINS[(playerSkins[id] ?? "default") as keyof typeof SKINS]
+                    .src
+                }
                 alt="유저 이미지"
                 fill
                 style={{ objectFit: "contain" }}
