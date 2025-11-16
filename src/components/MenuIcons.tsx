@@ -3,8 +3,11 @@ import Image from "next/image";
 import { Overlay } from "./ui/overlay";
 import { useState } from "react";
 import { ShopContent } from "./ShopContent";
+import { useAudio } from "@/providers/AudioContext";
 
 export const MenuIcons = () => {
+  const { playClickEffect } = useAudio();
+
   const [isShopOpen, setIsShopOpen] = useState(false);
 
   return (
@@ -12,6 +15,7 @@ export const MenuIcons = () => {
       <div
         className="relative h-8 w-8 cursor-pointer md:h-14 md:w-14"
         onClick={() => {
+          playClickEffect();
           setIsShopOpen(true);
         }}
       >
@@ -27,6 +31,7 @@ export const MenuIcons = () => {
       <div
         className="relative h-8 w-8 cursor-pointer md:h-14 md:w-14"
         onClick={() => {
+          playClickEffect();
           openLeaderboard();
         }}
       >

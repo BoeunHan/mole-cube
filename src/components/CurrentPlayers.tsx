@@ -13,7 +13,7 @@ type PlayerState = {
 export const CurrentPlayers = () => {
   const prevPlayersRef = useRef<string[]>([]);
   const { userId, gameRoomState, emotions, playerSkins } = useGameSocket();
-  const { playEffect } = useAudio();
+  const { playEnterEffect } = useAudio();
 
   const players = gameRoomState?.players;
   const currentPlayerId = gameRoomState?.currentPlayerId;
@@ -48,7 +48,7 @@ export const CurrentPlayers = () => {
 
     prevPlayersRef.current = players;
 
-    if (entering.length) playEffect("/sounds/digging.mp3", 0.7);
+    if (entering.length) playEnterEffect();
   }, [players]);
 
   return (
@@ -105,7 +105,7 @@ export const CurrentPlayers = () => {
               )}
               {id === currentPlayerId && (
                 <Image
-                  className="turn-arrow-float absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3"
+                  className="turn-arrow-float absolute top-0 left-1/2 -translate-x-1/2 -translate-y-5"
                   src="/assets/turn_arrow.png"
                   alt="현재 차례"
                   width={28}

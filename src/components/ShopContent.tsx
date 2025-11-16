@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { SKINS } from "@/constants";
 import { useGameSocket } from "@/providers/GameSocketContext";
+import { useAudio } from "@/providers/AudioContext";
 
 export const ShopContent = () => {
+  const { playClickEffect } = useAudio();
   const { emitBuySkin, emitSelectSkin, userId, playerSkins, ownedSkins } =
     useGameSocket();
 
@@ -44,7 +46,10 @@ export const ShopContent = () => {
             {!ownedSkins.includes(key) && (
               <div
                 className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
-                onClick={() => emitBuySkin(key, coin)}
+                onClick={() => {
+                  playClickEffect();
+                  emitBuySkin(key, coin);
+                }}
               >
                 <Image
                   src="/assets/bt_red.png"
@@ -61,7 +66,10 @@ export const ShopContent = () => {
             {ownedSkins.includes(key) && key !== mySelectedSkin && (
               <div
                 className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
-                onClick={() => emitSelectSkin(key)}
+                onClick={() => {
+                  playClickEffect();
+                  emitSelectSkin(key);
+                }}
               >
                 <Image
                   src="/assets/bt_blue.png"

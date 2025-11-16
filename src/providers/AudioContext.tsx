@@ -3,9 +3,12 @@
 import { createContext, useContext, useRef, ReactNode } from "react";
 
 type AudioContextType = {
-  playBGM: (src: string) => void;
+  playGameBGM: () => void;
+  playSolvedBGM: () => void;
   pauseBGM: () => void;
-  playEffect: (src: string, volume?: number) => void;
+  playClickEffect: () => void;
+  playEnterEffect: () => void;
+  playRotateEffect: () => void;
 };
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -13,15 +16,30 @@ const AudioContext = createContext<AudioContextType | undefined>(undefined);
 export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const bgmRef = useRef<HTMLAudioElement | null>(null);
 
-  const playBGM = (src: string) => {
-    if (!bgmRef.current) {
-      bgmRef.current = new Audio();
-      bgmRef.current.volume = 0.4;
-      bgmRef.current.loop = true;
+  const playGameBGM = () => {
+    if (!bgmRef.current) bgmRef.current = new Audio();
+    else bgmRef.current.pause();
+
+    if (bgmRef.current.src !== "/sounds/background.mp3") {
+      bgmRef.current.src = "/sounds/background.mp3";
     }
 
-    bgmRef.current.pause();
-    bgmRef.current.src = src;
+    bgmRef.current.volume = 0.2;
+    bgmRef.current.loop = true;
+    bgmRef.current.play().catch(() => {});
+  };
+
+  const playSolvedBGM = () => {
+    if (!bgmRef.current) bgmRef.current = new Audio();
+    else bgmRef.current.pause();
+
+    if (bgmRef.current.src !== "/sounds/solved.mp3") {
+      bgmRef.current.src = "/sounds/solved.mp3";
+    }
+
+    bgmRef.current.volume = 0.4;
+    bgmRef.current.playbackRate = 0.85;
+    bgmRef.current.loop = false;
     bgmRef.current.play().catch(() => {});
   };
 
@@ -29,14 +47,35 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     bgmRef.current?.pause();
   };
 
-  const playEffect = (src: string, volume: number = 1) => {
-    const effect = new Audio(src);
-    effect.volume = volume;
+  const playClickEffect = () => {
+    const effect = new Audio("/sounds/click.wav");
+    effect.volume = 1;
+    effect.play().catch(() => {});
+  };
+
+  const playEnterEffect = () => {
+    const effect = new Audio("/sounds/digging.mp3");
+    effect.volume = 0.7;
+    effect.play().catch(() => {});
+  };
+
+  const playRotateEffect = () => {
+    const effect = new Audio("/sounds/rotate.mp3");
+    effect.volume = 0.2;
     effect.play().catch(() => {});
   };
 
   return (
-    <AudioContext.Provider value={{ playBGM, pauseBGM, playEffect }}>
+    <AudioContext.Provider
+      value={{
+        playGameBGM,
+        playSolvedBGM,
+        pauseBGM,
+        playClickEffect,
+        playEnterEffect,
+        playRotateEffect,
+      }}
+    >
       {children}
     </AudioContext.Provider>
   );

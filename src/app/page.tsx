@@ -12,7 +12,7 @@ import { useEffect, useMemo } from "react";
 
 export default function Home() {
   const { gameRoomState } = useGameSocket();
-  const { playBGM } = useAudio();
+  const { playGameBGM, playSolvedBGM } = useAudio();
 
   const isBreak = useMemo(
     () => gameRoomState?.status === "break",
@@ -21,9 +21,9 @@ export default function Home() {
 
   useEffect(() => {
     if (gameRoomState?.roundState.status === "solved") {
-      playBGM("/sounds/solved.mp3");
+      playSolvedBGM();
     } else {
-      playBGM("/sounds/background.mp3");
+      playGameBGM();
     }
   }, [gameRoomState?.roundState.status]);
 

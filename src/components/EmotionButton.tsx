@@ -10,7 +10,7 @@ import { EMOTIONS } from "@/constants";
 
 export const EmotionButton = () => {
   const { emitSendEmotion } = useGameSocket();
-  const { playEffect } = useAudio();
+  const { playClickEffect } = useAudio();
 
   const [open, setOpen] = useState(false);
 
@@ -20,7 +20,7 @@ export const EmotionButton = () => {
         <div
           className="relative h-15 w-15 cursor-pointer md:h-20 md:w-20"
           onClick={() => {
-            playEffect("/sounds/click.wav");
+            playClickEffect();
           }}
         >
           <Image

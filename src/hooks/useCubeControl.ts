@@ -7,9 +7,11 @@ import { Color, Face } from "@/enums";
 import { getRotationAxis, getRotationDirection } from "@/cube.helpers";
 import { CubeStatus } from "@/cube-status";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import { useAudio } from "@/providers/AudioContext";
 const OFFSET = 1.05;
 
 export const useCubeControl = () => {
+  const { playRotateEffect } = useAudio();
   const {
     rendererRef,
     sceneRef,
@@ -244,6 +246,7 @@ export const useCubeControl = () => {
     }
 
     animate();
+    playRotateEffect();
   }
 
   function controlFaceGroup(face: Face) {
