@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { GameSocketContextProvider } from "@/providers/GameSocketContext";
-import { CubeProvider } from "@/providers/CubeContext";
-import { AudioProvider } from "@/providers/AudioContext";
-import { NicknameDialog } from "@/components/NicknameDialog";
-import { ConnectionControl } from "@/providers/ConnectionControl";
-
+import { ClientProvider } from "@/providers/ClientProvider";
 const bitbeat = localFont({
   src: "../../public/fonts/DnfBitbeatV2.otf",
   variable: "--font-bitbeat",
@@ -29,17 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className={`${bitbeat.variable} ${neodgm.variable} antialiased`}>
-        <AudioProvider>
-          <CubeProvider>
-            <GameSocketContextProvider>
-              <ConnectionControl />
-              <NicknameDialog />
-              {children}
-            </GameSocketContextProvider>
-          </CubeProvider>
-        </AudioProvider>
+        <ClientProvider>{children}</ClientProvider>
       </body>
     </html>
   );

@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import { useToast } from "./ToastContext";
 
 type GameSocketContextType = {
   userId: string;
@@ -36,6 +37,7 @@ export const GameSocketContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
+  const { openToast } = useToast();
   const { rotateCube, initCubes } = useCubeControl();
 
   const socketRef = useRef<Socket | null>(null);
@@ -68,10 +70,6 @@ export const GameSocketContextProvider = ({
   };
 
   const emitBuySkin = (skin: string, skinCoin: number) => {
-    if (skinCoin > coin.total) {
-      console.error("코인이 부족합니다!");
-      return;
-    }
     socketRef.current?.emit("buySkin", { skin, coin: skinCoin });
   };
 
@@ -237,7 +235,11 @@ export const GameSocketContextProvider = ({
         const delta = coin - prev.total;
         if (delta === 0) return prev;
         if (delta >= 0) {
-          submitScore(delta);
+          try {
+            submitScore(delta);
+          } catch (error) {
+            openToast((error as Error).message);
+          }
         }
         return {
           total: coin,
@@ -276,8 +278,12 @@ export const GameSocketContextProvider = ({
 
   useEffect(() => {
     const fetchUserId = async () => {
-      const userId = await getUserId();
-      if (userId) setUserId(userId);
+      try {
+        const userId = await getUserId();
+        if (userId) setUserId(userId);
+      } catch (error) {
+        openToast((error as Error).message);
+      }
     };
     fetchUserId();
   }, []);

@@ -5,7 +5,7 @@ export default defineConfig({
   brand: {
     displayName: "두더지큐브",
     primaryColor: "#D8D2CC",
-    icon: "/icons/logo-512.png",
+    icon: "https://static.toss.im/appsintoss/5909/8f7ccbb2-0992-47e8-98a0-4f93931e74f3.png",
     bridgeColorMode: "basic",
   },
   web: {

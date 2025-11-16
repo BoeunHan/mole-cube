@@ -4,9 +4,11 @@ import { Overlay } from "./ui/overlay";
 import { useState } from "react";
 import { ShopContent } from "./ShopContent";
 import { useAudio } from "@/providers/AudioContext";
+import { useToast } from "@/providers/ToastContext";
 
 export const MenuIcons = () => {
   const { playClickEffect } = useAudio();
+  const { openToast } = useToast();
 
   const [isShopOpen, setIsShopOpen] = useState(false);
 
@@ -32,7 +34,16 @@ export const MenuIcons = () => {
         className="relative h-8 w-8 cursor-pointer md:h-14 md:w-14"
         onClick={() => {
           playClickEffect();
-          openLeaderboard();
+          openToast("리더보드로 이동하면 게임에서 나가게 돼요. 이동할까요?", {
+            label: "확인",
+            onClick: () => {
+              try {
+                openLeaderboard();
+              } catch (error) {
+                openToast((error as Error).message);
+              }
+            },
+          });
         }}
       >
         <Image

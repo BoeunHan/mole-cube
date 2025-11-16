@@ -11,7 +11,6 @@ export const ConnectionControl = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
-        console.log("leave game");
         emitLeaveGame();
         pauseBGM();
       } else {

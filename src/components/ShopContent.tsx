@@ -2,14 +2,23 @@ import Image from "next/image";
 import { SKINS } from "@/constants";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { useAudio } from "@/providers/AudioContext";
+import { useToast } from "@/providers/ToastContext";
 
 export const ShopContent = () => {
   const { playClickEffect } = useAudio();
-  const { emitBuySkin, emitSelectSkin, userId, playerSkins, ownedSkins } =
+  const { openToast } = useToast();
+  const { emitBuySkin, emitSelectSkin, userId, coin, playerSkins, ownedSkins } =
     useGameSocket();
 
   const mySelectedSkin = playerSkins[userId] ?? "default";
 
+  const handleBuySkin = (skin: string, skinCoin: number) => {
+    if (skinCoin > coin.total) {
+      openToast("코인이 부족합니다!");
+      return;
+    }
+    emitBuySkin(skin, skinCoin);
+  };
   return (
     <div className="flex h-full flex-col items-center gap-y-2">
       <div className="text-xl">상점</div>
@@ -48,7 +57,7 @@ export const ShopContent = () => {
                 className="relative aspect-[2/1] w-[calc(100%-40px)] hover:cursor-pointer"
                 onClick={() => {
                   playClickEffect();
-                  emitBuySkin(key, coin);
+                  handleBuySkin(key, coin);
                 }}
               >
                 <Image
