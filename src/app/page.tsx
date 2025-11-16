@@ -6,6 +6,7 @@ import { CubeView } from "@/components/CubeView";
 import { CurrentCoin } from "@/components/CurrentCoin";
 import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { MenuIcons } from "@/components/MenuIcons";
+import { RoundInfo } from "@/components/RoundInfo";
 import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { useEffect, useMemo } from "react";
@@ -40,12 +41,8 @@ export default function Home() {
         <CubeView />
       </div>
       <div className="pointer-events-none relative z-10 flex h-full max-h-[760px] w-full flex-col items-center justify-between px-4 py-10 md:max-h-[900px]">
-        <div className="flex w-full flex-col items-center gap-y-2 md:gap-y-4">
-          {gameRoomState && (
-            <>
-              <div className="text-xl md:text-3xl">{`제 ${gameRoomState.currentRoundNumber}번째 게임`}</div>
-            </>
-          )}
+        <div className="flex w-full flex-col items-center gap-y-2">
+          <RoundInfo />
           <CurrentPlayers />
           {isBreak && <CompletePanel />}
         </div>

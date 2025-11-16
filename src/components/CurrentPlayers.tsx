@@ -52,7 +52,7 @@ export const CurrentPlayers = () => {
   }, [players]);
 
   return (
-    <div className="mt-4 flex h-20 w-full items-center justify-center">
+    <div className="flex h-20 w-full items-center justify-center">
       {displayPlayers?.map(({ id, status }) => (
         <div key={id} className="relative h-17 w-17 md:h-20 md:w-20">
           {status === "entering" ? (
@@ -95,7 +95,7 @@ export const CurrentPlayers = () => {
               )}
               {id === userId && (
                 <Image
-                  className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-2"
+                  className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-4"
                   src="/assets/me_tag.png"
                   alt="나"
                   width={40}
@@ -105,7 +105,7 @@ export const CurrentPlayers = () => {
               )}
               {id === currentPlayerId && (
                 <Image
-                  className="turn-arrow-float absolute top-0 left-1/2 -translate-x-1/2 -translate-y-5"
+                  className="turn-arrow-float absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4"
                   src="/assets/turn_arrow.png"
                   alt="현재 차례"
                   width={28}
