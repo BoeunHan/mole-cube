@@ -88,8 +88,8 @@ export const CurrentPlayers = () => {
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[calc(50%+6px)]"
                   src={EMOTIONS[emotions[id] as keyof typeof EMOTIONS]}
                   alt={emotions[id]}
-                  width={52}
-                  height={52}
+                  width={44}
+                  height={44}
                   unoptimized
                 />
               )}

@@ -37,9 +37,11 @@ export const CubeView = () => {
     sceneRef.current.add(cameraRef.current);
 
     // 렌더러
-    rendererRef.current = new THREE.WebGLRenderer({ antialias: true });
+    rendererRef.current = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+    });
     rendererRef.current.setSize(width, height);
-    rendererRef.current.setClearColor("#D8D2CC");
     container.appendChild(rendererRef.current.domElement);
 
     // 드래그

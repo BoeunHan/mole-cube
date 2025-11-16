@@ -29,6 +29,7 @@ export default function Home() {
 
   return (
     <div className="font-bitbeat text-primary relative flex h-full w-full items-center bg-[#D8D2CC]">
+      <div className="scroll-bg absolute inset-0 z-0"></div>
       {gameRoomState && (
         <div className="fixed top-7 z-20 flex w-full items-center justify-between px-7">
           <CurrentCoin />
