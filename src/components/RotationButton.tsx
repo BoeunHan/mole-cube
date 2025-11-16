@@ -46,6 +46,7 @@ const RotationButton = ({
         alt={`${face} ${clockwise ? "시계방향" : "반시계방향"} 회전 버튼`}
         fill
         className="object-cover"
+        unoptimized
       />
 
       <span className="z-10">{face}</span>

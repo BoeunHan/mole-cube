@@ -21,6 +21,7 @@ export const MenuIcons = () => {
           alt="상점"
           fill
           style={{ objectFit: "contain" }}
+          unoptimized
         />
       </div>
       <div
@@ -35,6 +36,7 @@ export const MenuIcons = () => {
           alt="리더보드"
           fill
           style={{ objectFit: "contain" }}
+          unoptimized
         />
       </div>
 

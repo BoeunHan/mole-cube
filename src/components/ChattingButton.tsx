@@ -33,6 +33,7 @@ export const ChattingButton = () => {
             alt="회전내역"
             fill
             style={{ objectFit: "contain" }}
+            unoptimized
           />
         </div>
       </PopoverTrigger>
@@ -123,6 +124,7 @@ const HistoryContent = () => {
             alt="최근으로 이동 버튼"
             fill
             className="object-cover"
+            unoptimized
           />
           <ChevronDownIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-black" />
         </button>

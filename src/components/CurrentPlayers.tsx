@@ -100,6 +100,7 @@ export const CurrentPlayers = () => {
                   alt="나"
                   width={40}
                   height={20}
+                  unoptimized
                 />
               )}
               {id === currentPlayerId && (
@@ -109,6 +110,7 @@ export const CurrentPlayers = () => {
                   alt="현재 차례"
                   width={28}
                   height={28}
+                  unoptimized
                 />
               )}
             </div>

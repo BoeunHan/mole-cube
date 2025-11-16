@@ -29,6 +29,7 @@ export const CompletePanel = () => {
           fill
           style={{ objectFit: "contain" }}
           draggable={false}
+          unoptimized
         />
       </div>
       <div className="md:text-2xl">축하합니다!</div>

@@ -12,6 +12,7 @@ export const CurrentCoin = () => {
           alt="코인 이미지"
           fill
           style={{ objectFit: "contain" }}
+          unoptimized
         />
       </div>
       <div className="relative flex flex-col text-sm md:text-lg">

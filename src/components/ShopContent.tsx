@@ -29,6 +29,7 @@ export const ShopContent = () => {
                     alt="코인 이미지"
                     width={20}
                     height={20}
+                    unoptimized
                   />
                   <span className="text-xs">{coin}</span>
                 </div>
