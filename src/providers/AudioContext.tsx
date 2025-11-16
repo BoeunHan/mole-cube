@@ -14,15 +14,14 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const bgmRef = useRef<HTMLAudioElement | null>(null);
 
   const playBGM = (src: string) => {
-    if (bgmRef.current) {
-      bgmRef.current.pause();
-      bgmRef.current.currentTime = 0;
+    if (!bgmRef.current) {
+      bgmRef.current = new Audio();
+      bgmRef.current.volume = 0.4;
+      bgmRef.current.loop = true;
     }
 
-    bgmRef.current = new Audio(src);
-    bgmRef.current.loop = true;
-    bgmRef.current.volume = 0.4;
-
+    bgmRef.current.pause();
+    bgmRef.current.src = src;
     bgmRef.current.play().catch(() => {});
   };
 
