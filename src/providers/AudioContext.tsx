@@ -55,7 +55,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
 
   const playEnterEffect = () => {
     const effect = new Audio("/sounds/digging.mp3");
-    effect.volume = 0.7;
+    effect.volume = 0.4;
     effect.play().catch(() => {});
   };
 

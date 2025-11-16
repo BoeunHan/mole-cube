@@ -8,7 +8,7 @@ import { RotateCcwIcon, RotateCwIcon } from "lucide-react";
 
 export const RotationButtonList = () => {
   return (
-    <div className="grid grid-flow-col auto-rows-fr grid-rows-2 gap-2">
+    <div className="grid grid-flow-col auto-rows-fr grid-rows-2 gap-1">
       {Object.values(Face).map((face, idx) => (
         <Fragment key={idx}>
           <RotationButton face={face} clockwise={true} />

@@ -1,12 +1,12 @@
 "use client";
 
-import { ChattingButton } from "@/components/ChattingButton";
 import { RotationButtonList } from "@/components/RotationButton";
 import { Timer } from "@/components/Timer";
 import { getTurnsLeft } from "@/lib/utils";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { useMemo } from "react";
 import { EmotionButton } from "./EmotionButton";
+import { RotationHistory } from "./RotationHistory";
 
 export const ControlPanel = () => {
   const { userId, gameRoomState } = useGameSocket();
@@ -21,33 +21,35 @@ export const ControlPanel = () => {
   if (!gameRoomState) return null;
 
   return (
-    <div className="pointer-events-auto flex h-32 w-full items-center justify-center gap-x-4 p-2">
-      <div className="flex shrink-0 flex-col justify-center self-stretch">
-        <ChattingButton />
+    <div className="pointer-events-auto flex w-full max-w-80 flex-col justify-center gap-y-2 p-2 md:max-w-96">
+      <RotationHistory />
+      <div className="flex h-30 w-full gap-1">
         <EmotionButton />
-      </div>
-      <div className="h-full w-full max-w-60 md:max-w-80">
-        {isCurrentPlayer ? (
-          <div className="flex flex-col gap-y-3">
-            <RotationButtonList />
-            <Timer
-              totalMs={gameRoomState.timerTotalTime}
-              endTime={gameRoomState.timerEndTime}
-            />
-          </div>
-        ) : (
-          currentPlayerId && (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-y-2 md:text-2xl">
-              <div>
-                {gameRoomState.currentPlayerNickname} 님을 기다리는 중...
-              </div>
-              <div>
-                내 차례까지{" "}
-                {getTurnsLeft(gameRoomState.players, currentPlayerId, userId)}턴
-              </div>
+        <div className="h-full w-full md:max-w-80">
+          {isCurrentPlayer ? (
+            <div className="flex flex-col gap-y-3">
+              <RotationButtonList />
+              <Timer
+                totalMs={gameRoomState.timerTotalTime}
+                endTime={gameRoomState.timerEndTime}
+              />
             </div>
-          )
-        )}
+          ) : (
+            currentPlayerId && (
+              <div className="flex h-full w-full flex-col items-center gap-y-2 md:text-xl">
+                <div className="text-center">
+                  {gameRoomState.currentPlayerNickname} 님을{" "}
+                  <span className="whitespace-nowrap">기다리는 중...</span>
+                </div>
+                <div>
+                  내 차례까지{" "}
+                  {getTurnsLeft(gameRoomState.players, currentPlayerId, userId)}
+                  턴
+                </div>
+              </div>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

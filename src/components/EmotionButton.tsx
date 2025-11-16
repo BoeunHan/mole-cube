@@ -18,7 +18,7 @@ export const EmotionButton = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div
-          className="relative h-15 w-15 cursor-pointer md:h-20 md:w-20"
+          className="relative h-12 w-12 flex-shrink-0 cursor-pointer"
           onClick={() => {
             playClickEffect();
           }}
