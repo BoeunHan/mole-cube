@@ -15,7 +15,6 @@ import { io, Socket } from "socket.io-client";
 
 type GameSocketContextType = {
   userId: string;
-  socket: Socket | null;
   gameRoomState?: GameRoomState;
   isSolved: boolean;
   emotions: Record<string, string>;
@@ -27,6 +26,7 @@ type GameSocketContextType = {
   emitSendEmotion: (emotion: string) => void;
   emitBuySkin: (skin: string, coin: number) => void;
   emitSelectSkin: (skin: string) => void;
+  emitLeaveGame: () => void;
 };
 
 const GameSocketContext = createContext<GameSocketContextType | null>(null);
@@ -77,6 +77,10 @@ export const GameSocketContextProvider = ({
 
   const emitSelectSkin = (skin: string) => {
     socketRef.current?.emit("selectSkin", skin);
+  };
+
+  const emitLeaveGame = () => {
+    socketRef.current?.emit("leaveGame");
   };
 
   useEffect(() => {
@@ -282,7 +286,6 @@ export const GameSocketContextProvider = ({
     <GameSocketContext.Provider
       value={{
         userId,
-        socket: socketRef.current,
         gameRoomState,
         isSolved,
         emotions,
@@ -294,6 +297,7 @@ export const GameSocketContextProvider = ({
         emitSendEmotion,
         emitBuySkin,
         emitSelectSkin,
+        emitLeaveGame,
       }}
     >
       {children}

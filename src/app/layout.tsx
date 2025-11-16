@@ -5,6 +5,7 @@ import { GameSocketContextProvider } from "@/providers/GameSocketContext";
 import { CubeProvider } from "@/providers/CubeContext";
 import { AudioProvider } from "@/providers/AudioContext";
 import { NicknameDialog } from "@/components/NicknameDialog";
+import { ConnectionControl } from "@/providers/ConnectionControl";
 
 const bitbeat = localFont({
   src: "../../public/fonts/DnfBitbeatV2.otf",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <AudioProvider>
           <CubeProvider>
             <GameSocketContextProvider>
+              <ConnectionControl />
               <NicknameDialog />
               {children}
             </GameSocketContextProvider>
