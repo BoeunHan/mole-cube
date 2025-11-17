@@ -13,7 +13,7 @@ export const MenuIcons = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col gap-2">
       <div
         className="relative h-8 w-8 cursor-pointer md:h-14 md:w-14"
         onClick={() => {
@@ -55,7 +55,6 @@ export const MenuIcons = () => {
           unoptimized
         />
       </div>
-
       <Overlay
         open={isShopOpen}
         onClose={() => {

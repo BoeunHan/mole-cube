@@ -16,6 +16,9 @@ export default defineConfig({
       build: "next build",
     },
   },
+  webViewProps: {
+    type: "game",
+  },
   permissions: [],
   outdir: "dist",
 });

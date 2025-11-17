@@ -4,6 +4,8 @@ import {
   isMinVersionSupported,
   openGameCenterLeaderboard,
   getUserKeyForGame,
+  generateHapticFeedback,
+  HapticFeedbackType,
 } from "@apps-in-toss/web-framework";
 import { localStorageUtil } from "./utils";
 
@@ -64,4 +66,8 @@ export function openLeaderboard() {
   }
 
   openGameCenterLeaderboard();
+}
+
+export function generateHaptic(type: HapticFeedbackType) {
+  generateHapticFeedback({ type });
 }
