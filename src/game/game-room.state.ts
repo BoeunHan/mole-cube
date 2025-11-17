@@ -216,8 +216,8 @@ export class GameRoomState {
 
     userScores[solvedUserId] += 10;
 
-    this.eventEmitter.emit('game.addCoin', {
-      coins: userScores,
+    this.eventEmitter.emit('game.addScore', {
+      scores: userScores,
     });
   }
 }

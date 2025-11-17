@@ -10,6 +10,7 @@ export class GameService {
   private userNicknames = new Map<string, string>();
   private userRooms = new Map<string, string>();
   private userCoins = new Map<string, number>();
+  private userScores = new Map<string, number>();
   private userOwnedSkins = new Map<string, string[]>();
   private userSelectedSkins = new Map<string, string>();
 
@@ -120,16 +121,19 @@ export class GameService {
     this.rooms.delete(roomId);
   }
 
-  @OnEvent('game.addCoin')
-  private handleAddCoins({ coins }: { coins: Record<string, number> }) {
-    const updatedCoins = {};
+  @OnEvent('game.addScore')
+  private handleAddScores({ scores }: { scores: Record<string, number> }) {
+    const update = {};
 
-    Object.entries(coins).forEach(([userId, coin]) => {
-      const updatedCoin = (this.userCoins.get(userId) ?? 0) + coin;
+    Object.entries(scores).forEach(([userId, score]) => {
+      const updatedCoin = (this.userCoins.get(userId) ?? 0) + score;
       this.userCoins.set(userId, updatedCoin);
-      updatedCoins[userId] = updatedCoin;
+      const updatedScore = (this.userScores.get(userId) ?? 0) + score;
+      this.userScores.set(userId, updatedScore);
+
+      update[userId] = { coin: updatedCoin, score: updatedScore };
     });
 
-    this.eventEmitter.emit('game.updateCoin', { coins: updatedCoins });
+    this.eventEmitter.emit('game.updateScores', { update });
   }
 }

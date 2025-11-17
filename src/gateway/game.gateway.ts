@@ -168,10 +168,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  @OnEvent('game.updateCoin')
-  handleUpdateCoins(payload: { coins: Record<string, number> }) {
-    Object.entries(payload.coins).forEach(([userId, coin]) => {
-      this.server.to(getUserKey(userId)).emit('updateCoin', coin);
+  @OnEvent('game.updateScores')
+  handleUpdateScores(payload: {
+    update: Record<string, { coin: number; score: number }>;
+  }) {
+    Object.entries(payload.update).forEach(([userId, update]) => {
+      this.server.to(getUserKey(userId)).emit('updateScore', update);
     });
   }
 }
