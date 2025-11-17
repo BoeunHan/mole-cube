@@ -8,7 +8,9 @@ export const ConfettiCanvas = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current!;
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d", {
+      desynchronized: true,
+    })!;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -19,6 +21,7 @@ export const ConfettiCanvas = () => {
       vy: number;
       size: number;
       color: string;
+      active: boolean;
     }[] = [];
 
     const createParticles = () => {
@@ -30,35 +33,47 @@ export const ConfettiCanvas = () => {
           vy: (Math.random() - 1.5) * 6,
           size: Math.random() * 6 + 4, // 픽셀 느낌 크기
           color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          active: true,
         });
       }
     };
 
     createParticles();
 
+    let animationId: number;
     const update = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let i = particles.length - 1; i >= 0; i--) {
+      let activeCount = 0;
+
+      for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
+        if (!p.active) continue;
+
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.15; // 중력
+        p.vy += 0.15;
 
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x, p.y, p.size, p.size);
 
         if (p.y > canvas.height || p.x < 0 || p.x > canvas.width) {
-          particles.splice(i, 1);
+          p.active = false;
+        } else {
+          activeCount++;
         }
       }
 
-      if (particles.length === 0) return;
+      if (activeCount === 0) return;
 
-      requestAnimationFrame(update);
+      animationId = requestAnimationFrame(update);
     };
 
     update();
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
   }, []);
 
   return (
