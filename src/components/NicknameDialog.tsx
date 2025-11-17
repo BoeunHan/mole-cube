@@ -1,17 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { localStorageUtil } from "@/lib/utils";
 import { NICKNAME_KEY } from "@/constants";
+import { Button, Modal, Post, TextField } from "@toss/tds-mobile";
 
 export const NicknameDialog = () => {
   const { emitJoinGame } = useGameSocket();
@@ -22,31 +15,61 @@ export const NicknameDialog = () => {
   );
 
   const handleSubmit = () => {
-    // TODO: 닉네임 경고 toast
     const trimmedNickname = nickname.trim();
     if (!trimmedNickname) return;
+    if (handleError(trimmedNickname)) return;
+
     emitJoinGame(trimmedNickname);
     localStorageUtil.setValue(NICKNAME_KEY, nickname);
 
     setOpen(false);
   };
 
+  const handleError = (value: string) => {
+    return value.trim().length > 7
+      ? "exceed"
+      : value.trim().length === 0
+        ? "blank"
+        : false;
+  };
+
   return (
-    <Dialog open={open}>
-      <DialogContent showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle>사용할 닉네임:</DialogTitle>
-        </DialogHeader>
-        <Input
+    <Modal open={open} onOpenChange={setOpen}>
+      <Modal.Overlay />
+      <Modal.Content
+        style={{
+          padding: "20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
+        <Post.H4>사용할 닉네임</Post.H4>
+        <TextField
+          variant={"box"}
+          placeholder="닉네임 입력"
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
-          placeholder="입력"
+          help={
+            handleError(nickname) === "exceed"
+              ? "닉네임은 7글자 이하여야 해요."
+              : handleError(nickname) === "blank"
+                ? "닉네임을 입력해주세요."
+                : null
+          }
+          hasError={!!handleError(nickname)}
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
         />
-        <Button variant="secondary" className="mt-4" onClick={handleSubmit}>
-          접속
+        <Button
+          size="medium"
+          display="block"
+          color="primary"
+          onClick={handleSubmit}
+        >
+          접속하기
         </Button>
-      </DialogContent>
-    </Dialog>
+      </Modal.Content>
+    </Modal>
   );
 };
