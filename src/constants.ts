@@ -28,4 +28,9 @@ export const SKINS = {
     label: "리본더지",
     coin: 10,
   },
+  helmet: {
+    src: "/assets/mole_helmet.png",
+    label: "안전더지",
+    coin: 10,
+  },
 };
