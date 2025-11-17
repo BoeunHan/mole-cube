@@ -24,7 +24,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       bgmRef.current.src = "/sounds/background.mp3";
     }
 
-    bgmRef.current.volume = 0.2;
+    bgmRef.current.volume = 0.3;
     bgmRef.current.loop = true;
     bgmRef.current.play().catch(() => {});
   };
