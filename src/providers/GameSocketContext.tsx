@@ -255,6 +255,7 @@ export const GameSocketContextProvider = ({
             delta: coins - prev.total,
           };
         });
+        openToast("구매 완료!");
         if (skins?.length > 0) setOwnedSkins(["default", ...skins]);
         else setOwnedSkins(["default"]);
       },
