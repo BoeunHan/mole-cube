@@ -49,7 +49,7 @@ const RotationButton = ({
         unoptimized
       />
 
-      <span className="z-10">{face}</span>
+      <span className="font-neodgm z-10">{face}</span>
       {clockwise && (
         <RotateCwIcon
           strokeWidth={1.5}

@@ -230,16 +230,14 @@ export const GameSocketContextProvider = ({
       },
     );
 
-    s.on("updateCoin", (coin: number) => {
+    s.on("updateScore", ({ coin, score }: { coin: number; score: number }) => {
       setCoin((prev) => {
         const delta = coin - prev.total;
         if (delta === 0) return prev;
-        if (delta >= 0) {
-          try {
-            submitScore(delta);
-          } catch (error) {
-            openToast((error as Error).message);
-          }
+        try {
+          submitScore(score);
+        } catch (error) {
+          openToast((error as Error).message);
         }
         return {
           total: coin,
