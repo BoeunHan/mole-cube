@@ -1,7 +1,7 @@
 "use client";
 
 import { useCubeControl } from "@/hooks/useCubeControl";
-import { getUserId, submitScore } from "@/lib/toss-utils";
+import { getUserId } from "@/lib/utils";
 import { CubeAction, CubeActionHistory, GameRoomState } from "@/types";
 import {
   createContext,
@@ -234,11 +234,6 @@ export const GameSocketContextProvider = ({
       setCoin((prev) => {
         const delta = coin - prev.total;
         if (delta === 0) return prev;
-        try {
-          submitScore(score);
-        } catch (error) {
-          openToast((error as Error).message);
-        }
         return {
           total: coin,
           delta,

@@ -4,9 +4,21 @@ import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import duration from "dayjs/plugin/duration";
+import { generateUUID } from "three/src/math/MathUtils.js";
 
 dayjs.locale("ko");
 dayjs.extend(duration);
+
+export async function getUserId(): Promise<string | undefined> {
+  const userId = localStorageUtil.getValue("user_id") as string;
+  if (!userId) {
+    const newUserId = await generateUUID();
+    localStorageUtil.setValue("user_id", newUserId);
+    return newUserId;
+  }
+
+  return userId;
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -102,4 +114,8 @@ export function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent,
   );
+}
+
+export function generateHaptic() {
+  navigator.vibrate([20, 30, 20, 30, 20]);
 }

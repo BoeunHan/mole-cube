@@ -1,5 +1,6 @@
 "use client";
-import { generateHaptic } from "@/lib/toss-utils";
+
+import { generateHaptic } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 
 const COLORS = ["#ff6b6b", "#ffd93d", "#6bcB77", "#4d96ff", "#ff8fab"];
@@ -8,7 +9,7 @@ export const ConfettiCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    generateHaptic("confetti");
+    generateHaptic();
 
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d", {

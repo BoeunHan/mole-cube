@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { localStorageUtil } from "@/lib/utils";
 import { NICKNAME_KEY } from "@/constants";
-import { Button, Modal, Post, TextField } from "@toss/tds-mobile";
-import Filter from "badwords-ko";
 
 export const NicknameDialog = () => {
   const { emitJoinGame } = useGameSocket();
@@ -16,81 +22,31 @@ export const NicknameDialog = () => {
   );
 
   const handleSubmit = () => {
+    // TODO: 닉네임 경고 toast
     const trimmedNickname = nickname.trim();
     if (!trimmedNickname) return;
-    if (handleError(trimmedNickname)) return;
-
     emitJoinGame(trimmedNickname);
     localStorageUtil.setValue(NICKNAME_KEY, nickname);
 
     setOpen(false);
   };
 
-  const handleError = (value: string) => {
-    const trimmedValue = value.trim();
-    if (trimmedValue.length > 7) return "exceed";
-    if (trimmedValue.length === 0) return "blank";
-    const filter = new Filter();
-    filter.addWords(...ADDITIONAL_BAD_WORDS);
-    if (filter.isProfane(trimmedValue)) return "badwords";
-    return false;
-  };
-
   return (
-    <Modal
-      open={open}
-      onOpenChange={(next) => {
-        if (!next) return;
-        setOpen(next);
-      }}
-    >
-      <Modal.Overlay />
-      <Modal.Content
-        style={{
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "12px",
-        }}
-      >
-        <Post.H4>사용할 닉네임</Post.H4>
-        <TextField
-          variant={"box"}
-          placeholder="닉네임 입력"
+    <Dialog open={open}>
+      <DialogContent showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>사용할 닉네임:</DialogTitle>
+        </DialogHeader>
+        <Input
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
-          help={
-            handleError(nickname) === "exceed"
-              ? "닉네임은 7글자 이하여야 해요."
-              : handleError(nickname) === "blank"
-                ? "닉네임을 입력해주세요."
-                : handleError(nickname) === "badwords"
-                  ? "사용할 수 없는 닉네임이에요."
-                  : null
-          }
-          hasError={!!handleError(nickname)}
+          placeholder="입력"
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
         />
-        <Button
-          size="medium"
-          display="block"
-          color="primary"
-          onClick={handleSubmit}
-        >
-          접속하기
+        <Button variant="secondary" className="mt-4" onClick={handleSubmit}>
+          접속
         </Button>
-      </Modal.Content>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };
-
-const ADDITIONAL_BAD_WORDS = [
-  "ㅅㅂ",
-  "ㅂㅅ",
-  "ㅅㅂㅅㄲ",
-  "ㅅㄲ",
-  "ㅂㅅㅅㄲ",
-  "ㅗ",
-  "새끼",
-];

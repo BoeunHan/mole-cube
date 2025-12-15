@@ -9,7 +9,6 @@ import { MenuIcons } from "@/components/MenuIcons";
 import { RoundInfo } from "@/components/RoundInfo";
 import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
-import { ToastManager } from "@/components/ToastManager";
 import { useEffect, useMemo } from "react";
 
 export default function Home() {
@@ -31,7 +30,6 @@ export default function Home() {
 
   return (
     <>
-      <ToastManager />
       <div className="font-bitbeat text-primary relative flex h-full w-full items-center bg-[#D8D2CC]">
         <div className="scroll-bg absolute inset-0 z-0"></div>
         {gameRoomState && (
