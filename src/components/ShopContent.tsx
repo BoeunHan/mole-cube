@@ -32,6 +32,7 @@ export const ShopContent = () => {
                 fill
                 style={{ objectFit: "contain" }}
                 unoptimized
+                draggable={false}
               />
               {!ownedSkins.includes(key) && (
                 <div className="absolute top-0 right-0 flex items-center">
@@ -41,6 +42,7 @@ export const ShopContent = () => {
                     width={20}
                     height={20}
                     unoptimized
+                    draggable={false}
                   />
                   <span className="text-xs">{coin}</span>
                 </div>
@@ -66,6 +68,7 @@ export const ShopContent = () => {
                   fill
                   style={{ objectFit: "contain" }}
                   unoptimized
+                  draggable={false}
                 />
                 <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-white">
                   구매하기
@@ -86,6 +89,7 @@ export const ShopContent = () => {
                   fill
                   style={{ objectFit: "contain" }}
                   unoptimized
+                  draggable={false}
                 />
                 <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-sm text-white md:text-base">
                   선택하기

@@ -25,6 +25,7 @@ export const MenuIcons = () => {
           fill
           style={{ objectFit: "contain" }}
           unoptimized
+          draggable={false}
         />
       </div>
       <Overlay

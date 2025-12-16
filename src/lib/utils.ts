@@ -76,18 +76,25 @@ export function diffTime(start: Date, end: Date) {
   const diffMs = endDate.diff(startDate);
   const d = dayjs.duration(diffMs);
 
-  return { hours: d.hours(), minutes: d.minutes(), seconds: d.seconds() };
+  return {
+    days: d.days(),
+    hours: d.hours(),
+    minutes: d.minutes(),
+    seconds: d.seconds(),
+  };
 }
 
 export function getPlayTimeLabel(
+  days: number,
   hours: number,
   minutes: number,
   seconds: number,
 ) {
-  if (hours === 0 && minutes === 0 && seconds === 0) return "0초";
-  if (hours === 0 && minutes === 0) return `${seconds}초`;
-  if (hours === 0) return `${minutes}분 ${seconds}초`;
-  return `${hours}시간 ${minutes}분 ${seconds}초`;
+  if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) return "0초";
+  if (days === 0 && hours === 0 && minutes === 0) return `${seconds}초`;
+  if (days === 0 && hours === 0) return `${minutes}분 ${seconds}초`;
+  if (days === 0) return `${hours}시간 ${minutes}분 ${seconds}초`;
+  return `${days}일 ${hours}시간 ${minutes}분 ${seconds}초`;
 }
 
 export function groupActionHistoriesByDate(

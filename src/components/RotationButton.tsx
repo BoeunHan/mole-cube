@@ -47,6 +47,7 @@ const RotationButton = ({
         fill
         className="object-cover"
         unoptimized
+        draggable={false}
       />
 
       <span className="font-neodgm z-10">{face}</span>

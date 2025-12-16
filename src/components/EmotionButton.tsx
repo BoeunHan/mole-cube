@@ -34,6 +34,7 @@ export const EmotionButton = () => {
             fill
             style={{ objectFit: "contain" }}
             unoptimized
+            draggable={false}
           />
         </div>
       </PopoverTrigger>
@@ -52,6 +53,7 @@ export const EmotionButton = () => {
             src={src}
             alt={emotion}
             unoptimized
+            draggable={false}
           />
         ))}
       </PopoverContent>

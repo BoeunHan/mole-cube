@@ -43,7 +43,11 @@ export const NicknameDialog = () => {
           placeholder="입력"
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
         />
-        <Button variant="secondary" className="mt-4" onClick={handleSubmit}>
+        <Button
+          variant="secondary"
+          className="mt-4 cursor-pointer"
+          onClick={handleSubmit}
+        >
           접속
         </Button>
       </DialogContent>

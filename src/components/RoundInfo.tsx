@@ -26,6 +26,7 @@ export const RoundInfo = () => {
         <span>
           {playTime
             ? getPlayTimeLabel(
+                playTime.days,
                 playTime.hours,
                 playTime.minutes,
                 playTime.seconds,

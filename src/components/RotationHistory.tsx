@@ -33,6 +33,7 @@ export const RotationHistory = () => {
                 fill
                 className="object-cover"
                 unoptimized
+                draggable={false}
               />
 
               <span className="z-10">{face}</span>

@@ -82,6 +82,7 @@ export const CurrentPlayers = () => {
                 fill
                 style={{ objectFit: "contain" }}
                 unoptimized
+                draggable={false}
               />
               {emotions[id] && (
                 <Image
@@ -91,6 +92,7 @@ export const CurrentPlayers = () => {
                   width={44}
                   height={44}
                   unoptimized
+                  draggable={false}
                 />
               )}
               {id === userId && (
@@ -101,6 +103,7 @@ export const CurrentPlayers = () => {
                   width={40}
                   height={20}
                   unoptimized
+                  draggable={false}
                 />
               )}
               {id === currentPlayerId && (
@@ -111,6 +114,7 @@ export const CurrentPlayers = () => {
                   width={28}
                   height={28}
                   unoptimized
+                  draggable={false}
                 />
               )}
             </div>
