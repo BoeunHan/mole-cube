@@ -5,7 +5,7 @@ import { CubeProvider } from "@/providers/CubeContext";
 import { AudioProvider } from "@/providers/AudioContext";
 import { NicknameDialog } from "@/components/NicknameDialog";
 import { ConnectionControl } from "@/providers/ConnectionControl";
-import { ToastProvider } from "@/providers/ToastContext";
+import { ToastManager, ToastProvider } from "mole-toast";
 
 export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -15,6 +15,9 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
           <GameSocketContextProvider>
             <ConnectionControl />
             <NicknameDialog />
+            <div className="font-neodgm">
+              <ToastManager />
+            </div>
             {children}
           </GameSocketContextProvider>
         </CubeProvider>

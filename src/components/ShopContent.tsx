@@ -2,11 +2,11 @@ import Image from "next/image";
 import { SKINS } from "@/constants";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { useAudio } from "@/providers/AudioContext";
-import { useToast } from "@/providers/ToastContext";
+import { useToast } from "mole-toast";
 
 export const ShopContent = () => {
   const { playClickEffect } = useAudio();
-  const { openToast } = useToast();
+  const toast = useToast();
   const { emitBuySkin, emitSelectSkin, userId, coin, playerSkins, ownedSkins } =
     useGameSocket();
 
@@ -14,7 +14,7 @@ export const ShopContent = () => {
 
   const handleBuySkin = (skin: string, skinCoin: number) => {
     if (skinCoin > coin.total) {
-      openToast("코인이 부족합니다!");
+      toast.shortWarning("코인이 부족합니다!");
       return;
     }
     emitBuySkin(skin, skinCoin);

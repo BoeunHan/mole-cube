@@ -3,6 +3,7 @@
 import { useCubeControl } from "@/hooks/useCubeControl";
 import { getUserId } from "@/lib/utils";
 import { CubeAction, CubeActionHistory, GameRoomState } from "@/types";
+import { useToast } from "mole-toast";
 import {
   createContext,
   ReactNode,
@@ -12,7 +13,6 @@ import {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
-import { useToast } from "./ToastContext";
 
 type GameSocketContextType = {
   userId: string;
@@ -37,7 +37,7 @@ export const GameSocketContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const { openToast } = useToast();
+  const toast = useToast();
   const { rotateCube, initCubes } = useCubeControl();
 
   const socketRef = useRef<Socket | null>(null);
@@ -250,7 +250,7 @@ export const GameSocketContextProvider = ({
             delta: coins - prev.total,
           };
         });
-        openToast("구매 완료!");
+        toast.shortSuccess("구매 완료!");
         if (skins?.length > 0) setOwnedSkins(["default", ...skins]);
         else setOwnedSkins(["default"]);
       },
@@ -276,7 +276,7 @@ export const GameSocketContextProvider = ({
         const userId = await getUserId();
         if (userId) setUserId(userId);
       } catch (error) {
-        openToast((error as Error).message);
+        toast.shortError((error as Error).message);
       }
     };
     fetchUserId();
