@@ -40,6 +40,7 @@ export const CompletePanel = () => {
           소요 시간 :{" "}
           {playTime
             ? getPlayTimeLabel(
+                playTime.days,
                 playTime.hours,
                 playTime.minutes,
                 playTime.seconds,
