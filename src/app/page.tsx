@@ -6,6 +6,7 @@ import { CubeView } from "@/components/CubeView";
 import { CurrentCoin } from "@/components/CurrentCoin";
 import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { MenuIcons } from "@/components/MenuIcons";
+import { NicknameDialog } from "@/components/NicknameDialog";
 import { RoundInfo } from "@/components/RoundInfo";
 import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
@@ -32,9 +33,10 @@ export default function Home() {
   return (
     <div className="flex h-dvh w-full justify-center overflow-hidden bg-[#6f6e6c]">
       <div className="font-bitbeat text-primary relative flex h-full w-[500px] items-center bg-[#D8D2CC]">
-        <div className="font-neodgm">
+        <div className="font-neodgm z-60">
           <ToastManager />
         </div>
+        <NicknameDialog />
         <div className="scroll-bg absolute inset-0 z-0"></div>
         {gameRoomState && (
           <>

@@ -12,9 +12,12 @@ import { Button } from "@/components/ui/button";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { localStorageUtil } from "@/lib/utils";
 import { NICKNAME_KEY } from "@/constants";
+import Filter from "badwords-ko";
+import { useToast } from "mole-toast";
 
 export const NicknameDialog = () => {
   const { emitJoinGame } = useGameSocket();
+  const toast = useToast();
 
   const [open, setOpen] = useState(true);
   const [nickname, setNickname] = useState(
@@ -22,20 +25,32 @@ export const NicknameDialog = () => {
   );
 
   const handleSubmit = () => {
-    // TODO: 닉네임 경고 toast
-    const trimmedNickname = nickname.trim();
-    if (!trimmedNickname) return;
-    emitJoinGame(trimmedNickname);
+    const error = getError(nickname);
+    if (error) {
+      toast.shortWarning(error);
+      return;
+    }
+    emitJoinGame(nickname.trim());
     localStorageUtil.setValue(NICKNAME_KEY, nickname);
 
     setOpen(false);
+  };
+
+  const getError = (value: string) => {
+    const trimmedValue = value.trim();
+    if (trimmedValue.length > 7) return "닉네임은 7글자 이하여야 해요.";
+    if (trimmedValue.length === 0) return "닉네임을 입력해주세요.";
+    const filter = new Filter();
+    filter.addWords(...ADDITIONAL_BAD_WORDS);
+    if (filter.isProfane(trimmedValue)) return "사용할 수 없는 닉네임이에요.";
+    return false;
   };
 
   return (
     <Dialog open={open}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>사용할 닉네임:</DialogTitle>
+          <DialogTitle>사용할 닉네임</DialogTitle>
         </DialogHeader>
         <Input
           value={nickname}
@@ -54,3 +69,13 @@ export const NicknameDialog = () => {
     </Dialog>
   );
 };
+
+const ADDITIONAL_BAD_WORDS = [
+  "ㅅㅂ",
+  "ㅂㅅ",
+  "ㅅㅂㅅㄲ",
+  "ㅅㄲ",
+  "ㅂㅅㅅㄲ",
+  "ㅗ",
+  "새끼",
+];

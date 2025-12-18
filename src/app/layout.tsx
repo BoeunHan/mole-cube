@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ClientProvider } from "@/providers/ClientProvider";
-import { NicknameDialog } from "@/components/NicknameDialog";
 
 const bitbeat = localFont({
   src: "../../public/fonts/DnfBitbeatV2.otf",
@@ -28,10 +27,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${bitbeat.variable} ${neodgm.variable} antialiased`}>
-        <ClientProvider>
-          <NicknameDialog />
-          {children}
-        </ClientProvider>
+        <ClientProvider>{children}</ClientProvider>
       </body>
     </html>
   );
