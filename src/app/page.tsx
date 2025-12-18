@@ -29,12 +29,12 @@ export default function Home() {
   }, [gameRoomState?.roundState.status]);
 
   return (
-    <>
-      <div className="font-bitbeat text-primary relative flex h-full w-full items-center bg-[#D8D2CC]">
+    <div className="flex h-dvh w-full justify-center overflow-hidden bg-[#6f6e6c]">
+      <div className="font-bitbeat text-primary relative flex h-full w-[500px] items-center bg-[#D8D2CC]">
         <div className="scroll-bg absolute inset-0 z-0"></div>
         {gameRoomState && (
           <>
-            <div className="fixed top-14 left-7 z-20 flex flex-col gap-2">
+            <div className="absolute top-14 left-7 z-20 flex flex-col gap-2">
               <CurrentCoin />
               <MenuIcons />
             </div>
@@ -52,6 +52,6 @@ export default function Home() {
           {!isBreak && <ControlPanel />}
         </div>
       </div>
-    </>
+    </div>
   );
 }
