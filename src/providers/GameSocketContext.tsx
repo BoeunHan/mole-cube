@@ -94,9 +94,9 @@ export const GameSocketContextProvider = ({
       "playersUpdated",
       (payload: {
         players: string[];
+        nicknames: Record<string, string>;
         playerSkins?: Partial<Record<string, string>>;
         currentPlayerId: string | null;
-        currentPlayerNickname: string;
         timerEndTime: number;
         timerTotalTime: number;
         serverNow: number;
@@ -107,8 +107,8 @@ export const GameSocketContextProvider = ({
           return {
             ...state,
             players: payload.players,
+            nicknames: payload.nicknames,
             currentPlayerId: payload.currentPlayerId,
-            currentPlayerNickname: payload.currentPlayerNickname,
             timerEndTime: payload.timerEndTime - timeDiff,
             timerTotalTime: payload.timerTotalTime,
           };
@@ -143,7 +143,6 @@ export const GameSocketContextProvider = ({
       "turnUpdated",
       (payload: {
         currentPlayerId: string;
-        currentPlayerNickname: string;
         timerTotalTime: number;
         timerEndTime: number;
         serverNow: number;
@@ -154,7 +153,6 @@ export const GameSocketContextProvider = ({
           return {
             ...state,
             currentPlayerId: payload.currentPlayerId,
-            currentPlayerNickname: payload.currentPlayerNickname,
             timerTotalTime: payload.timerTotalTime,
             timerEndTime: payload.timerEndTime - timeDiff,
           };
@@ -176,6 +174,7 @@ export const GameSocketContextProvider = ({
         playerSkins?: Partial<Record<string, string>>;
         serverNow: number;
       }) => {
+        console.log("setGameRound received", roomState);
         const timeDiff = serverNow - Date.now();
         setGameRoomState({
           ...roomState,

@@ -95,17 +95,6 @@ export const CurrentPlayers = () => {
                   draggable={false}
                 />
               )}
-              {id === userId && (
-                <Image
-                  className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-4"
-                  src="/assets/me_tag.png"
-                  alt="나"
-                  width={40}
-                  height={20}
-                  unoptimized
-                  draggable={false}
-                />
-              )}
               {id === currentPlayerId && (
                 <Image
                   className="turn-arrow-float absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4"
@@ -116,6 +105,13 @@ export const CurrentPlayers = () => {
                   unoptimized
                   draggable={false}
                 />
+              )}
+              {gameRoomState && (
+                <div
+                  className={`font-neodgm absolute top-full left-1/2 w-full -translate-x-1/2 -translate-y-2 text-center text-[10px] ${id === userId && "font-bold"}`}
+                >
+                  {gameRoomState.nicknames[id]}
+                </div>
               )}
             </div>
           )}

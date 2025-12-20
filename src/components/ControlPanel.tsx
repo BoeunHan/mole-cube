@@ -38,7 +38,7 @@ export const ControlPanel = () => {
             currentPlayerId && (
               <div className="flex h-full w-full flex-col items-center gap-y-2 md:text-xl">
                 <div className="text-center">
-                  {gameRoomState.currentPlayerNickname} 님을{" "}
+                  {gameRoomState.nicknames[currentPlayerId]} 님을{" "}
                   <span className="whitespace-nowrap">기다리는 중...</span>
                 </div>
                 <div>

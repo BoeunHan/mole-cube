@@ -28,10 +28,10 @@ export interface GameRoundState {
 
 export interface GameRoomState {
   players: string[];
+  nicknames: Record<string, string>;
   currentRoundNumber: number;
   roundState: GameRoundState;
   currentPlayerId: string | null;
-  currentPlayerNickname: string;
   timerEndTime: number;
   timerTotalTime: number;
   status: "playing" | "break";
