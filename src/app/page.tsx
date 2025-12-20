@@ -11,16 +11,11 @@ import { RoundInfo } from "@/components/RoundInfo";
 import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { ToastManager } from "mole-toast";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
   const { gameRoomState } = useGameSocket();
   const { playGameBGM, playSolvedBGM } = useAudio();
-
-  const isBreak = useMemo(
-    () => gameRoomState?.status === "break",
-    [gameRoomState?.status],
-  );
 
   useEffect(() => {
     if (gameRoomState?.roundState.status === "solved") {
@@ -29,6 +24,8 @@ export default function Home() {
       playGameBGM();
     }
   }, [gameRoomState?.roundState.status]);
+
+  const isBreak = gameRoomState?.status === "break";
 
   return (
     <div className="flex h-dvh w-full justify-center overflow-hidden bg-[#6f6e6c]">
