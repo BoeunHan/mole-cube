@@ -1,9 +1,10 @@
-import { ConfettiCanvas } from "@/components/ConfettiCanvas";
+"use client";
 
 import Image from "next/image";
 import { Timer } from "@/components/Timer";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { diffTime, getPlayTimeLabel } from "@/lib/utils";
+import { ConfettiCanvas } from "./ConfettiCanvas";
 
 export const CompletePanel = () => {
   const { gameRoomState } = useGameSocket();

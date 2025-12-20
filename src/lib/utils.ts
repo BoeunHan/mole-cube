@@ -122,7 +122,3 @@ export function isMobile() {
     navigator.userAgent,
   );
 }
-
-export function generateHaptic() {
-  navigator.vibrate([20, 30, 20, 30, 20]);
-}
