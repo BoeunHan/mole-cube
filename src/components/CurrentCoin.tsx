@@ -6,7 +6,7 @@ export const CurrentCoin = () => {
 
   return (
     <div className="flex items-center">
-      <div className="relative h-8 w-8 md:h-12 md:w-12">
+      <div className="relative h-8 w-8 @md:h-12 @md:w-12">
         <Image
           src="/assets/coin.png"
           alt="코인 이미지"
@@ -16,7 +16,7 @@ export const CurrentCoin = () => {
           unoptimized
         />
       </div>
-      <div className="relative flex flex-col text-sm md:text-lg">
+      <div className="relative flex flex-col text-sm @md:text-lg">
         {coin.total}
         {coin.delta !== 0 && (
           <span

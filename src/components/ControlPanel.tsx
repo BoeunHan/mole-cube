@@ -21,11 +21,11 @@ export const ControlPanel = () => {
   if (!gameRoomState) return null;
 
   return (
-    <div className="pointer-events-auto flex w-full max-w-80 flex-col justify-center gap-y-2 p-2 md:max-w-96">
+    <div className="pointer-events-auto flex w-full max-w-80 flex-col justify-center gap-y-2 p-2 @md:max-w-96">
       <RotationHistory />
       <div className="flex h-30 w-full gap-1">
         <EmotionButton />
-        <div className="h-full w-full md:max-w-80">
+        <div className="h-full w-full @md:max-w-80">
           {isCurrentPlayer ? (
             <div className="flex flex-col gap-y-3">
               <RotationButtonList />
@@ -36,7 +36,7 @@ export const ControlPanel = () => {
             </div>
           ) : (
             currentPlayerId && (
-              <div className="flex h-full w-full flex-col items-center gap-y-2 md:text-xl">
+              <div className="flex h-full w-full flex-col items-center gap-y-2 @md:text-xl">
                 <div className="text-center">
                   {gameRoomState.nicknames[currentPlayerId]} 님을{" "}
                   <span className="whitespace-nowrap">기다리는 중...</span>

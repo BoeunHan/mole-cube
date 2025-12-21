@@ -17,7 +17,7 @@ export const Overlay = ({ open, onClose, children }: OverlayProps) => {
       onClick={() => onClose()}
     >
       <div
-        className="overlay-paper relative h-[calc(100%-100px)] w-[calc(100%-40px)] max-w-[400px] md:max-h-[600px]"
+        className="overlay-paper relative h-[calc(100%-100px)] w-[calc(100%-40px)] max-w-[400px] @md:max-h-[600px]"
         onClick={(e) => e.stopPropagation()}
       >
         <XIcon

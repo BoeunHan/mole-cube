@@ -91,7 +91,7 @@ export const ShopContent = () => {
                   unoptimized
                   draggable={false}
                 />
-                <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-sm text-white md:text-base">
+                <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-sm text-white @md:text-base">
                   선택하기
                 </span>
               </div>

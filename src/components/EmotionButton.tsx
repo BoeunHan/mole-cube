@@ -18,7 +18,7 @@ export const EmotionButton = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div
-          className="relative h-12 w-12 flex-shrink-0 cursor-pointer md:h-16 md:w-16"
+          className="relative h-12 w-12 flex-shrink-0 cursor-pointer @md:h-16 @md:w-16"
           onClick={() => {
             playClickEffect();
           }}
@@ -41,7 +41,7 @@ export const EmotionButton = () => {
       <PopoverContent
         align="start"
         side="top"
-        className="mx-auto flex max-w-[300px] flex-wrap bg-stone-400/80 md:max-w-[400px]"
+        className="mx-auto flex max-w-[300px] flex-wrap bg-stone-400/80 @md:max-w-[400px]"
       >
         {Object.entries(EMOTIONS).map(([emotion, src]) => (
           <Image

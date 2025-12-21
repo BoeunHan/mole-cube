@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <div className="h-dvh w-full overflow-hidden bg-[#6f6e6c]">
-      <div className="font-bitbeat text-primary game-container flex items-center bg-[#D8D2CC]">
+      <div className="font-bitbeat text-primary game-container @container flex items-center bg-[#D8D2CC]">
         <div className="font-neodgm z-60">
           <ToastManager />
         </div>
@@ -46,7 +46,7 @@ export default function Home() {
         <div className={`${isBreak ? "invisible" : "block"}`}>
           <CubeView />
         </div>
-        <div className="pointer-events-none relative z-10 flex h-full max-h-[760px] w-full flex-col items-center justify-between px-4 py-10 md:max-h-[900px]">
+        <div className="pointer-events-none relative z-10 flex h-full max-h-[760px] w-full flex-col items-center justify-between px-4 py-10 @md:max-h-[900px]">
           <div className="flex w-full flex-col items-center gap-y-2">
             <RoundInfo />
             <CurrentPlayers />

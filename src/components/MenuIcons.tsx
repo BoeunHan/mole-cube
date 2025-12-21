@@ -12,7 +12,7 @@ export const MenuIcons = () => {
   return (
     <div className="flex flex-col gap-2">
       <div
-        className="relative h-8 w-8 cursor-pointer md:h-14 md:w-14"
+        className="relative h-8 w-8 cursor-pointer @md:h-14 @md:w-14"
         onClick={() => {
           playClickEffect();
           setIsShopOpen(true);

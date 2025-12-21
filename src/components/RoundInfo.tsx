@@ -22,7 +22,7 @@ export const RoundInfo = () => {
 
   return (
     <div className="flex w-full max-w-80 flex-col items-center gap-y-2">
-      <div className="text-xl md:text-3xl">{`제 ${gameRoomState?.currentRoundNumber}번째 게임`}</div>
+      <div className="text-xl @md:text-3xl">{`제 ${gameRoomState?.currentRoundNumber}번째 게임`}</div>
       {!isBreak && (
         <div className="font-neodgm flex w-full justify-around text-sm">
           <span>

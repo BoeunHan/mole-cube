@@ -54,7 +54,7 @@ export const CurrentPlayers = () => {
   return (
     <div className="flex h-20 w-full items-center justify-center">
       {displayPlayers?.map(({ id, status }) => (
-        <div key={id} className="relative h-17 w-17 md:h-20 md:w-20">
+        <div key={id} className="relative h-17 w-17 @md:h-20 @md:w-20">
           {status === "entering" ? (
             <Sprite
               src="/assets/mole_in.png"
