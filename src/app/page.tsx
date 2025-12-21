@@ -28,8 +28,8 @@ export default function Home() {
   const isBreak = gameRoomState?.status === "break";
 
   return (
-    <div className="flex h-dvh w-full justify-center overflow-hidden bg-[#6f6e6c]">
-      <div className="font-bitbeat text-primary relative flex h-full w-[500px] items-center bg-[#D8D2CC]">
+    <div className="h-dvh w-full overflow-hidden bg-[#6f6e6c]">
+      <div className="font-bitbeat text-primary game-container flex items-center bg-[#D8D2CC]">
         <div className="font-neodgm z-60">
           <ToastManager />
         </div>

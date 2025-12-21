@@ -13,11 +13,11 @@ export const Overlay = ({ open, onClose, children }: OverlayProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40"
+      className="game-container z-[999] flex items-center justify-center bg-black/40"
       onClick={() => onClose()}
     >
       <div
-        className="overlay-paper relative h-[calc(100%-100px)] max-h-[600px] w-[calc(100%-40px)] max-w-[400px]"
+        className="overlay-paper relative h-[calc(100%-100px)] w-[calc(100%-40px)] max-w-[400px] md:max-h-[600px]"
         onClick={(e) => e.stopPropagation()}
       >
         <XIcon
