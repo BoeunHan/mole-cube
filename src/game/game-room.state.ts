@@ -154,12 +154,16 @@ export class GameRoomState {
   getState() {
     return {
       players: this.players,
+      nicknames: this.players.reduce(
+        (acc, userId) => {
+          acc[userId] = this.getUserNickname(userId);
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
       currentRoundNumber: this.currentRoundNumber,
       roundState: this.currentRound.getState(),
       currentPlayerId: this.currentPlayerId,
-      currentPlayerNickname: this.currentPlayerId
-        ? this.getUserNickname(this.currentPlayerId)
-        : '',
       timerEndTime: this.timerEndTime,
       timerTotalTime: this.timerTotalTime,
       status: this.status,
@@ -169,9 +173,13 @@ export class GameRoomState {
   getTurnInfo() {
     return {
       currentPlayerId: this.currentPlayerId,
-      currentPlayerNickname: this.currentPlayerId
-        ? this.getUserNickname(this.currentPlayerId)
-        : '',
+      nicknames: this.players.reduce(
+        (acc, userId) => {
+          acc[userId] = this.getUserNickname(userId);
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
       timerTotalTime: this.timerTotalTime,
       timerEndTime: this.timerEndTime,
     };

@@ -145,7 +145,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleTurnUpdated(payload: {
     roomId: string;
     currentPlayerId: string;
-    currentPlayerNickname: string;
     timerTotalTime: number;
     timerEndTime: number;
   }) {
