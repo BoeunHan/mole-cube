@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { RotateCwIcon, RotateCcwIcon } from "lucide-react";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 export const RotationHistory = () => {
   const { gameRoomState } = useGameSocket();
@@ -32,33 +32,12 @@ export const RotationHistory = () => {
           {histories?.map(({ timestamp, action: { face, clockwise } }, idx) => {
             const isLast = idx === histories.length - 1;
             return (
-              <div
+              <HistoryItem
                 key={timestamp}
-                className={`font-neodgm relative flex aspect-square w-8 flex-shrink-0 items-center justify-center opacity-80 ${isLast ? "ring-2 ring-[#eb4949]" : ""}`}
-              >
-                <Image
-                  src="/assets/bt_blank.png"
-                  alt={`${face} ${clockwise ? "시계방향" : "반시계방향"}`}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  draggable={false}
-                />
-
-                <span className="z-10">{face}</span>
-                {clockwise && (
-                  <RotateCwIcon
-                    strokeWidth={1.3}
-                    className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 text-stone-400"
-                  />
-                )}
-                {!clockwise && (
-                  <RotateCcwIcon
-                    strokeWidth={1.3}
-                    className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 text-stone-400"
-                  />
-                )}
-              </div>
+                face={face}
+                clockwise={clockwise}
+                isLast={isLast}
+              />
             );
           })}
         </div>
@@ -66,3 +45,43 @@ export const RotationHistory = () => {
     </div>
   );
 };
+
+const HistoryItem = memo(
+  ({
+    face,
+    clockwise,
+    isLast,
+  }: {
+    face: string;
+    clockwise: boolean;
+    isLast: boolean;
+  }) => (
+    <div
+      className={`font-neodgm relative flex aspect-square w-8 flex-shrink-0 items-center justify-center opacity-80 ${isLast ? "ring-2 ring-[#eb4949]" : ""}`}
+    >
+      <Image
+        src="/assets/bt_blank.png"
+        alt={`${face} ${clockwise ? "시계방향" : "반시계방향"}`}
+        fill
+        className="object-cover"
+        unoptimized
+        draggable={false}
+      />
+
+      <span className="z-10">{face}</span>
+      {clockwise ? (
+        <RotateCwIcon
+          strokeWidth={1.3}
+          className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 text-stone-400"
+        />
+      ) : (
+        <RotateCcwIcon
+          strokeWidth={1.3}
+          className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 text-stone-400"
+        />
+      )}
+    </div>
+  ),
+);
+
+HistoryItem.displayName = "HistoryItem";
