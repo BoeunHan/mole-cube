@@ -1,0 +1,30 @@
+name: Deploy Backend to EC2
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "server/**"
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 복사
+        uses: actions/checkout@v4
+
+      - name: EC2 SSH 접속 및 배포
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/mole-cube-backend 
+
+            git pull origin main
+
+            cd server
+            npm install
+            npm run build
+
+            pm2 reload mole-cube-backend || pm2 start dist/main.js --name mole-cube-backend
