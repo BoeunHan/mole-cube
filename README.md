@@ -1,4 +1,4 @@
-# 🚀 Project Name: Mole-Cube
+# 🚀 Mole-Cube
 
 최대 5명의 랜덤한 유저들과 협동하여 큐브를 맞추는 실시간 멀티플레이 게임 
 
