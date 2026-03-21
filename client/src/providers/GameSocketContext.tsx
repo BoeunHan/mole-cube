@@ -174,7 +174,6 @@ export const GameSocketContextProvider = ({
         playerSkins?: Partial<Record<string, string>>;
         serverNow: number;
       }) => {
-        console.log("setGameRound received", roomState);
         const timeDiff = serverNow - Date.now();
         setGameRoomState({
           ...roomState,
