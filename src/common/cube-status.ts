@@ -1,0 +1,164 @@
+import { adjacentEdgesMap, EdgePosition } from './edges';
+import { Color, Face } from './enums';
+
+const DEFAULT_CUBE_COLORS: Record<Face, Color> = {
+  [Face.R]: Color.RED,
+  [Face.L]: Color.BLUE,
+  [Face.U]: Color.GREEN,
+  [Face.D]: Color.YELLOW,
+  [Face.F]: Color.ORANGE,
+  [Face.B]: Color.WHITE,
+};
+
+const SUHFFLE_COUNT = {
+  easy: 1,
+  normal: 35,
+  hard: 50,
+};
+
+export class CubeStatus {
+  private faceColors: Record<Face, Color[][]>;
+  private shuffleCnt: number;
+
+  constructor(level: 'easy' | 'normal' | 'hard') {
+    this.faceColors = this.createCubeColors(3);
+    this.shuffleCnt = SUHFFLE_COUNT[level];
+    if (level) this.shuffleCube(this.shuffleCnt);
+  }
+
+  private shuffleCube(shuffleCnt: number) {
+    const faces = Object.values(Face);
+
+    for (let i = 0; i < shuffleCnt; i++) {
+      const randomFace = faces[Math.floor(Math.random() * faces.length)];
+      const randomClockwise = Math.random() < 0.5;
+      this.rotateCubeFace(randomFace, randomClockwise);
+    }
+  }
+
+  private createCubeColors(size: number): Record<Face, Color[][]> {
+    const createCubeFace = (face: Face) =>
+      Array.from({ length: size }, () =>
+        Array.from({ length: size }, () => DEFAULT_CUBE_COLORS[face]),
+      );
+
+    return {
+      [Face.R]: createCubeFace(Face.R),
+      [Face.L]: createCubeFace(Face.L),
+      [Face.U]: createCubeFace(Face.U),
+      [Face.D]: createCubeFace(Face.D),
+      [Face.F]: createCubeFace(Face.F),
+      [Face.B]: createCubeFace(Face.B),
+    };
+  }
+
+  rotateCubeFace(face: Face, clockwise: boolean) {
+    const currentColors = this.faceColors[face];
+    const isOpposite = face === Face.L || face === Face.U || face === Face.B;
+
+    const rotatedColors = this.rotateMatrix(
+      currentColors,
+      isOpposite ? !clockwise : clockwise,
+    );
+
+    this.faceColors[face] = rotatedColors;
+
+    const adjEdges = adjacentEdgesMap[face];
+
+    const edges: Color[][] = adjEdges.map(({ face, edge, reverse }) => {
+      let edgeColors = this.getEdgeColors(face, edge);
+      const edgeReverse = clockwise ? reverse : !reverse;
+      if (edgeReverse) edgeColors = edgeColors.slice().reverse();
+      return edgeColors;
+    });
+
+    adjEdges.forEach(({ face, edge }, idx) => {
+      const fromIdx = (idx + (clockwise ? 3 : 1)) % 4;
+      const fromEdgeColors = edges[fromIdx];
+      this.setEdgeColors(face, edge, fromEdgeColors);
+    });
+  }
+
+  private rotateMatrix(matrix: Color[][], clockwise: boolean) {
+    const N = matrix.length;
+    const result = Array.from({ length: N }, () => Array.from({ length: N }));
+
+    for (let i = 0; i < N; i++) {
+      for (let j = 0; j < N; j++) {
+        if (clockwise) result[j][N - 1 - i] = matrix[i][j];
+        else result[N - 1 - j][i] = matrix[i][j];
+      }
+    }
+    return result as Color[][];
+  }
+
+  private getEdgeColors(face: Face, edge: EdgePosition) {
+    const matrix = this.faceColors[face];
+    const N = matrix.length;
+    const colors: Color[] = [];
+
+    for (let i = 0; i < N; i++) {
+      switch (edge) {
+        case 'top':
+          colors.push(matrix[i][N - 1]);
+          break;
+        case 'bottom':
+          colors.push(matrix[i][0]);
+          break;
+        case 'left':
+          colors.push(matrix[0][i]);
+          break;
+        case 'right':
+          colors.push(matrix[N - 1][i]);
+          break;
+      }
+    }
+
+    return colors;
+  }
+
+  private setEdgeColors(face: Face, edge: EdgePosition, colors: Color[]) {
+    const matrix = this.faceColors[face];
+    const N = matrix.length;
+    for (let i = 0; i < N; i++) {
+      switch (edge) {
+        case 'top':
+          matrix[i][N - 1] = colors[i];
+          break;
+        case 'bottom':
+          matrix[i][0] = colors[i];
+          break;
+        case 'left':
+          matrix[0][i] = colors[i];
+          break;
+        case 'right':
+          matrix[N - 1][i] = colors[i];
+          break;
+      }
+    }
+  }
+
+  isSolved() {
+    const faces = Object.values(this.faceColors);
+
+    for (const face of faces) {
+      const firstColor = face[0][0];
+      for (const row of face) {
+        for (const color of row) {
+          if (color !== firstColor) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  getStatus() {
+    return {
+      faceColors: this.faceColors,
+      shuffleCnt: this.shuffleCnt,
+    };
+  }
+}
