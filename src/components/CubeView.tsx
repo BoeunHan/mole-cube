@@ -50,7 +50,7 @@ export const CubeView = () => {
       rendererRef.current.domElement,
     );
 
-    controlsRef.current.rotateSpeed = isMobile() ? 2 : 14;
+    controlsRef.current.rotateSpeed = isMobile() ? 2 : 4;
     controlsRef.current.noZoom = true;
     controlsRef.current.noPan = true;
     controlsRef.current.staticMoving = true;

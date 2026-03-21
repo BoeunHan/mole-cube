@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { useGameSocket } from "./GameSocketContext";
-import { useAudio } from "./AudioContext";
+import { useGameSocket } from "../providers/GameSocketContext";
+import { useAudio } from "../providers/AudioContext";
 
-export const ConnectionControl = () => {
+export const useConnectionControl = () => {
   const { emitLeaveGame } = useGameSocket();
   const { pauseBGM } = useAudio();
 
@@ -24,6 +24,4 @@ export const ConnectionControl = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
-
-  return null;
 };

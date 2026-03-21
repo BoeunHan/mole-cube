@@ -8,12 +8,14 @@ import { CurrentPlayers } from "@/components/CurrentPlayers";
 import { MenuIcons } from "@/components/MenuIcons";
 import { NicknameDialog } from "@/components/NicknameDialog";
 import { RoundInfo } from "@/components/RoundInfo";
+import { useConnectionControl } from "@/hooks/useConnectionControl";
 import { useAudio } from "@/providers/AudioContext";
 import { useGameSocket } from "@/providers/GameSocketContext";
 import { ToastManager } from "mole-toast";
 import { useEffect } from "react";
 
 export default function Home() {
+  useConnectionControl();
   const { gameRoomState } = useGameSocket();
   const { playGameBGM, playSolvedBGM } = useAudio();
 
