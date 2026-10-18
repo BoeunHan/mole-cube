@@ -1,4 +1,4 @@
-<img width="800" height="387" alt="demo_2x" src="https://github.com/user-attachments/assets/42ef5c22-9fb5-46c8-8c50-e96d0f3f6364" /><img width="1932" height="509" alt="Mole-Cube 배너" src="https://github.com/user-attachments/assets/fde95226-d5c1-4013-a285-a8a5aee8e8a2" />
+<img width="1932" height="509" alt="Mole-Cube 배너" src="https://github.com/user-attachments/assets/fde95226-d5c1-4013-a285-a8a5aee8e8a2" />
 
 
 # 🐭 두더지큐브
@@ -7,9 +7,7 @@
 
 DEMO: [플레이](https://mole-cube.vercel.app)
 
-<img width="640" alt="데모 영상" src="https://github.com/user-attachments/assets/1f89c97b-ce96-4eac-adbc-4ae39d6509e9" />
-<img width="800" height="387" alt="demo_2x" src="https://github.com/user-attachments/assets/3bb44c96-848d-48e2-af93-9d6f83a82896" />
-
+https://github.com/user-attachments/assets/8cef8a59-d278-4455-a578-c09cca4742b8
 
 <br>
 
@@ -50,7 +48,6 @@ DEMO: [플레이](https://mole-cube.vercel.app)
 - 드래그로 큐브 전방위 시점 전환
 - 면 단위 시계/반시계 회전 애니메이션
 - 회전 히스토리로 누가 어떤 면을 돌렸는지 확인
-
 ### 💰 보상 · 상점 · 감정표현
 
 - 완성 시 회전 참여 횟수 비율로 코인 차등 지급 (완성시킨 유저 보너스)
@@ -73,18 +70,21 @@ DEMO: [플레이](https://mole-cube.vercel.app)
 - 회전할 면의 큐브 9개를 임시 Group으로 묶어 축 기준 90° 회전
 - 애니메이션이 끝나면 큐브를 원래 위치로 되돌리고, 데이터 모델(면별 색상 배열)을 회전시킨 뒤 색상만 다시 칠함
 - 큐브 배열의 인덱스가 항상 실제 위치와 같아서, 다음 회전 때 면에 속한 큐브 9개를 인덱스만으로 바로 찾을 수 있고 화면이 항상 데이터 모델과 일치
-- 
+
 ### 2. 서버 기준으로 모든 화면 동기화
 - 큐브 상태, 현재 차례, 타이머를 모두 서버에서 관리하고, 회전 요청은 서버가 차례/라운드 상태를 검증한 뒤 방 전체에 전달
 - 회전한 본인도 서버 응답을 받은 뒤 애니메이션을 실행해 모든 유저의 화면 순서가 동일
-- 
+
 ### 3. 클라이언트마다 다른 시계로 인한 타이머 오차
 - 서버가 `timerEndTime`과 함께 `serverNow`를 보내고, 클라이언트는 `serverNow - Date.now()`로 시간 차이를 보정해 남은 시간을 계산
 - 기기 시간이 달라도 모든 유저에게 같은 남은 시간이 표시되도록 처리
-- 
+
 ### 4. 이벤트 기반으로 로직과 통신분리
 - 방/라운드 로직(`GameRoomState`)은 소켓을 모르고, `EventEmitter2`로 이벤트만 발행
 - Gateway가 이벤트를 받아 해당 방/유저에게 전송 → 게임 로직과 네트워크 코드의 책임 분리
+
+
+<br>
 
 ## 📁 프로젝트 구조
  
